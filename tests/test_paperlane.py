@@ -97,11 +97,13 @@ class RenderTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             render.build([sample_day()], tmp, "https://example.org/paperlane/")
             out = Path(tmp)
-            for name in ["index.html", "latest.md", "latest.json", "latest-titles.md", "feed.xml", "llms.txt",
+            for name in ["index.html", "today.html", "about.html", "latest.md", "latest.json", "latest-titles.md", "feed.xml", "llms.txt",
                          "archive.html", "days/2026-10-23.html", "latest/math.CO.md", "assets/app.js",
                          "p/2610.00001.md", "p/2610.00001.html", "p/2610.00003.md"]:
                 self.assertTrue((out / name).exists(), name)
-            index = (out / "index.html").read_text()
+            index = (out / "today.html").read_text()
+            home = (out / "index.html").read_text()
+            self.assertIn('data-cat="math.CO"', home)
             self.assertIn("An abstract &amp; more.", index)
             self.assertIn("Lean project", index)
             self.assertIn('data-cats="math.CO"', index)
