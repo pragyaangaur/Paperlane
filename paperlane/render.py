@@ -634,12 +634,23 @@ def lookup_html(built, base):
 
 def notfound_html(base, built):
     # GitHub Pages serves this file for any missing path, so every link in it is absolute.
-    body = """<div class="wrap">
-  <header class="issue-head"><p class="kicker mono">404</p><h1>This page is <em>not here</em></h1>
-  <p class="lede small">The link may be mistyped, or the page may have moved. Today's issue and the archive are one click away.</p></header>
-  <p class="hook-actions"><a class="btn primary" href="{0}/today.html">Read today's issue</a><a class="mono" href="{0}/archive.html">open the archive →</a></p>
+    body = """<div class="wrap lost">
+  <section class="lost-copy">
+    <p class="lost-code" aria-hidden="true">404</p>
+    <h1>This page is <em>still under review</em>.</h1>
+    <p class="lede">We sent it to a journal in 2019. Reviewer 2 asked for three more experiments and a citation to their own thesis, and nobody has seen the page since.</p>
+    <p class="hook-actions"><a class="btn primary" href="{0}/today.html" data-fly>Read today's issue</a><a class="mono" href="{0}/archive.html">open the archive →</a></p>
+  </section>
+  <aside class="verdict mono" aria-label="A rejection letter">
+    <p class="v-head">Decision on manuscript PL-404</p>
+    <p>Dear author,</p>
+    <p>Thank you for submitting this page. After fourteen months, two reviewers recommend rejection. Reviewer 1 could not find it. Reviewer 2 found it but felt it should have been a different page.</p>
+    <p>Your article processing charge of USD 4,000 is not refundable. The page will now sit behind a paywall at USD 39.95 for 24 hours of access.</p>
+    <p class="v-sign">The Editors</p>
+  </aside>
+  <p class="lost-note">Paperlane works the other way. Every new maths paper is here the morning after it appears on arXiv, free to read, with nobody standing in between.</p>
 </div>""".format(esc(base))
-    return page("Not found · Paperlane", body, base + "/", built, "This page is not on Paperlane.", base, "notfound", "", "404.html")
+    return page("Under review · Paperlane", body, base + "/", built, "This page is still under review. Every new maths paper is on Paperlane the morning after it appears.", base, "notfound", "", "404.html")
 
 
 def sitemap(days, base):

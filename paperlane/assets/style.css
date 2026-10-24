@@ -570,3 +570,15 @@ h1 em.fit, h2 em.fit { background: none; padding: 0; }
 body { min-height: 100vh; display: flex; flex-direction: column; }
 body > main { flex: 1 0 auto; }
 .lede { max-width: 44em; }
+
+/* 404: a page lost in peer review */
+.lost { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px 56px; align-items: start; padding-top: 7vh; padding-bottom: 4vh; }
+.lost-code { font-family: var(--sans); font-weight: 700; font-size: clamp(7rem, 18vw, 13rem); line-height: 0.85; letter-spacing: -0.07em; margin: 0 0 18px; color: var(--ink); }
+.lost h1 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); line-height: 1.12; letter-spacing: -0.045em; margin: 0 0 22px; }
+.lost .lede { margin-bottom: 30px; }
+.verdict { align-self: center; background: var(--leaf); border: 1px solid var(--rule); border-radius: 14px; padding: 22px 24px; font-size: 0.78rem; line-height: 1.7; color: var(--ink-2); transform: rotate(1.4deg); box-shadow: 0 1px 2px rgba(17, 18, 16, 0.04), 0 18px 40px rgba(17, 18, 16, 0.08); }
+.verdict p { margin: 0 0 10px; }
+.verdict .v-head { color: var(--ink); font-weight: 500; border-bottom: 1px solid var(--rule); padding-bottom: 10px; margin-bottom: 14px; }
+.verdict .v-sign { margin: 14px 0 0; font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--ink); }
+.lost-note { grid-column: 1 / -1; border-top: 1px solid var(--rule); padding-top: 22px; margin: 18px 0 0; color: var(--ink-2); max-width: 44em; }
+@media (max-width: 800px) { .lost { grid-template-columns: 1fr; padding-top: 32px; } .verdict { transform: none; } }
