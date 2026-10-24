@@ -313,7 +313,7 @@ def ask_html(base, built):
       </div>
       <div id="ask-time" class="time-row" hidden>
         <label for="routine-time" class="mono">run every weekday at</label>
-        <div class="time-line"><input id="routine-time" type="time" value="07:30" step="300"><span class="mono" id="routine-tz"></span></div>
+        <div class="time-line"><input id="routine-time" type="time" value="07:30" step="300" aria-label="Time"><select id="routine-tz" aria-label="Timezone"></select></div>
         <p class="hint mono" id="time-hint"></p>
       </div>
       <div id="ask-work"><label for="interests" class="mono">what do you work on?</label>
@@ -321,15 +321,12 @@ def ask_html(base, built):
       <pre class="terminal" id="prompt" data-base="{esc(base)}"></pre>
       <div class="ask-actions">
         <button id="copy-prompt" type="button" class="btn primary">Copy prompt</button>
-        <a class="btn" id="open-chatgpt" target="_blank" rel="noopener" href="https://chatgpt.com/">ChatGPT ↗</a>
-        <a class="btn" id="open-claude" target="_blank" rel="noopener" href="https://claude.ai/new">Claude ↗</a>
-        <a class="btn" id="open-perplexity" target="_blank" rel="noopener" href="https://www.perplexity.ai/">Perplexity ↗</a>
       </div>
     </section>
     <aside class="ask-steps">
       <ol>
         <li><b>Choose a mode.</b> Use <i>for my work</i> to get the three papers closest to your research, or <i>just curious</i> for the most surprising results in plain words. Use <i>daily routine</i> to have your assistant send you a briefing every weekday at the time you pick.</li>
-        <li><b>Send the prompt.</b> Copy it into any assistant, or use an open button to start a chat with the prompt already filled in. For a routine, paste it where your assistant sets up scheduled tasks or routines.</li>
+        <li><b>Send the prompt.</b> Copy it and paste it into any assistant that can open web pages. For a routine, paste it where your assistant sets up scheduled tasks or routines.</li>
         <li><b>Read the answer.</b> Your assistant reads Paperlane's index of the issue, opens the abstracts it needs, and links every paper it mentions.</li>
       </ol>
       <p class="mono small-link">files for agents: <a href="llms.txt">llms.txt</a> · <a href="latest-titles.md">latest-titles.md</a> · <a href="latest.md">latest.md</a> · <a href="latest.json">latest.json</a></p>
@@ -599,7 +596,6 @@ def home_html(day, number, base, built, titles_sample, words_full, words_titles,
     wf, wt = nice_count(words_full), nice_count(words_titles)
     curious_text = CURIOUS_PROMPT.format(base=base)
     curious = esc(curious_text)
-    q = urllib.parse.quote(curious_text)
     lane_rows = "".join(
         f'<li><a href="p/{anchor(p)}.html"><span class="mono n">{i:02d}</span><span class="t">{esc(p["title"])}</span>'
         f'<span class="mono m">matched {" ".join(f"<mark>{esc(h)}</mark>" for h in hits)}</span></a></li>'
@@ -637,7 +633,7 @@ def home_html(day, number, base, built, titles_sample, words_full, words_titles,
     <h3>The AI you already pay for can read <em>the frontier</em>.</h3>
     <p>Your assistant already reads the news for you. Paste this prompt into it and hear what mathematicians found {when}, in plain words.</p>
     <pre class="terminal prompt-box" id="curious-prompt">{curious}</pre>
-    <div class="way-actions"><button type="button" class="btn primary" data-copy-from="#curious-prompt">Copy prompt</button><a class="btn dark" href="https://chatgpt.com/?q={q}" target="_blank" rel="noopener">Open in ChatGPT ↗</a><a class="btn dark" href="https://claude.ai/new?q={q}" target="_blank" rel="noopener">Claude ↗</a></div>
+    <div class="way-actions"><button type="button" class="btn primary" data-copy-from="#curious-prompt">Copy prompt</button></div>
   </article>
 </section>
 

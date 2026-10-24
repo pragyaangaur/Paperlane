@@ -563,31 +563,54 @@
     var box = $("#prompt"), interests = $("#interests"), workBox = $("#ask-work");
     var wanted = new URLSearchParams(location.search).get("mode");
     var mode = wanted === "curious" || wanted === "routine" ? wanted : "work";
-    var timeBox = $("#ask-time"), timeInput = $("#routine-time"), hint = $("#time-hint");
-    var tz = "";
-    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
-    $("#routine-tz").textContent = tz ? tz.replace(/_/g, " ") : "your local time";
-    // Paperlane publishes at 06:00 UTC. Show that moment in the reader's own time.
-    var publish = new Date(Date.UTC(2026, 0, 5, 6, 0));
-    var publishLocal = publish.getHours() * 60 + publish.getMinutes();
+    var timeBox = $("#ask-time"), timeInput = $("#routine-time"), hint = $("#time-hint"), tzSelect = $("#routine-tz");
+
+    // Every timezone the browser knows, labelled with its current UTC offset. The reader's own zone is chosen first.
+    function offsetOf(zone, when) {
+      try {
+        var part = new Intl.DateTimeFormat("en-US", { timeZone: zone, timeZoneName: "shortOffset" }).formatToParts(when)
+          .filter(function (p) { return p.type === "timeZoneName"; })[0];
+        return part ? part.value.replace("GMT", "UTC") : "";
+      } catch (e) { return ""; }
+    }
+    var now = new Date();
+    var zones = [];
+    try { zones = Intl.supportedValuesOf("timeZone").slice(); } catch (e) {}
+    if (!zones.length) zones = ["Europe/London", "Europe/Berlin", "America/New_York", "America/Chicago", "America/Los_Angeles", "Asia/Kolkata", "Asia/Shanghai", "Asia/Tokyo", "Australia/Sydney"];
+    var detected = "UTC";
+    try { detected = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"; } catch (e) {}
+    var saved = store.get("paperlane-timezone");
+    if (zones.indexOf(detected) < 0) zones.unshift(detected);
+    if (zones.indexOf("UTC") < 0) zones.unshift("UTC");
+    tzSelect.innerHTML = zones.map(function (z) {
+      return '<option value="' + esc(z) + '">' + esc(z.replace(/_/g, " ")) + " (" + esc(offsetOf(z, now)) + ")</option>";
+    }).join("");
+    tzSelect.value = saved && zones.indexOf(saved) >= 0 ? saved : detected;
+
+    function minutesIn(zone, when) {
+      var parts = new Intl.DateTimeFormat("en-GB", { timeZone: zone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(when);
+      var h = 0, m = 0;
+      parts.forEach(function (p) { if (p.type === "hour") h = Number(p.value); if (p.type === "minute") m = Number(p.value); });
+      return h * 60 + m;
+    }
     function hhmm(mins) { return String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0"); }
+    // Paperlane publishes at 06:00 UTC. Show that moment in the chosen timezone, using today's date so daylight saving is right.
     function timeHint() {
+      var zone = tzSelect.value;
+      var publish = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 6, 0));
+      var arriveMins = minutesIn(zone, publish);
       var v = (timeInput.value || "07:30").split(":");
       var chosen = Number(v[0]) * 60 + Number(v[1]);
-      var arrive = hhmm(publishLocal);
-      if (chosen < publishLocal) {
-        hint.textContent = "A new issue arrives at about " + arrive + " your time. At this time your routine would read the previous issue, so " + hhmm(Math.min(publishLocal + 30, 1439)) + " or later works better.";
+      var place = zone.replace(/_/g, " ");
+      if (chosen < arriveMins) {
+        hint.textContent = "A new issue arrives at about " + hhmm(arriveMins) + " in " + place + ". At this time your routine would read the previous issue, so " + hhmm(Math.min(arriveMins + 30, 1439)) + " or later works better.";
         hint.classList.add("warn");
       } else {
-        hint.textContent = "A new issue arrives at about " + arrive + " your time, so this works well.";
+        hint.textContent = "A new issue arrives at about " + hhmm(arriveMins) + " in " + place + ", so this time works well.";
         hint.classList.remove("warn");
       }
     }
-    var openers = [
-      ["#open-chatgpt", "https://chatgpt.com/?q="],
-      ["#open-claude", "https://claude.ai/new?q="],
-      ["#open-perplexity", "https://www.perplexity.ai/search?q="],
-    ];
+
     function update() {
       if (mode === "curious") {
         box.textContent =
@@ -598,7 +621,7 @@
         var when = timeInput.value || "07:30";
         var mine = interests.value.trim() || "X and Y";
         box.textContent =
-          "Set up a routine that runs every weekday at " + when + (tz ? " (" + tz + ")" : "") + ". Each time it runs, read " + base +
+          "Set up a routine that runs every weekday at " + when + " " + tzSelect.value + " time (" + offsetOf(tzSelect.value, now) + "). Each time it runs, read " + base +
           "/latest-titles.md, Paperlane's index of the newest maths papers, and check the issue date at the top. " +
           "If it is the same issue as on your last run, reply only: No new Paperlane issue today. " +
           "Otherwise, my interests are " + mine + ". Pick the papers that fit, read their abstracts in " + base +
@@ -614,20 +637,16 @@
       workBox.hidden = mode === "curious";
       timeBox.hidden = mode !== "routine";
       $$(".modes button", root).forEach(function (b) { b.setAttribute("aria-selected", b.dataset.mode === mode); });
-      openers.forEach(function (o) { var a = $(o[0]); if (a) a.href = o[1] + encodeURIComponent(box.textContent); });
     }
     $$(".modes button", root).forEach(function (b) {
       b.addEventListener("click", function () { mode = b.dataset.mode; update(); if (mode === "work") interests.focus(); });
     });
     interests.addEventListener("input", update);
     timeInput.addEventListener("input", update);
+    tzSelect.addEventListener("change", function () { store.set("paperlane-timezone", tzSelect.value); update(); });
     document.addEventListener("interests", update);
     update();
     $("#copy-prompt").addEventListener("click", function (e) { track("copy-prompt-" + mode); copy(box.textContent, e.target); });
-    openers.forEach(function (o) {
-      var a = $(o[0]);
-      if (a) a.addEventListener("click", function () { track("open-" + o[0].slice(6) + "-" + mode); });
-    });
   }
 
   // Copy buttons that copy the text of another element, such as the curious prompt on the home page.
