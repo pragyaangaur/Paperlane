@@ -1,0 +1,15 @@
+# Private notes, never public
+AGENTS.md
+HANDOFF.md
+PLAN.md
+CLAUDE.md
+.env
+.env.*
+
+# Build output, deployed by Actions
+_site/
+
+__pycache__/
+*.pyc
+.DS_Store
+.claude/
