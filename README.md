@@ -25,11 +25,12 @@ This renders every stored day into `_site/` and serves it locally. The tests run
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The latest day, with subfield filters, code and Lean filters, a search box and the paste-in prompt |
+| `index.html` | The latest day, with a filter sidebar (subfields, code, Lean, type and a text filter) and a Markdown button on every paper that shows its Markdown in place |
 | `latest-titles.md` | One line per paper with its id, categories, signals, title and authors, which is the place for an agent to start |
 | `latest.md` and `latest.json` | The latest day with abstracts |
 | `latest/<category>.md` | The latest day for one subfield, for example `latest/math.CO.md` |
 | `p/<id>.md` and `p/<id>.html` | One page per paper, which is the link to share. Old ids such as `math/0601001` use a hyphen in place of the slash |
+| `paper.html?id=<arXiv link or id>` | Opens any arXiv paper. A paper in the archive goes to its Paperlane page. Any other paper is fetched in the browser from Semantic Scholar or OpenAlex, because arXiv's own API does not allow requests from web pages |
 | `days/<date>.html`, `.md`, `.json` | Every past day |
 | `feed.xml` | RSS of the latest day's new papers and cross-lists |
 | `llms.txt` | An index for agents |
