@@ -556,17 +556,54 @@
   }
 
   // ---------- Ask your AI ----------
+  // The ask page builds a prompt and links that open common assistants with the prompt filled in.
   function ask() {
-    var dlg = $("#ask");
-    if (!dlg) return;
+    var root = $("#ask");
+    if (!root) return;
     var box = $("#prompt"), interests = $("#interests"), workBox = $("#ask-work");
-    var mode = "work";
+    var wanted = new URLSearchParams(location.search).get("mode");
+    var mode = wanted === "curious" || wanted === "routine" ? wanted : "work";
+    var timeBox = $("#ask-time"), timeInput = $("#routine-time"), hint = $("#time-hint");
+    var tz = "";
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+    $("#routine-tz").textContent = tz ? tz.replace(/_/g, " ") : "your local time";
+    // Paperlane publishes at 06:00 UTC. Show that moment in the reader's own time.
+    var publish = new Date(Date.UTC(2026, 0, 5, 6, 0));
+    var publishLocal = publish.getHours() * 60 + publish.getMinutes();
+    function hhmm(mins) { return String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0"); }
+    function timeHint() {
+      var v = (timeInput.value || "07:30").split(":");
+      var chosen = Number(v[0]) * 60 + Number(v[1]);
+      var arrive = hhmm(publishLocal);
+      if (chosen < publishLocal) {
+        hint.textContent = "A new issue arrives at about " + arrive + " your time. At this time your routine would read the previous issue, so " + hhmm(Math.min(publishLocal + 30, 1439)) + " or later works better.";
+        hint.classList.add("warn");
+      } else {
+        hint.textContent = "A new issue arrives at about " + arrive + " your time, so this works well.";
+        hint.classList.remove("warn");
+      }
+    }
+    var openers = [
+      ["#open-chatgpt", "https://chatgpt.com/?q="],
+      ["#open-claude", "https://claude.ai/new?q="],
+      ["#open-perplexity", "https://www.perplexity.ai/search?q="],
+    ];
     function update() {
       if (mode === "curious") {
         box.textContent =
           "Read " + base + "/latest-titles.md, the list of new maths papers from the latest Paperlane issue. " +
           "Pick the two results a curious person with no maths degree would find most surprising, read their abstracts in " +
           base + "/latest.md, and explain each one in plain words with an everyday example.";
+      } else if (mode === "routine") {
+        var when = timeInput.value || "07:30";
+        var mine = interests.value.trim() || "X and Y";
+        box.textContent =
+          "Set up a routine that runs every weekday at " + when + (tz ? " (" + tz + ")" : "") + ". Each time it runs, read " + base +
+          "/latest-titles.md, Paperlane's index of the newest maths papers, and check the issue date at the top. " +
+          "If it is the same issue as on your last run, reply only: No new Paperlane issue today. " +
+          "Otherwise, my interests are " + mine + ". Pick the papers that fit, read their abstracts in " + base +
+          "/latest.md, and send me a short briefing with the three papers I should read, one line each on why, and a link to each paper.";
+        timeHint();
       } else {
         var i = interests.value.trim() || "X and Y";
         box.textContent =
@@ -575,19 +612,22 @@
           "/latest.md, and tell me which three papers I should read and why.";
       }
       workBox.hidden = mode === "curious";
-      $$(".modes button", dlg).forEach(function (b) { b.setAttribute("aria-selected", b.dataset.mode === mode); });
+      timeBox.hidden = mode !== "routine";
+      $$(".modes button", root).forEach(function (b) { b.setAttribute("aria-selected", b.dataset.mode === mode); });
+      openers.forEach(function (o) { var a = $(o[0]); if (a) a.href = o[1] + encodeURIComponent(box.textContent); });
     }
-    $$(".modes button", dlg).forEach(function (b) {
-      b.addEventListener("click", function () { mode = b.dataset.mode; update(); });
+    $$(".modes button", root).forEach(function (b) {
+      b.addEventListener("click", function () { mode = b.dataset.mode; update(); if (mode === "work") interests.focus(); });
     });
     interests.addEventListener("input", update);
+    timeInput.addEventListener("input", update);
     document.addEventListener("interests", update);
     update();
-    $$("[data-open-ask]").forEach(function (b) {
-      b.addEventListener("click", function () { track("open-ask-ai"); update(); dlg.showModal ? dlg.showModal() : dlg.setAttribute("open", ""); if (mode === "work") interests.focus(); });
-    });
-    dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
     $("#copy-prompt").addEventListener("click", function (e) { track("copy-prompt-" + mode); copy(box.textContent, e.target); });
+    openers.forEach(function (o) {
+      var a = $(o[0]);
+      if (a) a.addEventListener("click", function () { track("open-" + o[0].slice(6) + "-" + mode); });
+    });
   }
 
   // Copy buttons that copy the text of another element, such as the curious prompt on the home page.
