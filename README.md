@@ -10,7 +10,7 @@
   <a href="https://pragyaangaur.github.io/Paperlane/about.html">How it works</a>
 </p>
 
-A few hundred new mathematics papers appear every weekday. Paperlane sets each day as one quiet issue in the typeface of a LaTeX paper, and it highlights the ones that matter to you the way you would mark a printout. You pick your fields and say what you work on, and the papers that matter to you come first. Every paper is also plain Markdown, so your own AI assistant can read the whole issue for you. It is free and needs no account.
+A few hundred new mathematics papers appear every weekday. Paperlane sets each day as one quiet issue, with every paper in the typeface of a LaTeX preprint, and it highlights the ones that matter to you the way you would mark a printout. You pick your fields and say what you work on, and the papers that matter to you come first. Every paper is also plain Markdown, so your own AI assistant can read the whole issue for you. It is free and needs no account.
 
 <p align="center">
   <img src="docs/home.png" alt="The Paperlane home page: a journal masthead, today's contents and the lane builder" width="90%">
