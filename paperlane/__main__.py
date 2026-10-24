@@ -50,7 +50,7 @@ def cmd_build(args):
     days = load_days(args.data)
     if not days:
         sys.exit(f"No days in {args.data}. Run `python -m paperlane fetch` first.")
-    render.build(days, args.out, args.base_url)
+    render.build(days, args.out, args.base_url, goatcounter=args.goatcounter)
 
 
 def main():
@@ -64,6 +64,7 @@ def main():
     b = sub.add_parser("build", help="render the site from stored days")
     b.add_argument("--out", default="_site")
     b.add_argument("--base-url", default=os.environ.get("PAPERLANE_BASE_URL", "http://localhost:8000"))
+    b.add_argument("--goatcounter", default=os.environ.get("PAPERLANE_GOATCOUNTER"), help="GoatCounter site code for visitor counts")
     args = ap.parse_args()
     {"fetch": cmd_fetch, "build": cmd_build}[args.cmd](args)
 

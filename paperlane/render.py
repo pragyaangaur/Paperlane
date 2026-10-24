@@ -223,6 +223,17 @@ def field_counts(day):
     return sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
 
 
+ANALYTICS = {"goatcounter": None}
+
+
+def analytics_tag():
+    """GoatCounter's script when the build has a site code. It sets no cookies."""
+    code = ANALYTICS["goatcounter"]
+    if not code:
+        return ""
+    return f'<script data-goatcounter="https://{code}.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>'
+
+
 def page(title, body, prefix, built, description="", base="", kind="page", active=""):
     def nav(href, label, key):
         cur = ' aria-current="page"' if key == active else ""
@@ -248,6 +259,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <script defer src="{KATEX}/katex.min.js"></script>
 <script defer src="{KATEX}/contrib/auto-render.min.js"></script>
 <script defer src="{prefix}assets/app.js"></script>
+{analytics_tag()}
 </head>
 <body class="{kind}" data-prefix="{prefix}" data-base="{esc(base)}">
 <header class="site">
@@ -467,8 +479,8 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
             rows.append(paper_html(p, day, prefix, order))
             order += 1
         sections.append(
-            f'<section class="group" data-field="{cat}"><h2><span>{esc(categories.name(cat))}</span><i class="leader"></i><span class="n mono">{len(groups[cat])}</span></h2>\n'
-            + "\n".join(rows) + "\n</section>"
+            f'<section class="group" id="g-{cat}" data-field="{cat}"><h2><span>{esc(categories.name(cat))}</span><i class="leader"></i><span class="n mono">{len(groups[cat])}</span></h2>\n'
+            + "\n".join(rows) + '\n<button type="button" class="more mono" hidden></button>\n</section>'
         )
     if revised:
         rows = []
@@ -476,9 +488,13 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
             rows.append(paper_html(p, day, prefix, order))
             order += 1
         sections.append(
-            f'<section class="group" data-field="_rev"><h2><span>Revised papers</span><i class="leader"></i><span class="n mono">{len(revised)}</span></h2>\n'
-            + "\n".join(rows) + "\n</section>"
+            f'<section class="group" id="g-revised" data-field="_rev"><h2><span>Revised papers</span><i class="leader"></i><span class="n mono">{len(revised)}</span></h2>\n'
+            + "\n".join(rows) + '\n<button type="button" class="more mono" hidden></button>\n</section>'
         )
+    jump_items = [(cat, categories.name(cat), len(ps)) for cat, ps in sorted(groups.items(), key=lambda kv: (-len(kv[1]), categories.name(kv[0])))]
+    if revised:
+        jump_items.append(("revised", "Revised", len(revised)))
+    jump = "".join(f'<a href="#g-{c}">{esc(n)} <em>{k}</em></a>' for c, n, k in jump_items)
     rebuilt = ""
     if day.get("source") == "api-window":
         rebuilt = ' · <span class="rebuilt" title="Rebuilt from submission times, so it may differ slightly from the announcement and has no revised papers.">rebuilt</span>'
@@ -498,10 +514,12 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
   {toolbar_html(day)}
   <p class="empty" id="f-empty" hidden>Nothing matches. <button type="button" class="link" data-clear>Clear the filters</button></p>
   <p class="empty" id="f-lookup" hidden></p>
+  <nav class="jump mono" id="jump" aria-label="Jump to a field">{jump}</nav>
   <div id="list">
   {''.join(sections)}
   </div>
   <section class="group flat" id="flat" hidden></section>
+  <button type="button" class="more mono" id="flat-more" hidden></button>
 </div>"""
     title = f"{d:%A} {d.day} {d:%B %Y} · Paperlane"
     return page(title, body, prefix, built, f"{st['papers']} new maths papers from {long_date(day['date'])}, with code and Lean tags.", base, "day", "today" if is_latest else "archive")
@@ -643,6 +661,9 @@ def about_html(days, base, built):
   <p>Everything on Paperlane is also published as plain files. Point your assistant at any of these.</p>
   <div class="table-wrap"><table class="files"><tbody>{rows}</tbody></table></div>
 
+  <h2>Privacy</h2>
+  <p>Paperlane counts visits with GoatCounter, which sets no cookies and stores no personal data. It also counts a few anonymous events, such as a prompt being copied or a Markdown file being opened, to learn which features people use. Your fields and interests are kept in your own browser and are never sent anywhere.</p>
+
   <h2>Where the data comes from</h2>
   <p>Titles, authors, abstracts and categories come from <a href="https://arxiv.org" target="_blank" rel="noopener">arXiv</a>, and every paper links to arXiv for the full text. Papers that Paperlane has not listed are looked up through Semantic Scholar or OpenAlex. {ARXIV_THANKS}</p>
   <p>Paperlane is open source on <a href="{REPO}">GitHub</a>, where you can report a problem or ask for a feature.</p>
@@ -767,8 +788,10 @@ def json_day(day, base):
     return json.dumps(out, ensure_ascii=False, separators=(",", ":"))
 
 
-def build(days, out, base, built_dt=None):
+def build(days, out, base, built_dt=None, goatcounter=None):
     """Write the whole site for `days` (newest first) into `out`."""
+    code = (goatcounter or "").strip().lower()
+    ANALYTICS["goatcounter"] = code if re.fullmatch(r"[a-z0-9-]{2,50}", code) else None
     built_dt = built_dt or datetime.now(timezone.utc).replace(microsecond=0)
     built = built_dt.strftime("%Y-%m-%d %H:%M UTC")
     base = base.rstrip("/")

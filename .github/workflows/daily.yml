@@ -63,6 +63,9 @@ jobs:
 
       - name: Build the site
         if: steps.fetch.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          # Set this repository variable to a GoatCounter site code to turn on visitor counts.
+          PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
         run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
 
       - uses: actions/upload-pages-artifact@v3
