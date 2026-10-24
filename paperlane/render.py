@@ -2,6 +2,7 @@
 
 import html
 import json
+import re
 import shutil
 from datetime import date, datetime, timezone
 from email.utils import format_datetime
@@ -166,24 +167,37 @@ def titles_md(day, base, built):
 # HTML
 
 REPO = "https://github.com/pragyaangaur/Paperlane"
-
-LOGO = (
-    '<svg class="mark" viewBox="0 0 40 40" aria-hidden="true">'
-    '<rect width="40" height="40" rx="10" class="tile"/>'
-    '<path d="M5.5 34.5 Q 9.5 30.5 14 27.5" class="lane"/>'
-    '<path d="M32 8.5 L8.5 18.2 L16.6 21.6 Z" class="wing"/>'
-    '<path d="M32 8.5 L16.6 21.6 L20.4 31.5 Z" class="body"/></svg>'
+FONTS = (
+    '<link rel="preconnect" href="https://fonts.googleapis.com">'
+    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600'
+    '&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&display=swap">'
 )
-ICON_SEARCH = '<svg class="i" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4.5 4.5"/></svg>'
-ICON_THEME = '<svg class="i" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 3a7 7 0 0 0 0 14z" class="fill"/></svg>'
-ICON_CHEVRON = '<svg class="i chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 8l3 3 3-3"/></svg>'
-ICON_GITHUB = '<svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path class="fill" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>'
+
+# The mark: a written sheet caught by the wind, its last line closed with a tombstone.
+LOGO = (
+    '<svg class="mark" viewBox="0 0 48 48" aria-hidden="true">'
+    '<g class="wind"><path d="M1.8 20.6c3.1.9 5.6-.9 8.6-.2"/><path d="M1.2 27.4c2.3-1.6 4.6-1.4 6.3-.2 1.5 1.1 3.3 1.2 5.1.2"/>'
+    '<path d="M4.6 34.2c2.4.6 4.3-.5 6.6.1"/></g>'
+    '<g transform="rotate(-15 29 24)">'
+    '<path class="sheet" d="M16.5 8.6c5.3-1.2 10.6 1.1 16.4-.5l5 4.9c-1.6 9.4 1.4 17.9-.6 27.6-6.2 1.6-12.6-1.6-18.6.6-1.8-.2-3.2-1.6-3.1-3.6 1.4-9.4-1.6-19.3.9-29z"/>'
+    '<path class="fold" d="M32.9 8.1l.3 5.1 4.7-.2"/><path class="ink" d="M18.7 41.2c.9-1.5 2.4-2 3.9-1.4"/>'
+    '<g class="ink"><path d="M20.5 16.6c2.3-1.2 4 .9 6.1-.2 1.9-1 3.3.4 4.9-.3"/><path d="M20.6 22.5c2.8-.9 5 .8 7.6-.1 1.6-.5 2.8 0 4.1-.3"/>'
+    '<path d="M20.7 28.5c2.2-.8 4.1.6 6.1-.2"/></g><rect class="qed" x="29.2" y="26.6" width="3" height="3"/></g></svg>'
+)
+ICON_GITHUB = '<svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>'
 
 # Runs before the page paints, so a saved theme never flashes the wrong colours.
 THEME_BOOT = (
     "<script>try{var t=localStorage.getItem('paperlane-theme');"
     "if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>"
 )
+PAGES_RE = re.compile(r"(\d{1,4})\s*(?:pages|pp\b|page)", re.I)
+
+
+def pages_of(p):
+    m = PAGES_RE.search(p.get("comments") or "")
+    return int(m.group(1)) if m else None
 
 
 def short_date(d):
@@ -197,7 +211,16 @@ def day_stats(day):
         "papers": len(day["papers"]),
         "code": sum(1 for s in sig if s.get("code_links")),
         "lean": sum(1 for s in sig if s.get("lean_repo")),
+        "fields": len({c for p in day["papers"] for c in p.get("math_categories") or []}),
     }
+
+
+def field_counts(day):
+    counts = {}
+    for p in day["papers"]:
+        for c in p.get("math_categories") or []:
+            counts[c] = counts.get(c, 0) + 1
+    return sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
 
 
 def page(title, body, prefix, built, description="", base="", kind="page", active=""):
@@ -217,8 +240,9 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <meta property="og:description" content="{esc(description)}">
 {THEME_BOOT}
 <link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="{prefix}assets/style.css">
+{FONTS}
 <link rel="stylesheet" href="{KATEX}/katex.min.css">
+<link rel="stylesheet" href="{prefix}assets/style.css">
 <link rel="alternate" type="application/rss+xml" title="Paperlane" href="{prefix}feed.xml">
 <link rel="alternate" type="text/markdown" title="Today as Markdown" href="{prefix}latest.md">
 <script defer src="{KATEX}/katex.min.js"></script>
@@ -229,18 +253,18 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <header class="site">
   <div class="bar">
     <a class="brand" href="{prefix}index.html" aria-label="Paperlane home">{LOGO}<span>Paperlane</span></a>
-    <nav>
-      {nav("today.html", "Today", "today")}
-      {nav("archive.html", "Archive", "archive")}
-      <button type="button" data-open-ask>Ask your AI</button>
-      {nav("about.html", "About", "about")}
+    <nav class="mono">
+      {nav("today.html", "today", "today")}
+      {nav("archive.html", "archive", "archive")}
+      <button type="button" data-open-ask>ask&#8209;ai</button>
+      {nav("about.html", "about", "about")}
     </nav>
     <div class="tools">
-      <form class="lookup" action="{prefix}paper.html" method="get" role="search">
-        {ICON_SEARCH}<input name="id" type="search" placeholder="Open a paper by link or id" aria-label="Open a paper by arXiv link or id" autocomplete="off" spellcheck="false">
+      <form class="lookup mono" action="{prefix}paper.html" method="get" role="search">
+        <span aria-hidden="true">&gt;</span><input name="id" type="search" placeholder="open arXiv id or link" aria-label="Open a paper by arXiv link or id" autocomplete="off" spellcheck="false">
       </form>
-      <button type="button" class="icon-btn" data-theme-toggle title="Switch theme" aria-label="Switch theme">{ICON_THEME}</button>
-      <a class="icon-btn" href="{REPO}" title="Paperlane on GitHub" aria-label="Paperlane on GitHub">{ICON_GITHUB}</a>
+      <button type="button" class="icon-btn mono" data-theme-toggle title="Switch theme" aria-label="Switch theme">◐</button>
+      <a class="icon-btn" href="{REPO}" title="Source on GitHub" aria-label="Source on GitHub">{ICON_GITHUB}</a>
     </div>
   </div>
 </header>
@@ -250,9 +274,12 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 {ask_dialog(prefix, base)}
 <footer class="site">
   <div class="foot">
-    <a class="brand small" href="{prefix}index.html">{LOGO}<span>Paperlane</span></a>
-    <nav><a href="{prefix}today.html">Today</a><a href="{prefix}archive.html">Archive</a><a href="{prefix}about.html">About</a><a href="{prefix}about.html#agents">For agents</a><a href="{prefix}feed.xml">RSS</a><a href="{REPO}">GitHub</a></nav>
-    <p class="built">Updated {esc(built)}</p>
+    <div class="colophon">
+      <a class="brand small" href="{prefix}index.html">{LOGO}<span>Paperlane</span></a>
+      <p>A daily journal of new mathematics, for people and their agents.</p>
+    </div>
+    <nav class="mono"><a href="{prefix}today.html">today</a><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}about.html#agents">agents</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}">source</a></nav>
+    <p class="mono built">set in Newsreader &amp; JetBrains Mono · built {esc(built)}</p>
   </div>
 </footer>
 </body>
@@ -263,13 +290,14 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 def ask_dialog(prefix, base):
     return f"""<dialog class="ask" id="ask">
   <form method="dialog" class="close"><button aria-label="Close">×</button></form>
-  <h2>Let your AI pick today's papers</h2>
-  <p>Tell it what you work on. Paperlane writes the prompt, and any assistant that can open web pages does the reading.</p>
-  <label for="interests">What do you work on?</label>
-  <input id="interests" type="text" placeholder="e.g. extremal graph theory, polyominoes">
-  <textarea id="prompt" rows="5" readonly data-base="{esc(base)}"></textarea>
+  <p class="kicker mono">ask&#8209;ai</p>
+  <h2>Hand today's papers to <em>your</em> assistant</h2>
+  <p>Say what you work on. Paperlane writes the prompt, and any assistant that can open web pages does the reading.</p>
+  <label for="interests" class="mono">interests</label>
+  <input id="interests" type="text" placeholder="extremal graph theory, polyominoes" data-interests>
+  <pre class="terminal" id="prompt" data-base="{esc(base)}"></pre>
   <div class="row"><button id="copy-prompt" type="button" class="btn primary">Copy prompt</button>
-  <a class="muted-link" href="{prefix}about.html#agents">Files for agents →</a></div>
+  <a class="mono small-link" href="{prefix}about.html#agents">files for agents →</a></div>
 </dialog>"""
 
 
@@ -284,267 +312,330 @@ def linkify(text):
     return "".join(out) + esc(text[last:])
 
 
+def authors_text(authors, limit=6):
+    if len(authors) <= 2:
+        return " and ".join(authors)
+    shown = authors[:limit]
+    rest = len(authors) - len(shown)
+    if rest:
+        return ", ".join(shown) + f" and {rest} more"
+    return ", ".join(shown[:-1]) + " and " + shown[-1]
+
+
 def tags(p):
-    """The few tags shown on a collapsed row: field, then anything a reader may filter on."""
+    """One quiet line of metadata: fields, origin, signals, length."""
     s = p.get("signals") or {}
-    lead = lead_cat(p)
-    out = [f'<span class="tag field">{esc(categories.name(lead))}</span>'] if lead else []
+    out = [f'<span class="t-field" title="{esc(categories.name(c))}">{esc(c)}</span>' for c in (p.get("math_categories") or [])[:3]]
     if section_of(p) == "cross":
-        out.append(f'<span class="tag" title="Cross-listed from {esc(p["primary_category"])}">from {esc(p["primary_category"])}</span>')
+        out.append(f'<span title="Cross-listed from another field">via {esc(p["primary_category"])}</span>')
     if s.get("new_version"):
-        out.append(f'<span class="tag version" title="A new version of an older paper">v{p.get("version")}</span>')
-    if s.get("lean_repo"):
-        out.append('<span class="tag lean" title="A linked repository contains a Lean project">Lean project</span>')
-    elif s.get("mentions_lean"):
-        out.append('<span class="tag lean-soft" title="Mentions a Lean formalisation">Lean</span>')
+        out.append(f'<span class="t-rev" title="A revised version of an older paper">v{p.get("version")}</span>')
     if s.get("code_links"):
-        out.append('<span class="tag code">Code</span>')
-    return "".join(out)
+        out.append('<span class="t-code" title="Links to code">code</span>')
+    if s.get("lean_repo"):
+        out.append('<span class="t-lean" title="A linked repository contains a Lean project">∎ lean</span>')
+    elif s.get("mentions_lean"):
+        out.append('<span class="t-lean soft" title="Mentions a Lean formalisation, no repository found">□ lean</span>')
+    n = pages_of(p)
+    if n:
+        out.append(f'<span class="t-pp">{n} pp</span>')
+    return '<span class="sep"> · </span>'.join(out)
 
 
 def details_html(p):
     s = p.get("signals") or {}
     rows = []
-    fields = ", ".join(categories.name(c) for c in p.get("math_categories") or [])
-    if fields:
-        rows.append(("Fields", esc(fields)))
     checks = {c["repo"].lower(): c for c in s.get("github", [])}
     for url in s.get("code_links", []):
         note = ""
         for repo, c in checks.items():
             if f"github.com/{repo}" in url.lower():
                 if c["lean"]:
-                    note = f' <span class="ok">Lean project found ({esc(", ".join(c["lean_paths"][:2]))})</span>'
+                    note = f' <span class="ok">∎ Lean project ({esc(", ".join(c["lean_paths"][:2]))})</span>'
                 elif c["status"] == "missing":
                     note = ' <span class="warn">repository not found</span>'
-        rows.append(("Code", f'<a href="{esc(url)}" rel="nofollow">{esc(short_link(url))}</a>{note}'))
+        rows.append(("code", f'<a href="{esc(url)}" rel="nofollow">{esc(short_link(url))}</a>{note}'))
     if p.get("comments"):
-        rows.append(("Comments", linkify(p["comments"])))
+        rows.append(("comments", linkify(p["comments"])))
     if p.get("journal_ref"):
-        rows.append(("Journal", esc(p["journal_ref"])))
-    return "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in rows)
+        rows.append(("journal", esc(p["journal_ref"])))
+    fields = ", ".join(f"{categories.name(c)}" for c in p.get("math_categories") or [])
+    if fields:
+        rows.append(("fields", esc(fields)))
+    return "".join(f'<div><dt class="mono">{k}</dt><dd>{v}</dd></div>' for k, v in rows)
 
 
-def paper_html(p, day, prefix="", expanded=False):
+def actions_html(p, prefix, pid):
+    return f"""<div class="actions mono">
+      <button type="button" class="act" data-act="md" data-md="{prefix}p/{pid}.md" aria-expanded="false">markdown</button>
+      <a class="act" href="{p['links']['pdf']}">pdf</a>
+      <a class="act" href="{prefix}p/{pid}.html">page</a>
+      <button type="button" class="act" data-act="link" data-url="{prefix}p/{pid}.html">copy link</button>
+      <a class="pid" href="{p['links']['abs']}" title="Open on arXiv">arXiv:{esc(p['id'])} ↗</a>
+    </div>
+    <div class="md-panel" hidden></div>"""
+
+
+def paper_html(p, day, prefix="", order=0):
     s = p.get("signals") or {}
-    authors = p["authors"]
-    shown = ", ".join(authors[:6]) + (f" +{len(authors) - 6}" if len(authors) > 6 else "")
     pid = anchor(p)
     attrs = [
         f'id="{pid}"',
         f'data-cats="{" ".join(p.get("math_categories") or [])}"',
         f'data-kind="{section_of(p)}"',
+        f'data-order="{order}"',
     ]
     if s.get("code_links"):
         attrs.append('data-code="1"')
     if s.get("lean_repo") or s.get("mentions_lean"):
         attrs.append('data-lean="1"')
-    return f"""<article class="paper{' open' if expanded else ''}" {' '.join(attrs)}>
-  <button type="button" class="head" aria-expanded="{'true' if expanded else 'false'}">
+    n = pages_of(p)
+    if n:
+        attrs.append(f'data-pages="{n}"')
+    return f"""<article class="paper" {' '.join(attrs)}>
+  <button type="button" class="head" aria-expanded="false">
+    <span class="num mono" aria-hidden="true"></span>
     <span class="title">{esc(p['title'])}</span>
-    <span class="authors">{esc(shown)}</span>
-    <span class="tags">{tags(p)}</span>
-    {ICON_CHEVRON}
+    <span class="authors">{esc(authors_text(p['authors']))}</span>
+    <span class="tags mono" data-fields="{esc(' '.join(categories.name(c) for c in p.get('math_categories') or []))}">{tags(p)}</span>
+    <span class="why mono" hidden></span>
   </button>
   <div class="body">
     <p class="abstract">{esc(p['abstract'])}</p>
     <dl class="facts">{details_html(p)}</dl>
-    <div class="actions">
-      <button type="button" class="btn small" data-act="md" data-md="{prefix}p/{pid}.md" aria-expanded="false">Markdown</button>
-      <a class="btn small" href="{p['links']['pdf']}">PDF</a>
-      <a class="btn small" href="{prefix}p/{pid}.html">Paper page</a>
-      <button type="button" class="btn small ghost" data-act="link" data-url="{prefix}p/{pid}.html">Copy link</button>
-      <a class="pid" href="{p['links']['abs']}" title="Open on arXiv">arXiv {esc(p['id'])} ↗</a>
-    </div>
-    <div class="md-panel" hidden></div>
+    {actions_html(p, prefix, pid)}
   </div>
 </article>"""
 
 
 def toolbar_html(day):
-    counts = {}
-    for p in day["papers"]:
-        for c in p.get("math_categories") or []:
-            counts[c] = counts.get(c, 0) + 1
+    g = grouped(day)
     st = day_stats(day)
     lean_any = sum(1 for p in day["papers"] if (p.get("signals") or {}).get("lean_repo") or (p.get("signals") or {}).get("mentions_lean"))
-    g = grouped(day)
     subs = "".join(
-        f'<label class="opt"><input type="checkbox" name="cat" value="{c}"><span>{esc(categories.name(c))}</span><em>{n}</em></label>'
-        for c, n in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+        f'<label class="opt"><input type="checkbox" name="cat" value="{c}"><span>{esc(categories.name(c))}</span><i class="leader"></i><em class="mono">{n}</em></label>'
+        for c, n in field_counts(day)
     )
     kinds = "".join(
-        f'<label class="opt"><input type="checkbox" name="kind" value="{k}" checked><span>{t}</span><em>{len(g[k])}</em></label>'
-        for k, t in [("cross", "Cross-lists from other fields"), ("replace", "New versions of older papers")]
+        f'<label class="opt"><input type="checkbox" name="kind" value="{k}" checked><span>{t}</span><i class="leader"></i><em class="mono">{len(g[k])}</em></label>'
+        for k, t in [("cross", "Cross-lists from other subjects"), ("replace", "Revised papers")]
         if g[k]
     )
     return f"""<div class="toolbar" id="filters">
-  <label class="search">{ICON_SEARCH}<span class="sr">Search these papers</span><input type="search" id="f-q" placeholder="Search titles, authors, abstracts" autocomplete="off"><kbd>/</kbd></label>
-  <div class="pop">
-    <button type="button" class="chip" id="f-fields" aria-expanded="false" aria-controls="f-panel">Fields <span id="f-fields-n"></span>{ICON_CHEVRON}</button>
-    <div class="panel" id="f-panel" hidden>
-      <input type="search" id="f-sub" class="mini" placeholder="Find a field" autocomplete="off">
-      <div class="sub-list">{subs}</div>
-      {f'<p class="panel-label">Also show</p>{kinds}' if kinds else ''}
-      <div class="panel-foot"><button type="button" class="link" id="f-none">Clear fields</button><button type="button" class="btn small primary" id="f-done">Done</button></div>
+  <div class="row1">
+    <label class="search"><span class="mono prompt" aria-hidden="true">/</span><span class="sr">Search these papers</span><input type="search" id="f-q" placeholder="Search titles, authors and abstracts" autocomplete="off"></label>
+    <div class="pop">
+      <button type="button" class="chip" id="f-fields" aria-expanded="false" aria-controls="f-panel">Fields<span id="f-fields-n" class="mono"></span></button>
+      <div class="panel" id="f-panel" hidden>
+        <input type="search" id="f-sub" class="mini" placeholder="Find a field" autocomplete="off">
+        <div class="sub-list">{subs}</div>
+        {f'<p class="panel-label mono">also show</p>{kinds}' if kinds else ''}
+        <div class="panel-foot"><button type="button" class="link mono" id="f-none">clear fields</button><button type="button" class="btn small primary" id="f-done">Done</button></div>
+      </div>
     </div>
+    <button type="button" class="chip" id="f-code" aria-pressed="false">Code <em class="mono">{st['code']}</em></button>
+    <button type="button" class="chip lean" id="f-lean" aria-pressed="false">∎ Lean <em class="mono">{lean_any}</em></button>
   </div>
-  <button type="button" class="chip" id="f-code" aria-pressed="false">Has code <em>{st['code']}</em></button>
-  <button type="button" class="chip" id="f-lean" aria-pressed="false">Lean <em>{lean_any}</em></button>
+  <div class="row2 mono">
+    <span class="lbl">order</span>
+    <div class="seg" role="radiogroup" aria-label="Order">
+      <button type="button" role="radio" data-sort="field" aria-checked="true">by field</button>
+      <button type="button" role="radio" data-sort="me" aria-checked="false">for me</button>
+      <button type="button" role="radio" data-sort="newest" aria-checked="false">newest</button>
+      <button type="button" role="radio" data-sort="short" aria-checked="false">shortest</button>
+    </div>
+    <label class="me-box" id="f-me" hidden><span class="lbl">interests</span><input type="text" id="f-interests" placeholder="graph colouring, random walks" autocomplete="off" data-interests></label>
+  </div>
+  <p class="why-line mono" id="f-why"></p>
 </div>
-<div class="results"><span id="f-count" aria-live="polite"></span><span id="f-pills"></span><button type="button" class="link" data-clear hidden>Clear all</button></div>"""
+<div class="results mono"><span id="f-count" aria-live="polite"></span><span id="f-pills"></span><button type="button" class="link" data-clear hidden>clear all</button></div>"""
 
 
-def day_html(day, base, built, prefix, newer=None, older=None, is_latest=False):
-    g = grouped(day)
+def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest=False):
     st = day_stats(day)
+    groups, order = {}, 0
+    revised = []
+    for p in sorted(day["papers"], key=lambda p: p["id"]):
+        if section_of(p) == "replace":
+            revised.append(p)
+        else:
+            groups.setdefault(lead_cat(p) or "other", []).append(p)
     sections = []
-    labels = {"new": "New papers", "cross": "Cross-listed from other fields", "replace": "New versions"}
-    for key, _ in SECTIONS:
-        if not g[key]:
-            continue
-        rows = "\n".join(paper_html(p, day, prefix) for p in g[key])
-        sections.append(f'<section class="group" data-group="{key}">\n<h2>{labels[key]} <span class="n">{len(g[key])}</span></h2>\n{rows}\n</section>')
-    note = ""
+    for cat, _ in sorted(groups.items(), key=lambda kv: (-len(kv[1]), categories.name(kv[0]))):
+        rows = []
+        for p in groups[cat]:
+            rows.append(paper_html(p, day, prefix, order))
+            order += 1
+        sections.append(
+            f'<section class="group" data-field="{cat}"><h2><span>{esc(categories.name(cat))}</span><i class="leader"></i><span class="n mono">{len(groups[cat])}</span></h2>\n'
+            + "\n".join(rows) + "\n</section>"
+        )
+    if revised:
+        rows = []
+        for p in revised:
+            rows.append(paper_html(p, day, prefix, order))
+            order += 1
+        sections.append(
+            f'<section class="group" data-field="_rev"><h2><span>Revised papers</span><i class="leader"></i><span class="n mono">{len(revised)}</span></h2>\n'
+            + "\n".join(rows) + "\n</section>"
+        )
+    rebuilt = ""
     if day.get("source") == "api-window":
-        note = '<span class="note-dot" title="This day was rebuilt from submission times, so it may differ slightly from the announcement and has no new versions.">rebuilt day</span>'
+        rebuilt = ' · <span class="rebuilt" title="Rebuilt from submission times, so it may differ slightly from the announcement and has no revised papers.">rebuilt</span>'
     nav = []
     if older:
         nav.append(f'<a href="{prefix}days/{older}.html">← {short_date(older)}</a>')
-    nav.append(f'<a href="{prefix}archive.html">All days</a>')
+    nav.append(f'<a href="{prefix}archive.html">archive</a>')
     if newer:
         nav.append(f'<a href="{prefix}days/{newer}.html">{short_date(newer)} →</a>')
-    body = f"""<div class="wrap list">
-  <div class="day-head">
-    <div>
-      <p class="eyebrow">{'Today on Paperlane' if is_latest else 'From the archive'} {note}</p>
-      <h1>{long_date(day['date'])}</h1>
-      <p class="stats"><b>{st['papers']}</b> papers · <b>{st['code']}</b> with code · <b>{st['lean']}</b> Lean projects</p>
-    </div>
-    <nav class="day-nav">{''.join(nav)}</nav>
-  </div>
+    d = date.fromisoformat(day["date"])
+    body = f"""<div class="wrap">
+  <header class="issue-head">
+    <p class="kicker mono">no. {number} · {'today' if is_latest else 'from the archive'}{rebuilt}<span class="day-nav">{' '.join(nav)}</span></p>
+    <h1>{d:%A}, <em>{d.day} {d:%B %Y}</em></h1>
+    <p class="stats mono">{st['papers']} papers · {st['fields']} fields · {st['code']} with code · {st['lean']} ∎ lean</p>
+  </header>
   {toolbar_html(day)}
   <p class="empty" id="f-empty" hidden>Nothing matches. <button type="button" class="link" data-clear>Clear the filters</button></p>
   <p class="empty" id="f-lookup" hidden></p>
+  <div id="list">
   {''.join(sections)}
+  </div>
+  <section class="group flat" id="flat" hidden></section>
 </div>"""
-    title = f"Paperlane · {long_date(day['date'])}"
+    title = f"{d:%A} {d.day} {d:%B %Y} · Paperlane"
     return page(title, body, prefix, built, f"{st['papers']} new maths papers from {long_date(day['date'])}, with code and Lean tags.", base, "day", "today" if is_latest else "archive")
 
 
-def home_html(day, days, base, built):
+def home_html(day, number, base, built, titles_sample):
     st = day_stats(day)
-    counts = {}
-    for p in day["papers"]:
-        for c in p.get("math_categories") or []:
-            counts[c] = counts.get(c, 0) + 1
-    tiles = "".join(
-        f'<button type="button" class="tile" data-cat="{c}" aria-pressed="false"><span>{esc(categories.name(c))}</span><em>{n}</em></button>'
-        for c, n in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    d = date.fromisoformat(day["date"])
+    fc = field_counts(day)
+    toc = "".join(
+        f'<li><a href="today.html?cat={c}"><span>{esc(categories.name(c))}</span><i class="leader"></i><span class="mono">{n}</span></a></li>'
+        for c, n in fc[:8]
     )
-    sample = next((p for p in day["papers"] if (p.get("signals") or {}).get("lean_repo")), day["papers"][0])
-    body = f"""<section class="hero">
-  <a class="pill-link" href="today.html"><span class="dot"></span>{long_date(day['date'])} · {st['papers']} new papers <span aria-hidden="true">→</span></a>
-  <h1>Read today's new maths <br>papers in a minute.</h1>
-  <p class="lede">Paperlane gathers each day's new mathematics papers into one calm list. Pick your fields, spot the ones with code or Lean, or hand the whole day to your own AI.</p>
-  <form class="big-search" id="home-search" action="today.html" method="get" role="search">
-    {ICON_SEARCH}<input name="q" type="search" placeholder="Search today's papers, or paste an arXiv link" aria-label="Search today's papers or paste an arXiv link" autocomplete="off">
-    <button type="submit" class="btn primary">Search</button>
-  </form>
-  <div class="hero-actions"><a class="btn primary big" href="today.html">Browse today's papers</a><button type="button" class="btn big" data-open-ask>Ask your AI</button></div>
+    index = "".join(
+        f'<button type="button" class="ix" data-cat="{c}" aria-pressed="false"><span class="box" aria-hidden="true"></span><span>{esc(categories.name(c))}</span><i class="leader"></i><em class="mono">{n}</em></button>'
+        for c, n in sorted(fc, key=lambda kv: categories.name(kv[0]))
+    )
+    sample = "\n".join(esc(line) for line in titles_sample)
+    body = f"""<section class="masthead wrap-wide">
+  <div class="mh-copy">
+    <p class="kicker mono">no. {number} · {d:%A} {d.day} {d:%B %Y}</p>
+    <h1>The day's mathematics, <em>read in a&nbsp;minute.</em></h1>
+    <p class="lede">Every weekday, Paperlane gathers the new mathematics papers into one quiet list. Make it your lane: pick your fields, say what you work on, and the papers that matter to you come first.</p>
+    <div class="cta"><a class="btn primary" href="today.html">Read today's {st['papers']} papers</a><a class="btn" href="#lane">Set up my lane</a></div>
+  </div>
+  <aside class="contents">
+    <p class="mono label">in this issue</p>
+    <ol class="toc">{toc}</ol>
+    <p class="mono foot-note">{st['papers']} papers · {st['code']} with code · {st['lean']} ∎ lean</p>
+  </aside>
 </section>
 
-<section class="band" id="fields">
-  <div class="band-head">
-    <h2>Pick your fields</h2>
-    <p>Choose any number. Paperlane remembers them on this device.</p>
-  </div>
-  <div class="tiles">{tiles}</div>
-  <div class="tiles-go"><a class="btn primary" id="fields-go" href="today.html">Show all {st['papers']} papers</a><button type="button" class="link" id="fields-clear" hidden>Clear</button></div>
-</section>
-
-<section class="features">
-  <div class="feature">
-    <p class="kicker">Spotted for you</p>
-    <h3>Code and Lean, checked</h3>
-    <p>Papers that link to code are tagged. If a linked repository holds a Lean project, the paper gets a green tag. Today: {st['code']} with code, {st['lean']} Lean projects.</p>
-    <a href="today.html?lean=1">See the Lean papers →</a>
-  </div>
-  <div class="feature">
-    <p class="kicker">Built for agents</p>
-    <h3>Every paper in Markdown</h3>
-    <p>Each paper and each day is plain Markdown that any assistant can read. Copy one paper into a chat, or point your agent at the whole day.</p>
-    <a href="p/{anchor(sample)}.md">See a paper in Markdown →</a>
-  </div>
-  <div class="feature">
-    <p class="kicker">Any paper</p>
-    <h3>Paste a link, start reading</h3>
-    <p>Drop any arXiv link or id into the search box. Paperlane opens it with its abstract, its code links and a Markdown copy.</p>
-    <a href="paper.html?id={esc(sample['id'])}">Try it →</a>
+<section class="lane wrap-wide" id="lane">
+  <h2>Make it <em>your</em> lane</h2>
+  <div class="lane-grid">
+    <div>
+      <p class="step mono">01 · pick fields</p>
+      <div class="field-index">{index}</div>
+    </div>
+    <div>
+      <p class="step mono">02 · say what you work on</p>
+      <input class="interest-input" id="lane-interests" type="text" placeholder="e.g. extremal graph theory, polyominoes" autocomplete="off" data-interests>
+      <p class="hint">Papers are ranked in your browser with BM25 over titles and abstracts. Your interests never leave this device, and no author is ever scored.</p>
+      <p class="step mono">03 · read</p>
+      <a class="btn primary" id="lane-go" href="today.html">Open my lane →</a>
+    </div>
   </div>
 </section>
 
-<section class="promise">
-  <p>Paperlane never ranks papers or scores their authors. It shows what can be checked and leaves the choosing to you.</p>
+<section class="machines wrap-wide">
+  <div>
+    <p class="kicker mono">for agents</p>
+    <h2>Plain text, all the way down</h2>
+    <p>Every day and every paper is also published as Markdown and JSON. Point an assistant at it, or press <button type="button" class="link" data-open-ask>ask&#8209;ai</button> for a ready prompt.</p>
+    <p class="mono small-link"><a href="llms.txt">llms.txt</a> · <a href="latest-titles.md">latest-titles.md</a> · <a href="latest.json">latest.json</a> · <a href="feed.xml">rss</a></p>
+  </div>
+  <pre class="terminal"><span class="cmd">$ curl -s {esc(base)}/latest-titles.md | grep -m3 "^- "</span>
+{sample}</pre>
+</section>
+
+<section class="checks wrap-wide">
+  <dl>
+    <div><dt class="mono t-lean">∎ lean</dt><dd>A linked repository holds a Lean project. The proof may be machine-checked.</dd></div>
+    <div><dt class="mono t-lean soft">□ lean</dt><dd>The paper says it is formalised in Lean, but no repository was found.</dd></div>
+    <div><dt class="mono t-code">code</dt><dd>The abstract or comments link to code on GitHub, GitLab or similar.</dd></div>
+  </dl>
+  <p class="mono note">Every tag is a check anyone can repeat. Nothing here ranks a paper or an author.</p>
 </section>"""
-    return page("Paperlane · Read today's new maths papers in a minute", body, "", built,
-                "A free daily feed of new mathematics papers for people and their AI agents.", base, "home", "home")
+    return page("Paperlane · The day's mathematics, read in a minute", body, "", built,
+                "A free daily journal of new mathematics papers for people and their AI agents.", base, "home", "home")
 
 
-def archive_html(days, built, base):
+def archive_html(days, numbers, built, base):
     rows = []
     for d in days:
         st = day_stats(d)
+        dd = date.fromisoformat(d["date"])
         rows.append(
-            f'<a class="day-row" href="days/{d["date"]}.html"><span class="d">{long_date(d["date"])}</span>'
-            f'<span class="c">{st["papers"]} papers</span><span class="c">{st["code"]} with code</span><span class="c">{st["lean"]} Lean</span><span class="go">→</span></a>'
+            f'<li><a href="days/{d["date"]}.html"><span class="mono no">no. {numbers[d["date"]]}</span>'
+            f'<span class="d">{dd:%A}, <em>{dd.day} {dd:%B %Y}</em></span><i class="leader"></i>'
+            f'<span class="mono c">{st["papers"]} papers · {st["lean"]} ∎</span></a></li>'
         )
     body = f"""<div class="wrap narrow">
-  <p class="eyebrow">Archive</p>
-  <h1>Every day on Paperlane</h1>
-  <p class="lede small">Each day stays here. To find one paper from any day, paste its link or id into the box at the top.</p>
-  <div class="day-list">{''.join(rows)}</div>
+  <header class="issue-head"><p class="kicker mono">archive</p><h1>Every issue, <em>so far</em></h1>
+  <p class="lede small">Each day stays here. To open one paper from any day, paste its arXiv link or id into the box at the top.</p></header>
+  <ol class="toc archive-toc">{''.join(rows)}</ol>
 </div>"""
-    return page("Paperlane · Archive", body, "", built, "Every day of new maths papers on Paperlane.", base, "archive", "archive")
+    return page("Archive · Paperlane", body, "", built, "Every issue of Paperlane.", base, "archive", "archive")
 
 
 def lookup_html(built, base):
     body = """<div class="wrap narrow">
-  <p class="eyebrow" id="lk-eyebrow">Open a paper</p>
-  <h1 id="lk-title">Open any paper</h1>
-  <p class="lede small" id="lk-status">Paste an arXiv link or id into the box at the top, for example 2610.30655.</p>
-  <div id="lk-result"></div>
+  <article class="first-page" id="lk-page">
+    <p class="kicker mono" id="lk-eyebrow">open a paper</p>
+    <h1 id="lk-title">Open any paper</h1>
+    <p class="lede small" id="lk-status">Paste an arXiv link or id into the box at the top, for example 2610.30655.</p>
+    <div id="lk-result"></div>
+  </article>
 </div>"""
-    return page("Paperlane · Open a paper", body, "", built, "Open any arXiv paper on Paperlane by its link or id.", base, "lookup-page")
+    return page("Open a paper · Paperlane", body, "", built, "Open any arXiv paper on Paperlane by its link or id.", base, "lookup-page")
 
 
 def about_html(days, base, built):
     files = [
         ("llms.txt", "A guide to every file, written for language models"),
-        ("latest-titles.md", "One line per paper with its id, fields, tags, title and authors"),
+        ("latest-titles.md", "One line per paper: id, fields, tags, title, authors"),
         ("latest.md", "The whole day with abstracts"),
         ("latest.json", "The whole day with every field"),
         ("latest/math.CO.md", "One field of the day (swap in any field code)"),
         (f"p/{anchor(days[0]['papers'][0])}.md", "One paper (swap in any arXiv id)"),
         ("feed.xml", "RSS for your feed reader"),
     ]
-    rows = "".join(f'<tr><td><a href="{f}"><code>{esc(f)}</code></a></td><td>{esc(t)}</td></tr>' for f, t in files)
+    rows = "".join(f'<tr><td class="mono"><a href="{f}">{esc(f)}</a></td><td>{esc(t)}</td></tr>' for f, t in files)
     body = f"""<div class="wrap narrow prose">
-  <p class="eyebrow">About</p>
-  <h1>A calmer way to keep up with maths</h1>
-  <p class="lede small">Paperlane collects the new mathematics papers each weekday and puts them in one list that you can filter in seconds. It is free and needs no account.</p>
+  <header class="issue-head"><p class="kicker mono">about</p><h1>A quieter way to <em>keep up with mathematics</em></h1></header>
+  <p class="lede small">Paperlane collects the new mathematics papers every weekday and sets them in one list that you can make your own in seconds. It is free and needs no account.</p>
+
+  <h2>How the order works</h2>
+  <p><b>By field</b> groups the papers under their main field, largest field first, with your own fields moved to the top. Inside a field, papers keep the order in which they were submitted.</p>
+  <p><b>For me</b> ranks papers against the interests you type, using BM25 (the classic search-engine formula) over titles and abstracts, with titles counted twice. Under each paper it shows the words that matched. This runs in your browser and nothing is sent anywhere.</p>
+  <p><b>Newest</b> puts the latest submissions first, and <b>shortest</b> sorts by page count when the authors give one.</p>
 
   <h2>What the tags mean</h2>
   <dl class="glossary">
-    <div><dt><span class="tag code">Code</span></dt><dd>The abstract or comments link to a code host such as GitHub or GitLab.</dd></div>
-    <div><dt><span class="tag lean">Lean project</span></dt><dd>A linked GitHub repository contains a Lean project file (<code>lean-toolchain</code> or a <code>lakefile</code>). A check that it compiles is planned.</dd></div>
-    <div><dt><span class="tag lean-soft">Lean</span></dt><dd>The paper says it is formalised in Lean, but no Lean repository was found.</dd></div>
-    <div><dt><span class="tag version">v2</span></dt><dd>A new version of an older paper.</dd></div>
+    <div><dt class="mono t-lean">∎ lean</dt><dd>A linked GitHub repository contains a Lean project file (<code>lean-toolchain</code> or a <code>lakefile</code>). A check that it compiles is planned.</dd></div>
+    <div><dt class="mono t-lean soft">□ lean</dt><dd>The paper says it is formalised in Lean, but no Lean repository was found.</dd></div>
+    <div><dt class="mono t-code">code</dt><dd>The abstract or comments link to a code host such as GitHub or GitLab.</dd></div>
+    <div><dt class="mono t-rev">v2</dt><dd>A revised version of an older paper.</dd></div>
+    <div><dt class="mono">via cs.CC</dt><dd>A paper from another subject that its authors also listed under mathematics.</dd></div>
   </dl>
   <p>Every tag comes from a simple check that anyone can repeat. Paperlane never ranks papers or scores authors.</p>
 
   <h2>When it updates</h2>
-  <p>New papers are announced from Sunday to Thursday evening, US Eastern time. Paperlane picks them up at 06:00 UTC the next morning, so a new day appears from Monday to Friday.</p>
+  <p>New papers are announced from Sunday to Thursday evening, US Eastern time. Paperlane picks them up at 06:00 UTC the next morning, so a new issue appears from Monday to Friday.</p>
 
   <h2 id="agents">For agents and tools</h2>
   <p>Everything on Paperlane is also published as plain files. Point your assistant at any of these.</p>
@@ -552,9 +643,9 @@ def about_html(days, base, built):
 
   <h2>Where the data comes from</h2>
   <p>Titles, authors, abstracts and categories come from <a href="https://arxiv.org">arXiv</a>, and every paper links to arXiv for the full text. Papers that Paperlane has not listed are looked up through Semantic Scholar or OpenAlex. {ARXIV_THANKS}</p>
-  <p>Paperlane is open source on <a href="{REPO}">GitHub</a>, where you can also report a problem or ask for a feature.</p>
+  <p>Paperlane is open source on <a href="{REPO}">GitHub</a>, where you can report a problem or ask for a feature.</p>
 </div>"""
-    return page("Paperlane · About", body, "", built, "What Paperlane is, what its tags mean and the files it publishes for agents.", base, "about", "about")
+    return page("About · Paperlane", body, "", built, "How Paperlane orders papers, what its tags mean and the files it publishes for agents.", base, "about", "about")
 
 
 # Feeds and indexes
@@ -649,11 +740,21 @@ def single_md(p, base, day, built):
     ])
 
 
-def single_html(p, day, base, built):
-    st = f'Listed on <a href="../days/{day['date']}.html#{anchor(p)}">{long_date(day['date'])}</a>'
-    body = f"""<div class="wrap narrow single">
-  <p class="eyebrow">{st}</p>
-  {paper_html(p, day, "../", expanded=True)}
+def single_html(p, day, base, built, number):
+    pid = anchor(p)
+    s = p.get("signals") or {}
+    attrs = f'id="{pid}" data-cats="{" ".join(p.get("math_categories") or [])}"'
+    body = f"""<div class="wrap narrow">
+  <article class="first-page paper open" {attrs}>
+    <p class="kicker mono">no. {number} · <a href="../days/{day['date']}.html#{pid}">{long_date(day['date'])}</a></p>
+    <h1 class="title">{esc(p['title'])}</h1>
+    <p class="authors">{esc(authors_text(p['authors'], 12))}</p>
+    <p class="tags mono">{tags(p)}</p>
+    <h2 class="abs-h">Abstract</h2>
+    <p class="abstract">{esc(p['abstract'])}</p>
+    <dl class="facts">{details_html(p)}</dl>
+    {actions_html(p, "../", pid)}
+  </article>
 </div>"""
     return page(f"{p['title']} · Paperlane", body, "../", built, p["abstract"][:200], base, "single")
 
@@ -679,29 +780,32 @@ def build(days, out, base, built_dt=None):
     (out / ".nojekyll").write_text("")
 
     # Oldest first, so a paper listed again as a new version keeps its newest entry.
+    numbers = {d["date"]: len(days) - i for i, d in enumerate(days)}
     for d in reversed(days):
         for p in d["papers"]:
             (out / "p" / f"{anchor(p)}.md").write_text(single_md(p, base, d, built))
-            (out / "p" / f"{anchor(p)}.html").write_text(single_html(p, d, base, built))
+            (out / "p" / f"{anchor(p)}.html").write_text(single_html(p, d, base, built, numbers[d["date"]]))
     for i, d in enumerate(days):
         newer = days[i - 1]["date"] if i > 0 else None
         older = days[i + 1]["date"] if i + 1 < len(days) else None
-        (out / "days" / f"{d['date']}.html").write_text(day_html(d, base, built, "../", newer, older))
+        (out / "days" / f"{d['date']}.html").write_text(day_html(d, base, built, "../", numbers[d["date"]], newer, older))
         (out / "days" / f"{d['date']}.md").write_text(day_md(d, base, built))
         (out / "days" / f"{d['date']}.json").write_text(json_day(d, base))
 
     latest = days[0]
-    (out / "index.html").write_text(home_html(latest, days, base, built))
+    titles = titles_md(latest, base, built)
+    sample = [line[:118] + ("…" if len(line) > 118 else "") for line in titles.splitlines() if line.startswith("- ")][:3]
+    (out / "index.html").write_text(home_html(latest, numbers[latest["date"]], base, built, sample))
     older = days[1]["date"] if len(days) > 1 else None
-    (out / "today.html").write_text(day_html(latest, base, built, "", None, older, is_latest=True))
+    (out / "today.html").write_text(day_html(latest, base, built, "", numbers[latest["date"]], None, older, is_latest=True))
     (out / "about.html").write_text(about_html(days, base, built))
     (out / "latest.md").write_text(day_md(latest, base, built))
     (out / "latest.json").write_text(json_day(latest, base))
-    (out / "latest-titles.md").write_text(titles_md(latest, base, built))
+    (out / "latest-titles.md").write_text(titles)
     for c in sorted({c for p in latest["papers"] for c in p.get("math_categories") or []}):
         sel = [p for p in latest["papers"] if c in (p.get("math_categories") or [])]
         (out / "latest" / f"{c}.md").write_text(day_md(latest, base, built, sel, f"Paperlane: {categories.name(c)} ({c})"))
-    (out / "archive.html").write_text(archive_html(days, built, base))
+    (out / "archive.html").write_text(archive_html(days, numbers, built, base))
     (out / "paper.html").write_text(lookup_html(built, base))
     (out / "feed.xml").write_text(rss(days, base, built_dt))
     (out / "llms.txt").write_text(llms_txt(days, base, built))
