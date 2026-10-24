@@ -572,7 +572,7 @@ body > main { flex: 1 0 auto; }
 .lede { max-width: 44em; }
 
 /* 404: a page lost in peer review */
-.lost { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px 56px; align-items: start; padding-top: 7vh; padding-bottom: 4vh; }
+.lost { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px 56px; align-items: start; padding-top: 7vh; padding-bottom: 4vh; }
 .lost-code { font-family: var(--sans); font-weight: 700; font-size: clamp(7rem, 18vw, 13rem); line-height: 0.85; letter-spacing: -0.07em; margin: 0 0 18px; color: var(--ink); }
 .lost h1 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); line-height: 1.12; letter-spacing: -0.045em; margin: 0 0 22px; }
 .lost .lede { margin-bottom: 30px; }
@@ -582,3 +582,26 @@ body > main { flex: 1 0 auto; }
 .verdict .v-sign { margin: 14px 0 0; font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--ink); }
 .lost-note { grid-column: 1 / -1; border-top: 1px solid var(--rule); padding-top: 22px; margin: 18px 0 0; color: var(--ink-2); max-width: 44em; }
 @media (max-width: 800px) { .lost { grid-template-columns: 1fr; padding-top: 32px; } .verdict { transform: none; } }
+.lost-side { display: flex; flex-direction: column; align-items: stretch; }
+.lost-art { width: 112%; max-width: none; height: auto; overflow: visible; margin: -10px 0 -34px -6%; position: relative; z-index: 0; }
+.lost-side .verdict { position: relative; z-index: 1; margin-left: 12%; }
+.la-wind path { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; }
+.la-back { fill: var(--paper); stroke: var(--faint); stroke-width: 2; stroke-linejoin: round; }
+.la-sheet { fill: var(--leaf); stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+.la-fold { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+.la-hl { stroke: var(--hl); stroke-width: 14; stroke-linecap: round; }
+.la-ink path { fill: none; stroke: var(--muted); stroke-width: 3; stroke-linecap: round; }
+.la-qed { fill: var(--ink); }
+.la-stamp rect { fill: var(--leaf); fill-opacity: 0.82; stroke: var(--ink); stroke-width: 3; }
+.la-stamp .la-small { paint-order: stroke; stroke: var(--leaf); stroke-width: 4px; }
+.la-stamp rect + rect { stroke-width: 1.5; }
+.la-stamp text { font-family: var(--mono); font-weight: 500; font-size: 21px; letter-spacing: 0.14em; fill: var(--ink); }
+.la-stamp .la-small { font-size: 11px; letter-spacing: 0.3em; fill: var(--muted); }
+.la-stamp { opacity: 0.88; transform-box: fill-box; transform-origin: center; animation: thunk 0.5s 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3) both; }
+.la-lock rect { fill: var(--lime); stroke: var(--ink); stroke-width: 2.4; }
+.la-lock .la-shackle { fill: none; stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; }
+.la-lock text { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; font-weight: 500; fill: #111210; }
+.la-float { animation: bob 6s ease-in-out infinite; }
+@keyframes thunk { from { opacity: 0; transform: rotate(-16deg) scale(1.7); } to { opacity: 0.88; transform: rotate(-16deg) scale(1); } }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-7px) rotate(-0.6deg); } }
+@media (prefers-reduced-motion: reduce) { .la-float, .la-stamp { animation: none; } }

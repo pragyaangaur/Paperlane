@@ -641,6 +641,29 @@ def notfound_html(base, built):
     <p class="lede">We sent it to a journal in 2019. Reviewer 2 asked for three more experiments and a citation to their own thesis, and nobody has seen the page since.</p>
     <p class="hook-actions"><a class="btn primary" href="{0}/today.html" data-fly>Read today's issue</a><a class="mono" href="{0}/archive.html">open the archive →</a></p>
   </section>
+  <div class="lost-side">
+    <svg class="lost-art" viewBox="0 22 360 270" role="img" aria-label="A stack of manuscripts stamped rejected, locked behind a paywall">
+      <g class="la-wind"><path d="M8 118c18 4 34 1 52-6"/><path d="M2 160c20 2 37-3 49-15 13-13 10-32-5-33-16-1-20 21-7 34 15 15 40 15 61 4"/><path d="M14 206c19 4 35-1 52-8"/></g>
+      <g class="la-float">
+        <g transform="rotate(-9 230 150)"><path class="la-back" d="M128 46h178l34 34v196H128z"/></g>
+        <g transform="rotate(4 230 150)"><path class="la-back" d="M124 40h178l34 34v196H124z"/></g>
+        <g transform="rotate(-2 230 150)">
+          <path class="la-sheet" d="M120 32h180l36 36v200H120z"/><path class="la-fold" d="M300 32v36h36"/>
+          <path class="la-hl" d="M144 96h120"/>
+          <g class="la-ink"><path d="M144 66h96"/><path d="M144 96h132"/><path d="M144 120h160"/><path d="M144 140h150"/><path d="M144 160h164"/><path d="M144 180h120"/><path d="M144 210h158"/><path d="M144 230h96"/></g>
+          <rect class="la-qed" x="246" y="224" width="9" height="9"/>
+          <g class="la-stamp" transform="rotate(-16 230 150)">
+            <rect x="148" y="122" width="164" height="54" rx="6"/><rect x="154" y="128" width="152" height="42" rx="4"/>
+            <text x="230" y="158" text-anchor="middle">REJECTED</text>
+            <text class="la-small" x="230" y="190" text-anchor="middle">REVIEWER 2</text>
+          </g>
+        </g>
+        <g class="la-lock" transform="translate(300 214) rotate(10)">
+          <path class="la-shackle" d="M14 18v-8a12 12 0 0 1 24 0v8"/><rect x="6" y="18" width="40" height="32" rx="5"/>
+          <text x="26" y="40" text-anchor="middle">PAY</text>
+        </g>
+      </g>
+    </svg>
   <aside class="verdict mono" aria-label="A rejection letter">
     <p class="v-head">Decision on manuscript PL-404</p>
     <p>Dear author,</p>
@@ -648,6 +671,7 @@ def notfound_html(base, built):
     <p>Your article processing charge of USD 4,000 is not refundable. The page will now sit behind a paywall at USD 39.95 for 24 hours of access.</p>
     <p class="v-sign">The Editors</p>
   </aside>
+  </div>
   <p class="lost-note">Paperlane works the other way. Every new maths paper is here the morning after it appears on arXiv, free to read, with nobody standing in between.</p>
 </div>""".format(esc(base))
     return page("Under review · Paperlane", body, base + "/", built, "This page is still under review. Every new maths paper is on Paperlane the morning after it appears.", base, "notfound", "", "404.html")
