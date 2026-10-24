@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://pragyaangaur.github.io/Paperlane/"><b>Read today's issue</b></a>
   &nbsp;·&nbsp;
-  <a href="https://pragyaangaur.github.io/Paperlane/#lane">Set up your lane</a>
+  <a href="https://pragyaangaur.github.io/Paperlane/ask.html">Ask your AI</a>
   &nbsp;·&nbsp;
   <a href="https://pragyaangaur.github.io/Paperlane/llms.txt">llms.txt</a>
   &nbsp;·&nbsp;
@@ -21,44 +21,31 @@
 
 Every weekday a few hundred new mathematics papers come out. One night of them is about 57,000 words of abstracts, the length of a short novel, and almost nobody sees it happen. Paperlane turns each night into one short issue that you can skim in a minute and your AI assistant can read in seconds.
 
-If you do research, you pick your fields and say what you work on, and the papers closest to your work come first. If you are simply curious, you paste one prompt into the AI you already pay for, and it tells you what mathematicians found last night in plain words.
+Type anything you are curious about and the matching papers from last night appear as you type. If you do research, type what you work on and the closest papers come first. If you would rather not read papers at all, paste one prompt into the AI you already pay for, and it tells you what mathematicians found last night in plain words.
 
 Paperlane is free, needs no account and sets no cookies.
 
 <p align="center">
-  <img src="docs/home.png" alt="The Paperlane home page with today's issue, the lane builder and a contents card" width="92%">
+  <img src="docs/home.png" alt="The Paperlane home page, where typing prime numbers shows the matching papers from last night" width="92%">
 </p>
 
-## Start in thirty seconds
+## Start in ten seconds
 
-1. Open [Paperlane](https://pragyaangaur.github.io/Paperlane/) and tick the fields you follow under **Make it your lane**.
-2. Type a few phrases about your work, such as `graph colouring, random walks`.
-3. Press **Open my lane**. Your papers rise to the top, and each one shows the words that matched.
-
-Paperlane remembers your fields and interests in your own browser. A lane link carries its settings, so you can bookmark it or send it to a colleague.
+1. Open [Paperlane](https://pragyaangaur.github.io/Paperlane/).
+2. Type a topic, such as `random walks`, or press one of the suggestions under the box.
+3. Open any paper that catches your eye, or press **see all** to get the whole issue ranked for what you typed.
 
 <p align="center">
-  <img src="docs/lane.png" alt="An issue ranked for graph colouring and random walks, with matched words highlighted under each paper" width="92%">
+  <img src="docs/search.png" alt="The day's issue searched for random walks, best match first, with the matching words highlighted under each paper" width="92%">
 </p>
 
 ## What you can do
 
-- **Skim by field.** Papers are grouped under their main field, and each field shows its first three papers until you ask for the rest. A row of field links at the top jumps straight to the one you want.
-- **Rank for yourself.** The **for me** order ranks the whole issue against your interests in your browser.
-- **Filter fast.** One search box covers titles, authors and abstracts. The **Code** and **Lean** buttons keep only papers that link to code or to a Lean formalisation.
+- **Search the night.** One box ranks every paper against what you type, best match first, and shows the words that matched. Titles count twice, exact phrases get a bonus, and British and American spellings match each other. It runs in your browser with BM25, the formula behind most search engines, and nothing you type is sent anywhere.
+- **Skim by field.** With no search, papers sit under their main field, three at a time until you ask for the rest. Fields you pick move to the top next time.
+- **Keep code and proofs.** The **Code** and **Lean** buttons keep only papers that link to code or to a Lean formalisation.
 - **Open any paper.** Paste an arXiv link or id into the box in the header. Papers from any issue open on their own page, and older papers are looked up for you.
 - **Take the Markdown.** Every paper has a Markdown version one click away, ready for a chat window or your notes.
-
-## How the order works
-
-The page always says which order is in use, so nothing about the ranking is hidden.
-
-| Order | What it does |
-| --- | --- |
-| **by field** | Groups papers under their main field, largest first, with your own fields on top. Inside a field, papers keep the order in which they were submitted. |
-| **for me** | Ranks papers against your interests with BM25, the standard formula behind most search engines. Titles count twice, exact phrases get a bonus, and British and American spellings match each other. It runs in your browser and your interests are never sent anywhere. |
-| **newest** | Puts the latest submissions first. |
-| **shortest** | Sorts by the page count that the authors give. |
 
 Paperlane never ranks a paper by who wrote it.
 
@@ -133,7 +120,7 @@ Paperlane counts visits with [GoatCounter](https://www.goatcounter.com), which s
 ## What comes next
 
 - A check that linked Lean projects actually compile, so the Lean tag can mean a verified proof.
-- An optional email digest of your lane.
+- An optional email digest of the papers on your topics.
 - A direct connection for AI assistants, so an agent can ask Paperlane for today's papers in your fields.
 
 ## Feedback
