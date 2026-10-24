@@ -68,6 +68,10 @@ Paste this into ChatGPT, Claude, Gemini or any assistant that can open web pages
 
 > Read https://pragyaangaur.github.io/Paperlane/latest-titles.md, the list of new maths papers from the latest Paperlane issue. Pick the two results a curious person with no maths degree would find most surprising, read their abstracts in https://pragyaangaur.github.io/Paperlane/latest.md, and explain each one in plain words with an everyday example.
 
+## Get a briefing every morning
+
+Many assistants can now run scheduled routines. Open [ask-ai in routine mode](https://pragyaangaur.github.io/Paperlane/ask.html?mode=routine), pick a time and type what you work on, and Paperlane writes a prompt that sets up a routine for every weekday. Each run reads the new issue and sends you the three papers worth your time. On days with no new issue it says so in one line. The page shows when the new issue arrives in your own timezone, so you can pick a time after it.
+
 ## Why not just ask your AI to read arXiv?
 
 - **A night of maths is a short novel.** Paperlane reads it once and hands your assistant an index of about 7,500 words, so the answer is fast and cheap.
@@ -77,7 +81,7 @@ Paste this into ChatGPT, Claude, Gemini or any assistant that can open web pages
 
 ## For your AI agent
 
-Press **ask-ai** on the site to get a ready prompt, or write your own:
+Open [**ask-ai**](https://pragyaangaur.github.io/Paperlane/ask.html) to build a prompt and send it to ChatGPT, Claude or Perplexity in one click, or write your own:
 
 > Read https://pragyaangaur.github.io/Paperlane/latest-titles.md, Paperlane's index of today's new maths papers. My interests are extremal graph theory and polyominoes. Pick the candidates that fit, read their abstracts in https://pragyaangaur.github.io/Paperlane/latest.md, and tell me which three papers I should read and why.
 
