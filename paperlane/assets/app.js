@@ -8,7 +8,7 @@
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
   var store = {
     get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-    set: function (k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} },
+    set: function (k, v) { try { v == null || v === "" ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} },
   };
 
   function esc(s) {
@@ -20,7 +20,7 @@
   function copy(text, button) {
     var label = button.textContent;
     var done = function () {
-      button.textContent = "Copied";
+      button.textContent = "copied";
       setTimeout(function () { button.textContent = label; }, 1400);
     };
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done);
@@ -49,14 +49,97 @@
   }
   function anchorOf(id) { return id.replace("/", "-"); }
 
-  // Theme: Auto follows the system. The choice is kept on this device.
+  // ---------- Ranking ----------
+  // BM25 over titles (counted twice), abstracts and field names, with a bonus when a phrase
+  // from the reader's interests appears word for word. Everything runs in the browser.
+  var STOP = {};
+  ("a an and are as at be been by can for from has have in into is it its of on or our that the their them then there these this those to "
+    + "via we what when where which while who with without also both each such than other some any all not only one two three new using use used "
+    + "show shows shown prove proves proved study studies paper papers result results give gives given case cases work way well first second")
+    .split(" ").forEach(function (w) { STOP[w] = 1; });
+
+  function stem(w) {
+    w = w.replace(/our(s|ing|ed)?$/, "or$1").replace(/is(e|es|ed|ing|ation|ations)$/, "iz$1");
+    var rules = ["izations", "ization", "ations", "ation", "nesses", "ness", "ments", "ment", "ities", "ity", "ically", "ical", "ings", "ing", "ied", "ies", "ed"];
+    for (var i = 0; i < rules.length; i++) {
+      var s = rules[i];
+      if (w.length - s.length >= 4 && w.slice(-s.length) === s) { w = w.slice(0, -s.length) + (s === "ies" || s === "ied" ? "y" : ""); break; }
+    }
+    if (/(s|x|z|ch|sh|o)es$/.test(w) && w.length > 5) w = w.slice(0, -2);
+    else if (/[^su]s$/.test(w) && !/is$/.test(w) && w.length > 4) w = w.slice(0, -1);
+    return w;
+  }
+  function tokens(text) {
+    return (text || "").toLowerCase().replace(/\\[a-z]+/g, " ").replace(/[^a-z0-9]+/g, " ").split(" ")
+      .filter(function (t) { return t.length > 2 && !STOP[t]; }).map(stem);
+  }
+  function Ranker(docs) {
+    var df = {}, total = 0;
+    this.docs = docs.map(function (text) {
+      var seq = tokens(text), tf = {};
+      seq.forEach(function (t) { tf[t] = (tf[t] || 0) + 1; });
+      Object.keys(tf).forEach(function (t) { df[t] = (df[t] || 0) + 1; });
+      total += seq.length;
+      return { seq: seq, tf: tf, len: seq.length };
+    });
+    this.df = df;
+    this.avg = total / Math.max(1, docs.length);
+    this.n = docs.length;
+  }
+  Ranker.prototype.idf = function (t) {
+    var d = this.df[t] || 0;
+    return Math.log(1 + (this.n - d + 0.5) / (d + 0.5));
+  };
+  // Returns, for every document, {score, hits: [query words that matched, best first]}.
+  Ranker.prototype.rank = function (query) {
+    var self = this, k1 = 1.2, b = 0.75;
+    var phrases = query.split(/[,;]+/).map(function (ph) {
+      var words = ph.toLowerCase().match(/[a-z0-9]+/g) || [];
+      return words.filter(function (w) { return w.length > 2 && !STOP[w]; }).map(function (w) { return { word: w, t: stem(w) }; });
+    }).filter(function (ph) { return ph.length; });
+    var terms = {};
+    phrases.forEach(function (ph) { ph.forEach(function (q) { terms[q.t] = terms[q.t] || q.word; }); });
+    return this.docs.map(function (d) {
+      var score = 0, hits = [];
+      Object.keys(terms).forEach(function (t) {
+        var f = d.tf[t];
+        if (!f) return;
+        var s = self.idf(t) * (f * (k1 + 1)) / (f + k1 * (1 - b + b * d.len / self.avg));
+        score += s;
+        hits.push({ word: terms[t], s: s });
+      });
+      phrases.forEach(function (ph) {
+        for (var i = 0; i + 1 < ph.length; i++) {
+          for (var j = 0; j + 1 < d.seq.length; j++) {
+            if (d.seq[j] === ph[i].t && d.seq[j + 1] === ph[i + 1].t) { score += 0.5 * (self.idf(ph[i].t) + self.idf(ph[i + 1].t)); break; }
+          }
+        }
+      });
+      hits.sort(function (x, y) { return y.s - x.s; });
+      return { score: score, hits: hits.map(function (h) { return h.word; }) };
+    });
+  };
+
+  // ---------- Shared bits ----------
+  function interestsSync() {
+    var inputs = $$("[data-interests]");
+    var saved = store.get("paperlane-interests") || "";
+    inputs.forEach(function (i) { i.value = saved; });
+    inputs.forEach(function (i) {
+      i.addEventListener("input", function () {
+        inputs.forEach(function (o) { if (o !== i) o.value = i.value; });
+        store.set("paperlane-interests", i.value.trim());
+        document.dispatchEvent(new CustomEvent("interests"));
+      });
+    });
+  }
+
   function theme() {
     var btn = $("[data-theme-toggle]");
     if (!btn) return;
     var order = ["auto", "light", "dark"];
-    var names = { auto: "Auto", light: "Light", dark: "Dark" };
     var current = document.documentElement.dataset.theme || "auto";
-    function show() { btn.title = "Theme: " + names[current] + " (click to switch)"; }
+    function show() { btn.title = "Theme: " + current + " (click to switch)"; }
     btn.addEventListener("click", function () {
       current = order[(order.indexOf(current) + 1) % order.length];
       if (current === "auto") delete document.documentElement.dataset.theme;
@@ -77,7 +160,7 @@
       var parsed = parseId(input.value);
       if (!parsed) return;
       var here = document.getElementById(anchorOf(parsed.id));
-      if (here && here.classList.contains("paper")) {
+      if (here && here.classList.contains("paper") && $(".head", here)) {
         e.preventDefault();
         if (here.hidden && window.paperlaneClear) window.paperlaneClear();
         openRow(here, true);
@@ -89,53 +172,60 @@
     });
   }
 
-  // Home page: field tiles and the big search box.
+  // ---------- Home ----------
   function home() {
     if (!body.classList.contains("home")) return;
-    // Old links pointed filters at the home page. Send them to today's list.
-    if (/[?&](cat|q|code|lean|hide)=/.test(location.search)) { location.replace("today.html" + location.search); return; }
-    var tiles = $$(".tile");
-    var go = $("#fields-go"), clear = $("#fields-clear");
-    var total = go.textContent;
+    if (/[?&](cat|q|code|lean|hide|sort)=/.test(location.search)) { location.replace("today.html" + location.search); return; }
+    var boxes = $$(".ix");
+    var go = $("#lane-go");
     var saved = (store.get("paperlane-fields") || "").split(",").filter(Boolean);
-    tiles.forEach(function (t) { t.setAttribute("aria-pressed", saved.indexOf(t.dataset.cat) >= 0); });
+    boxes.forEach(function (t) { t.setAttribute("aria-pressed", saved.indexOf(t.dataset.cat) >= 0); });
     function update() {
-      var on = tiles.filter(function (t) { return t.getAttribute("aria-pressed") === "true"; });
-      var n = on.reduce(function (sum, t) { return sum + Number($("em", t).textContent); }, 0);
-      var cats = on.map(function (t) { return t.dataset.cat; });
-      go.textContent = on.length ? "Show " + (on.length === 1 ? n + " papers" : "papers in " + on.length + " fields") + " →" : total;
-      go.href = "today.html" + (on.length ? "?cat=" + cats.join(",") : "");
-      clear.hidden = !on.length;
-      store.set("paperlane-fields", cats.length ? cats.join(",") : null);
+      var cats = boxes.filter(function (t) { return t.getAttribute("aria-pressed") === "true"; }).map(function (t) { return t.dataset.cat; });
+      var interests = (store.get("paperlane-interests") || "").trim();
+      var params = [];
+      if (cats.length) params.push("cat=" + cats.join(","));
+      if (interests) params.push("sort=me");
+      go.href = "today.html" + (params.length ? "?" + params.join("&") : "");
+      go.textContent = cats.length || interests ? "Open my lane →" : "Open today's issue →";
+      store.set("paperlane-fields", cats.join(","));
     }
-    tiles.forEach(function (t) {
+    boxes.forEach(function (t) {
       t.addEventListener("click", function () { t.setAttribute("aria-pressed", t.getAttribute("aria-pressed") !== "true"); update(); });
     });
-    clear.addEventListener("click", function () { tiles.forEach(function (t) { t.setAttribute("aria-pressed", "false"); }); update(); });
+    document.addEventListener("interests", update);
     update();
-    $("#home-search").addEventListener("submit", function (e) {
-      var input = $("input", e.target);
-      var parsed = parseId(input.value);
-      if (parsed) { e.preventDefault(); location.href = "paper.html?id=" + encodeURIComponent(parsed.id + parsed.v); }
-      else if (!input.value.trim()) { e.preventDefault(); location.href = "today.html"; }
-    });
   }
 
-  // The filter toolbar on a day page.
-  function filters() {
+  // ---------- The issue page ----------
+  function issue() {
     var bar = $("#filters");
     if (!bar) return;
-    var papers = $$("article.paper");
+    var list = $("#list"), flat = $("#flat");
+    var papers = $$("article.paper", list);
+    var groupOf = papers.map(function (p) { return p.parentNode; });
     var text = papers.map(function (p) {
       return [".title", ".authors", ".abstract"].map(function (s) { var el = $(s, p); return el ? el.textContent : ""; }).join(" ").concat(" " + p.id).toLowerCase().replace(/\s+/g, " ");
     });
-    var groups = $$("section.group");
-    var q = $("#f-q"), code = $("#f-code"), lean = $("#f-lean"), sub = $("#f-sub");
-    var fieldsBtn = $("#f-fields"), panel = $("#f-panel");
+    // Ranking text: the title counts twice, then the abstract and the field names.
+    var ranker = new Ranker(papers.map(function (p) {
+      var title = $(".title", p).textContent;
+      return title + " " + title + " " + $(".abstract", p).textContent + " " + $(".tags", p).getAttribute("data-fields");
+    }));
+    var q = $("#f-q"), code = $("#f-code"), lean = $("#f-lean"), sub = $("#f-sub"), why = $("#f-why");
+    var fieldsBtn = $("#f-fields"), panel = $("#f-panel"), meBox = $("#f-me"), interests = $("#f-interests");
     var catBoxes = $$('input[name="cat"]', panel), kindBoxes = $$('input[name="kind"]', panel);
+    var seg = $$(".seg button");
     var names = {};
     catBoxes.forEach(function (b) { names[b.value] = $("span", b.parentNode).textContent; });
-    var kindNames = { cross: "cross-lists", replace: "new versions" };
+    var kindNames = { cross: "cross-lists", replace: "revised" };
+    var lane = (store.get("paperlane-fields") || "").split(",").filter(Boolean);
+
+    // Your own fields go to the top of the field order.
+    lane.slice().reverse().forEach(function (c) {
+      var g = $('section.group[data-field="' + c + '"]', list);
+      if (g) list.insertBefore(g, list.firstChild);
+    });
 
     var params = new URLSearchParams(location.search);
     q.value = params.get("q") || "";
@@ -145,6 +235,12 @@
     catBoxes.forEach(function (b) { b.checked = cats.indexOf(b.value) >= 0; });
     var hide = (params.get("hide") || "").split(",").filter(Boolean);
     kindBoxes.forEach(function (b) { b.checked = hide.indexOf(b.value) < 0; });
+    // A shared lane link can carry its interests.
+    if (params.get("i")) {
+      store.set("paperlane-interests", params.get("i"));
+      $$("[data-interests]").forEach(function (el) { el.value = params.get("i"); });
+    }
+    var sort = params.get("sort") || (store.get("paperlane-interests") ? "me" : "field");
 
     function pressed(b) { return b.getAttribute("aria-pressed") === "true"; }
     function state() {
@@ -166,6 +262,50 @@
       return b;
     }
 
+    var meQuery = "";
+    function arrange() {
+      seg.forEach(function (b) { b.setAttribute("aria-checked", b.dataset.sort === sort); });
+      meBox.hidden = sort !== "me";
+      $$(".why", list.parentNode).forEach(function (w) { w.hidden = true; });
+      var query = interests.value.trim();
+      meQuery = "";
+      if (sort === "field" || (sort === "me" && !query)) {
+        // Put every paper back in its field, in submission order.
+        papers.slice().sort(function (a, b) { return a.dataset.order - b.dataset.order; })
+          .forEach(function (p, i) { groupOf[papers.indexOf(p)].appendChild(p); });
+        list.hidden = false;
+        flat.hidden = true;
+        why.innerHTML = sort === "me"
+          ? "Type what you work on and the list is ranked as you type."
+          : "Grouped by main field, largest first" + (lane.length ? ", with your fields on top" : "") + ". Within a field, in order of submission.";
+        return;
+      }
+      var order;
+      if (sort === "me") {
+        var ranked = ranker.rank(query);
+        papers.forEach(function (p, i) {
+          var r = ranked[i];
+          p._score = r.score;
+          var w = $(".why", p);
+          if (r.score > 0) {
+            w.innerHTML = "matched " + r.hits.slice(0, 4).map(function (h) { return "<mark>" + esc(h) + "</mark>"; }).join(" ");
+            w.hidden = false;
+          }
+        });
+        order = papers.slice().sort(function (a, b) { return b._score - a._score || a.dataset.order - b.dataset.order; });
+        meQuery = query;
+      } else if (sort === "newest") {
+        order = papers.slice().sort(function (a, b) { return b.id.localeCompare(a.id); });
+        why.textContent = "Latest submissions first.";
+      } else {
+        order = papers.slice().sort(function (a, b) { return (a.dataset.pages || 1e6) - (b.dataset.pages || 1e6) || a.dataset.order - b.dataset.order; });
+        why.textContent = "Fewest pages first, as stated by the authors. Papers without a page count go last.";
+      }
+      order.forEach(function (p) { flat.appendChild(p); });
+      list.hidden = true;
+      flat.hidden = false;
+    }
+
     function apply() {
       var s = state();
       var words = s.q.split(" ").filter(Boolean);
@@ -181,7 +321,7 @@
         p.hidden = !ok;
         if (ok) shown++;
       });
-      groups.forEach(function (g) {
+      $$("section.group", list).forEach(function (g) {
         var n = $$("article.paper:not([hidden])", g).length;
         g.hidden = n === 0;
         $(".n", g).textContent = n;
@@ -192,6 +332,11 @@
       fieldsBtn.classList.toggle("on", s.cats.length > 0);
       $$("[data-clear]").forEach(function (b) { if (b.closest(".results")) b.hidden = !active; });
       $("#f-empty").hidden = shown > 0;
+      if (meQuery) {
+        var matched = papers.filter(function (p) { return !p.hidden && p._score > 0; }).length;
+        why.innerHTML = "Ranked for <b>“" + esc(meQuery) + "”</b> with BM25 over titles and abstracts, in your browser. " +
+          (matched === 1 ? "1 paper matches" : matched + " papers match") + ", and the rest follow in field order.";
+      }
 
       var pills = $("#f-pills");
       pills.innerHTML = "";
@@ -199,16 +344,15 @@
         pills.appendChild(pill(names[c] || c, function () { catBoxes.forEach(function (b) { if (b.value === c) b.checked = false; }); }));
       });
       s.hide.forEach(function (k) {
-        pills.appendChild(pill("No " + kindNames[k], function () { kindBoxes.forEach(function (b) { if (b.value === k) b.checked = true; }); }));
+        pills.appendChild(pill("no " + kindNames[k], function () { kindBoxes.forEach(function (b) { if (b.value === k) b.checked = true; }); }));
       });
 
-      // Someone typed an arXiv id that is not on this day: offer to open it anyway.
       var hint = $("#f-lookup");
       var parsed = parseId(s.q);
       if (parsed && shown === 0) {
         hint.hidden = false;
         $("#f-empty").hidden = true;
-        hint.innerHTML = esc(parsed.id) + " is not on this day. <a href=\"" + prefix + "paper.html?id=" + encodeURIComponent(parsed.id + parsed.v) + "\">Open it anyway →</a>";
+        hint.innerHTML = esc(parsed.id) + " is not in this issue. <a href=\"" + prefix + "paper.html?id=" + encodeURIComponent(parsed.id + parsed.v) + "\">Open it anyway →</a>";
       } else hint.hidden = true;
 
       var out = new URLSearchParams();
@@ -217,6 +361,8 @@
       if (s.code) out.set("code", "1");
       if (s.lean) out.set("lean", "1");
       if (s.hide.length) out.set("hide", s.hide.join(","));
+      if (sort !== "field") out.set("sort", sort);
+      if (meQuery) out.set("i", meQuery);
       var str = out.toString();
       history.replaceState(null, "", location.pathname + (str ? "?" + str.replace(/%2C/g, ",") : "") + location.hash);
     }
@@ -242,6 +388,19 @@
     [code, lean].forEach(function (b) {
       b.addEventListener("click", function () { b.setAttribute("aria-pressed", !pressed(b)); apply(); });
     });
+    seg.forEach(function (b) {
+      b.addEventListener("click", function () {
+        sort = b.dataset.sort;
+        arrange();
+        apply();
+        if (sort === "me" && !interests.value.trim()) interests.focus();
+      });
+    });
+    var timer;
+    document.addEventListener("interests", function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { if (sort === "me") { arrange(); apply(); } }, 120);
+    });
     panel.addEventListener("change", apply);
     q.addEventListener("input", apply);
     sub.addEventListener("input", function () {
@@ -255,28 +414,29 @@
       if (e.key === "Escape") togglePanel(false);
       if (e.key === "/" && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); q.focus(); }
     });
+    arrange();
     apply();
   }
 
-  // Rows open and close. Single paper pages are always open.
+  // ---------- Paper entries ----------
   function openRow(row, open) {
     row.classList.toggle("open", open);
-    $(".head", row).setAttribute("aria-expanded", open);
+    var head = $(".head", row);
+    if (head) head.setAttribute("aria-expanded", open);
   }
 
   function showMarkdown(panel, name, text, url) {
     panel.innerHTML =
-      '<div class="md-bar"><span>' + esc(name) + '</span><button type="button" class="link" data-copy-md>Copy</button>' +
-      (url ? '<a href="' + esc(url) + '">Open raw</a>' : "") + "</div><pre></pre>";
+      '<div class="md-bar"><span>' + esc(name) + '</span><button type="button" class="link" data-copy-md>copy</button>' +
+      (url ? '<a href="' + esc(url) + '">raw</a>' : "") + "</div><pre></pre>";
     $("pre", panel).textContent = text;
     $("[data-copy-md]", panel).addEventListener("click", function (e) { copy(text, e.target); });
   }
 
   function rows() {
-    var fixed = body.classList.contains("single") || body.classList.contains("lookup-page");
     document.addEventListener("click", function (e) {
       var head = e.target.closest("article.paper .head");
-      if (head && !fixed) {
+      if (head) {
         var row = head.closest("article.paper");
         openRow(row, !row.classList.contains("open"));
         return;
@@ -290,10 +450,10 @@
       panel.hidden = !opening;
       btn.setAttribute("aria-expanded", opening);
       if (!opening) return;
-      if (btn.markdown) return showMarkdown(panel, "Markdown", btn.markdown);
+      if (btn.markdown) return showMarkdown(panel, "paper.md", btn.markdown);
       if (panel.dataset.loaded) return;
       panel.dataset.loaded = "1";
-      panel.innerHTML = '<div class="md-bar"><span>Loading…</span></div>';
+      panel.innerHTML = '<div class="md-bar"><span>loading…</span></div>';
       fetch(btn.dataset.md).then(function (r) {
         if (!r.ok) throw new Error(r.status);
         return r.text();
@@ -301,40 +461,39 @@
         showMarkdown(panel, btn.dataset.md.split("/").pop(), t, btn.dataset.md);
       }).catch(function () {
         delete panel.dataset.loaded;
-        panel.innerHTML = '<div class="md-bar"><span>Could not load the Markdown.</span><a href="' + esc(btn.dataset.md) + '">Open it</a></div>';
+        panel.innerHTML = '<div class="md-bar"><span>could not load the Markdown</span><a href="' + esc(btn.dataset.md) + '">open it</a></div>';
       });
     });
-    // A shared link to one paper opens it.
     if (location.hash) {
       var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
       if (target && target.classList.contains("paper")) openRow(target, true);
     }
   }
 
-  // "Ask your AI" dialog.
+  // ---------- Ask your AI ----------
   function ask() {
     var dlg = $("#ask");
     if (!dlg) return;
     var box = $("#prompt"), interests = $("#interests");
-    interests.value = store.get("paperlane-interests") || "";
     function update() {
       var i = interests.value.trim() || "X and Y";
-      box.value =
+      box.textContent =
         "Read " + base + "/latest-titles.md, Paperlane's index of today's new maths papers. " +
         "My interests are " + i + ". Pick the candidates that fit, read their abstracts in " + base +
         "/latest.md, and tell me which three papers I should read and why.";
-      store.set("paperlane-interests", interests.value || null);
     }
     interests.addEventListener("input", update);
+    document.addEventListener("interests", update);
     update();
     $$("[data-open-ask]").forEach(function (b) {
-      b.addEventListener("click", function () { dlg.showModal ? dlg.showModal() : dlg.setAttribute("open", ""); interests.focus(); });
+      b.addEventListener("click", function () { update(); dlg.showModal ? dlg.showModal() : dlg.setAttribute("open", ""); interests.focus(); });
     });
     dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
-    $("#copy-prompt").addEventListener("click", function (e) { copy(box.value, e.target); });
+    $("#copy-prompt").addEventListener("click", function (e) { copy(box.textContent, e.target); });
   }
 
-  // Lookup: Paperlane's own pages first, then open scholarly APIs (arXiv's API blocks browsers).
+  // ---------- Lookup ----------
+  // Paperlane's own pages first, then open scholarly APIs, because arXiv's API blocks browsers.
   var LEAN_RE = /\bLean[ ~]?4\b|\bMathlib\b|\b(?:in|using|with|into) Lean\b|\bLean (?:proof|formali[sz]ation|theorem prover|code|project|library)/;
   var CODE_HOSTS = ["github.com", "gitlab.com", "codeberg.org", "bitbucket.org", "git.sr.ht", "huggingface.co"];
 
@@ -347,7 +506,7 @@
   function fromSemanticScholar(id) {
     return getJSON("https://api.semanticscholar.org/graph/v1/paper/arXiv:" + id + "?fields=title,abstract,authors,publicationDate").then(function (d) {
       if (!d || !d.title) return null;
-      return { source: "Semantic Scholar", title: d.title, abstract: d.abstract || "", date: d.publicationDate || "", authors: (d.authors || []).map(function (a) { return a.name; }) };
+      return { title: d.title, abstract: d.abstract || "", date: d.publicationDate || "", authors: (d.authors || []).map(function (a) { return a.name; }) };
     });
   }
   function fromOpenAlex(id) {
@@ -358,7 +517,7 @@
         d.abstract_inverted_index[w].forEach(function (i) { words[i] = w; });
       });
       return {
-        source: "OpenAlex", title: d.title, abstract: words.join(" "), date: d.publication_date || "",
+        title: d.title, abstract: words.join(" "), date: d.publication_date || "",
         authors: (d.authorships || []).map(function (a) { return a.author && a.author.display_name; }).filter(Boolean),
       };
     });
@@ -378,12 +537,17 @@
       return (t.tree || []).filter(function (x) { return /(^|\/)(lean-toolchain|lakefile\.lean|lakefile\.toml)$/.test(x.path); }).map(function (x) { return x.path; });
     });
   }
+  function authorsText(a) {
+    if (a.length <= 2) return a.join(" and ");
+    var shown = a.slice(0, 12), rest = a.length - shown.length;
+    return rest ? shown.join(", ") + " and " + rest + " more" : shown.slice(0, -1).join(", ") + " and " + shown[shown.length - 1];
+  }
 
   function lookupPage() {
-    var result = $("#lk-result");
-    if (!result) return;
+    var pageEl = $("#lk-page");
+    if (!pageEl) return;
     var raw = new URLSearchParams(location.search).get("id");
-    var status = $("#lk-status"), title = $("#lk-title"), eyebrow = $("#lk-eyebrow");
+    var status = $("#lk-status"), title = $("#lk-title");
     if (!raw) return;
     $("form.lookup input").value = raw;
     var parsed = parseId(raw);
@@ -392,7 +556,7 @@
       return;
     }
     var id = parsed.id, v = parsed.v, anc = anchorOf(id);
-    title.textContent = "Opening " + id + v + "…";
+    title.innerHTML = "Opening <em>" + esc(id + v) + "</em>…";
     status.textContent = "";
     fetch(prefix + "p/" + anc + ".md", { method: "HEAD" }).then(function (r) {
       if (r.ok) { location.replace(prefix + "p/" + anc + ".html"); return "done"; }
@@ -407,32 +571,32 @@
     function render(d) {
       var abs = "https://arxiv.org/abs/" + id + v, pdf = "https://arxiv.org/pdf/" + id + v;
       if (!d) {
-        title.textContent = "Couldn't load " + id + v;
+        title.innerHTML = "Couldn't open <em>" + esc(id + v) + "</em>";
         status.innerHTML = "The paper may be very new, or the free lookup services may be busy.";
-        result.innerHTML = '<div class="actions"><a class="btn primary" href="' + location.href + '">Try again</a><a class="btn" href="' + pdf + '">Open the PDF</a></div>';
+        $("#lk-result").innerHTML = '<p class="actions mono"><a class="act" href="' + esc(location.href) + '">try again</a><a class="act" href="' + pdf + '">pdf</a></p>';
         return;
       }
-      title.hidden = true;
-      status.hidden = true;
-      eyebrow.textContent = id + v;
       document.title = d.title + " · Paperlane";
       var text = d.abstract || "";
       var code = findLinks(text).filter(function (u) { try { return CODE_HOSTS.indexOf(new URL(u).hostname.replace(/^www\./, "")) >= 0; } catch (e) { return false; } });
       var mentions = LEAN_RE.test(text);
-      var tagHtml = (mentions ? '<span class="tag lean-soft">Lean</span>' : "") + (code.length ? '<span class="tag code">Code</span>' : "");
-      var facts = code.map(function (u) { return '<div><dt>Code</dt><dd><a href="' + esc(u) + '" rel="nofollow">' + esc(u.replace(/^https?:\/\//, "")) + "</a></dd></div>"; }).join("") +
-        (d.date ? "<div><dt>Date</dt><dd>" + esc(d.date) + "</dd></div>" : "");
-      var authors = d.authors.slice(0, 8).join(", ") + (d.authors.length > 8 ? " +" + (d.authors.length - 8) : "");
-      result.innerHTML =
-        '<article class="paper open" id="' + esc(anc) + '"><div class="head"><span class="title">' + esc(d.title) + '</span><span class="authors">' + esc(authors) +
-        '</span><span class="tags">' + tagHtml + '</span></div><div class="body"><p class="abstract">' + (text ? esc(text) : "No abstract is available yet.") + "</p>" +
-        '<dl class="facts">' + facts + "</dl>" +
-        '<div class="actions"><button type="button" class="btn small" data-act="md" aria-expanded="false">Markdown</button><a class="btn small" href="' + pdf + '">PDF</a>' +
-        '<button type="button" class="btn small ghost" data-act="link" data-url="' + esc(location.href) + '">Copy link</button><a class="pid" href="' + abs + '">arXiv ' + esc(id + v) + " ↗</a></div>" +
-        '<div class="md-panel" hidden></div></div></article>';
+      var tags = ['<span>' + esc(id + v) + "</span>"];
+      if (code.length) tags.push('<span class="t-code">code</span>');
+      if (mentions) tags.push('<span class="t-lean soft">□ lean</span>');
+      var facts = code.map(function (u) { return '<div><dt class="mono">code</dt><dd><a href="' + esc(u) + '" rel="nofollow">' + esc(u.replace(/^https?:\/\//, "")) + "</a></dd></div>"; }).join("") +
+        (d.date ? '<div><dt class="mono">date</dt><dd>' + esc(d.date) + "</dd></div>" : "");
+      pageEl.classList.add("paper", "open");
+      pageEl.id = anc;
+      pageEl.innerHTML =
+        '<p class="kicker mono">not yet in an issue</p><h1 class="title">' + esc(d.title) + '</h1><p class="authors">' + esc(authorsText(d.authors)) + "</p>" +
+        '<p class="tags mono">' + tags.join('<span class="sep"> · </span>') + '</p><h2 class="abs-h">Abstract</h2>' +
+        '<p class="abstract">' + (text ? esc(text) : "No abstract is available yet.") + '</p><dl class="facts">' + facts + "</dl>" +
+        '<div class="actions mono"><button type="button" class="act" data-act="md" aria-expanded="false">markdown</button><a class="act" href="' + pdf + '">pdf</a>' +
+        '<button type="button" class="act" data-act="link" data-url="' + esc(location.href) + '">copy link</button><a class="pid" href="' + abs + '">arXiv:' + esc(id + v) + " ↗</a></div>" +
+        '<div class="md-panel" hidden></div>';
       var notes = code.map(function (u) { return "code " + u; });
       if (mentions) notes.push("abstract mentions Lean");
-      var mdBtn = $('[data-act="md"]', result);
+      var mdBtn = $('[data-act="md"]', pageEl);
       function makeMarkdown() {
         mdBtn.markdown = [
           "# " + d.title, "",
@@ -443,17 +607,16 @@
         ]).join("\n");
       }
       makeMarkdown();
-      renderMath(result);
-      // The same Lean check as the daily job, run from the reader's browser.
+      renderMath(pageEl);
       code.forEach(function (u, i) {
         var m = u.match(/github\.com\/([^\/]+)\/([^\/#?]+)/i);
         if (!m) return;
         leanCheck(m[1] + "/" + m[2].replace(/\.git$/, "")).then(function (paths) {
           if (!paths || !paths.length) return;
-          var tags = $(".tags", result);
-          var soft = $(".lean-soft", tags);
-          if (soft) soft.remove();
-          tags.insertAdjacentHTML("afterbegin", '<span class="tag lean">Lean project</span>');
+          var t = $(".tags", pageEl);
+          var soft = $(".t-lean.soft", t);
+          if (soft) soft.outerHTML = '<span class="t-lean">∎ lean</span>';
+          else t.insertAdjacentHTML("beforeend", '<span class="sep"> · </span><span class="t-lean">∎ lean</span>');
           notes[i] += " (Lean project: " + paths.slice(0, 2).join(", ") + ")";
           makeMarkdown();
         });
@@ -462,10 +625,11 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    interestsSync();
     theme();
     lookupForm();
     home();
-    filters();
+    issue();
     rows();
     ask();
     lookupPage();
