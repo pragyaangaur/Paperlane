@@ -170,7 +170,7 @@ REPO = "https://github.com/pragyaangaur/Paperlane"
 FONTS = (
     '<link rel="preconnect" href="https://fonts.googleapis.com">'
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
-    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap">'
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">'
 )
 
 # The mark: a written sheet caught in a gust, one line highlighted, the last closed with a tombstone.
@@ -264,7 +264,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
         <span aria-hidden="true">&gt;</span><input name="id" type="search" placeholder="open arXiv id or link" aria-label="Open a paper by arXiv link or id" autocomplete="off" spellcheck="false">
       </form>
       <button type="button" class="icon-btn mono" data-theme-toggle title="Dark mode" aria-label="Switch to dark mode">◐</button>
-      <a class="icon-btn" href="{REPO}" title="Source on GitHub" aria-label="Source on GitHub">{ICON_GITHUB}</a>
+      <a class="icon-btn" href="{REPO}" target="_blank" rel="noopener" title="Source on GitHub" aria-label="Source on GitHub">{ICON_GITHUB}</a>
     </div>
   </div>
 </header>
@@ -279,7 +279,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
       <p>A daily journal of new mathematics, for people and their agents.</p>
     </div>
     <nav class="mono"><a href="{prefix}today.html">today</a><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}about.html#agents">agents</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}">source</a></nav>
-    <p class="mono built">set in Latin Modern &amp; JetBrains Mono · built {esc(built)}</p>
+    <p class="mono built">set in Geist, Geist Mono &amp; Latin Modern · built {esc(built)}</p>
   </div>
 </footer>
 </body>
@@ -307,7 +307,7 @@ def linkify(text):
     for m in signals.URL_RE.finditer(text):
         url = signals._trim(m.group(0))
         href = url if url.lower().startswith("http") else "https://" + url
-        out += [esc(text[last : m.start()]), f'<a href="{esc(href)}" rel="nofollow">{esc(url)}</a>']
+        out += [esc(text[last : m.start()]), f'<a href="{esc(href)}" target="_blank" rel="nofollow noopener">{esc(url)}</a>']
         last = m.start() + len(url)
     return "".join(out) + esc(text[last:])
 
@@ -354,7 +354,7 @@ def details_html(p):
                     note = f' <span class="ok">∎ Lean project ({esc(", ".join(c["lean_paths"][:2]))})</span>'
                 elif c["status"] == "missing":
                     note = ' <span class="warn">repository not found</span>'
-        rows.append(("code", f'<a href="{esc(url)}" rel="nofollow">{esc(short_link(url))}</a>{note}'))
+        rows.append(("code", f'<a href="{esc(url)}" target="_blank" rel="nofollow noopener">{esc(short_link(url))}</a>{note}'))
     if p.get("comments"):
         rows.append(("comments", linkify(p["comments"])))
     if p.get("journal_ref"):
@@ -368,10 +368,10 @@ def details_html(p):
 def actions_html(p, prefix, pid):
     return f"""<div class="actions mono">
       <button type="button" class="act" data-act="md" data-md="{prefix}p/{pid}.md" aria-expanded="false">markdown</button>
-      <a class="act" href="{p['links']['pdf']}">pdf</a>
+      <a class="act" href="{p['links']['pdf']}" target="_blank" rel="noopener">pdf ↗</a>
       <a class="act" href="{prefix}p/{pid}.html">page</a>
       <button type="button" class="act" data-act="link" data-url="{prefix}p/{pid}.html">copy link</button>
-      <a class="pid" href="{p['links']['abs']}" title="Open on arXiv">arXiv:{esc(p['id'])} ↗</a>
+      <a class="pid" href="{p['links']['abs']}" target="_blank" rel="noopener" title="Open on arXiv">arXiv:{esc(p['id'])} ↗</a>
     </div>
     <div class="md-panel" hidden></div>"""
 
@@ -522,12 +522,14 @@ def home_html(day, number, base, built, titles_sample):
     sample = "\n".join(esc(line) for line in titles_sample)
     body = f"""<section class="masthead wrap-wide">
   <div class="mh-copy">
-    <p class="kicker mono">no. {number} · {d:%A} {d.day} {d:%B %Y}</p>
-    <h1>The day's mathematics, <em>read in a&nbsp;minute.</em></h1>
+    <a class="live" href="today.html"><span class="pulse" aria-hidden="true"></span><span class="mono">issue no. {number} is out · {d:%a} {d.day} {d:%b}</span><span aria-hidden="true">→</span></a>
+    <h1>The day's mathematics, <em>read in a minute.</em></h1>
     <p class="lede">Every weekday, Paperlane gathers the new mathematics papers into one quiet list. Make it your lane: pick your fields, say what you work on, and the papers that matter to you come first.</p>
-    <div class="cta"><a class="btn primary" href="today.html">Read today's {st['papers']} papers</a><a class="btn" href="#lane">Set up my lane</a></div>
+    <div class="cta"><a class="btn primary" href="today.html">Read today's {st['papers']} papers →</a><a class="btn" href="#lane">Set up my lane</a></div>
+    <p class="works mono">free · no account · updated every weekday 06:00 UTC</p>
   </div>
   <aside class="contents">
+    <div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span class="mono">paperlane / today</span></div>
     <p class="mono label">in this issue</p>
     <ol class="toc">{toc}</ol>
     <p class="mono foot-note">{st['papers']} papers · {st['code']} with code · {st['lean']} ∎ lean</p>
@@ -642,7 +644,7 @@ def about_html(days, base, built):
   <div class="table-wrap"><table class="files"><tbody>{rows}</tbody></table></div>
 
   <h2>Where the data comes from</h2>
-  <p>Titles, authors, abstracts and categories come from <a href="https://arxiv.org">arXiv</a>, and every paper links to arXiv for the full text. Papers that Paperlane has not listed are looked up through Semantic Scholar or OpenAlex. {ARXIV_THANKS}</p>
+  <p>Titles, authors, abstracts and categories come from <a href="https://arxiv.org" target="_blank" rel="noopener">arXiv</a>, and every paper links to arXiv for the full text. Papers that Paperlane has not listed are looked up through Semantic Scholar or OpenAlex. {ARXIV_THANKS}</p>
   <p>Paperlane is open source on <a href="{REPO}">GitHub</a>, where you can report a problem or ask for a feature.</p>
 </div>"""
     return page("About · Paperlane", body, "", built, "How Paperlane orders papers, what its tags mean and the files it publishes for agents.", base, "about", "about")

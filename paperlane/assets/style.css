@@ -1,5 +1,5 @@
 /*
-  Paperlane. A LaTeX preprint, marked up with a highlighter, read on a terminal.
+  Paperlane. Product chrome in Geist, papers in Latin Modern, one highlighter colour across both.
   White paper and black ink. The one brand colour is highlighter lime, and it only ever sits behind things:
   matched words, chosen fields, the active order and papers with a Lean project.
   Light is the default for everyone; dark applies only when the reader switches to it.
@@ -26,7 +26,8 @@
   --term-bg: #121310;
   --term-fg: #e6e8e0;
   --serif: "Latin Modern", "Latin Modern Roman", "CMU Serif", "Computer Modern Serif", Georgia, serif;
-  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sans: "Geist", ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
   color-scheme: light;
 }
 :root[data-theme="dark"] {
@@ -353,3 +354,77 @@ article.first-page .title { font-weight: 400; }
 dialog.ask { box-shadow: 8px 8px 0 var(--hl); }
 .panel { box-shadow: 5px 5px 0 var(--hl); }
 
+/* Startup layer: the interface speaks Geist, the papers keep the LaTeX voice. */
+body { font-family: var(--sans); font-size: 16px; line-height: 1.55; letter-spacing: -0.005em; }
+.mono { font-size: 0.8em; letter-spacing: 0; }
+h1, h2, .lane h2, .machines h2, dialog.ask h2, .prose h2 { font-family: var(--sans); font-weight: 650; letter-spacing: -0.035em; font-style: normal; }
+h1 { font-size: 2.5rem; line-height: 1.08; }
+h1 em, h2 em, .lane h2 em, .machines h2 em, dialog.ask h2 em { font-family: var(--serif); font-weight: 400; font-style: italic; letter-spacing: -0.01em; background: none; padding: 0;
+  text-decoration: underline; text-decoration-color: var(--lime); text-decoration-thickness: 0.22em; text-underline-offset: 0.06em; text-decoration-skip-ink: none; }
+.issue-head h1 em { text-decoration: none; }
+.masthead h1 { font-size: clamp(2.7rem, 5.6vw, 4.4rem); line-height: 1.12; letter-spacing: -0.045em; }
+.masthead h1 em { font-size: 1.04em; white-space: nowrap; word-spacing: -0.06em; }
+@media (max-width: 600px) { .masthead h1 em { white-space: normal; } }
+.lede { font-size: 1.15rem; color: var(--ink-2); line-height: 1.6; }
+.prose h2 { font-size: 1.3rem; margin-top: 44px; }
+
+/* Buttons and controls get product-style corners; the primary action is the highlighter. */
+.btn { font-family: var(--sans); font-weight: 550; font-size: 0.95rem; border-radius: 10px; padding: 10px 18px; border-color: var(--rule); background: var(--leaf); }
+.btn:hover { background: var(--leaf); color: var(--ink); border-color: var(--ink); }
+.btn.primary { background: var(--lime); border-color: var(--lime); color: #111210; }
+.btn.primary:hover { background: #b9e81f; border-color: #b9e81f; color: #111210; }
+.btn.small { border-radius: 8px; padding: 5px 12px; font-size: 0.85rem; }
+.chip, .search, .lookup, input.mini { border-radius: 9px; }
+.chip { font-family: var(--sans); font-size: 0.86rem; font-weight: 500; }
+.chip em { font-family: var(--mono); font-size: 0.78rem; }
+.search input, .me-box input, .interest-input, dialog.ask input { font-family: var(--sans); font-style: normal; }
+.search input::placeholder, .interest-input::placeholder { font-style: normal; }
+.interest-input { font-size: 1.15rem; border: 1px solid var(--rule); border-radius: 10px; padding: 11px 14px; background: var(--leaf); }
+.interest-input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px var(--lime); }
+.me-box input { font-size: 0.95rem; }
+.panel { border-radius: 12px; border-color: var(--rule); box-shadow: 0 18px 50px rgba(17, 18, 16, 0.14); }
+dialog.ask { border-radius: 16px; border-color: var(--rule); box-shadow: 0 30px 80px rgba(17, 18, 16, 0.25); }
+dialog.ask input { border: 1px solid var(--rule); border-radius: 10px; padding: 10px 12px; font-size: 1rem; }
+.terminal, .md-panel { border-radius: 12px; }
+.seg button { border-radius: 6px; padding: 3px 9px; }
+header nav a, header nav button { font-family: var(--sans); font-size: 0.9rem; }
+header nav a[aria-current="page"] { box-shadow: none; background: var(--rule-soft); border-radius: 7px; padding: 4px 10px; }
+header nav { gap: 6px; }
+header nav a, header nav button { padding: 4px 10px; border-radius: 7px; }
+header nav a:hover, header nav button:hover { background: var(--rule-soft); }
+.brand { font-family: var(--sans); font-weight: 700; font-size: 1.18rem; letter-spacing: -0.03em; }
+.toolbar { border-bottom-color: var(--rule); }
+.results, .why-line, .stats { font-family: var(--mono); }
+
+/* Home: product touches */
+.live { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--rule); background: var(--leaf); border-radius: 999px; padding: 5px 14px 5px 10px; color: var(--ink-2); text-decoration: none; margin-bottom: 4px; }
+.live:hover { border-color: var(--ink); color: var(--ink); }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: #5fb520; box-shadow: 0 0 0 0 rgba(95, 181, 32, 0.6); animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95, 181, 32, 0.55); } 70% { box-shadow: 0 0 0 8px rgba(95, 181, 32, 0); } 100% { box-shadow: 0 0 0 0 rgba(95, 181, 32, 0); } }
+@media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+.works { color: var(--muted); margin: 18px 0 0; }
+.contents { border: 1px solid var(--rule); border-top: 1px solid var(--rule); border-radius: 14px; background: var(--leaf); padding: 0 20px 16px; box-shadow: 0 1px 2px rgba(17, 18, 16, 0.04), 0 12px 40px rgba(17, 18, 16, 0.07); overflow: hidden; }
+.window-bar { display: flex; align-items: center; gap: 6px; margin: 0 -20px 14px; padding: 10px 14px; border-bottom: 1px solid var(--rule-soft); background: var(--paper); }
+.window-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--rule); }
+.window-bar span { margin-left: 8px; color: var(--faint); }
+.toc li a span:first-child { font-family: var(--serif); font-size: 1.05rem; }
+.ix { font-family: var(--serif); font-size: 1.05rem; }
+.ix .box { border-radius: 3px; }
+.ix[aria-pressed="true"] .box { background: var(--lime); border-color: var(--ink); }
+.step { font-family: var(--mono); color: var(--muted); }
+.step::before { content: ""; }
+.machines, .checks { border-top-color: var(--rule); }
+.checks dl > div { border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; background: var(--leaf); }
+.lane { border-top-color: var(--rule); }
+
+/* Papers keep the LaTeX voice */
+article.paper .title, article.paper .authors, .abstract, .group h2, .abs-h, .colophon p { font-family: var(--serif); }
+article.paper .title { font-size: 1.24rem; }
+.group h2 { font-weight: 400; letter-spacing: 0; }
+.abs-h { font-family: var(--serif); letter-spacing: 0.12em; }
+.facts dd { font-family: var(--sans); font-size: 0.92rem; }
+.act { font-family: var(--mono); }
+.prose p, .glossary dd, .checks dd, .machines p, .hint { font-family: var(--sans); }
+/* A translucent selection never hides the line above it. */
+::selection { background: rgba(200, 245, 60, 0.5); color: inherit; }
+:root[data-theme="dark"] ::selection { background: rgba(200, 245, 60, 0.3); }
