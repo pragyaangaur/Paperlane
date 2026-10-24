@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.svg" alt="Paperlane. The day's mathematics, read in a minute." width="100%">
+  <img src="docs/banner.svg" alt="Paperlane: read the day's mathematics in a minute." width="100%">
 </p>
 
 <p align="center">
@@ -21,9 +21,7 @@
 
 Every weekday a few hundred new mathematics papers come out. One night of them is about 57,000 words of abstracts, the length of a short novel, and almost nobody sees it happen. Paperlane turns each night into one short issue that you can skim in a minute and your AI assistant can read in seconds.
 
-Type anything you are curious about and the matching papers from last night appear as you type. If you do research, type what you work on and the closest papers come first. If you would rather not read papers at all, paste one prompt into the AI you already pay for, and it tells you what mathematicians found last night in plain words.
-
-Paperlane is free, needs no account and sets no cookies.
+Type anything you are curious about and the matching papers from last night appear as you type. If you do research, type what you work on and the closest papers come first. If you would rather not read papers at all, paste one prompt into the AI you already pay for, and it tells you what mathematicians found last night in plain words. Paperlane is free and needs no account.
 
 <p align="center">
   <img src="docs/home.png" alt="The Paperlane home page, where typing prime numbers shows the matching papers from last night" width="92%">
@@ -41,15 +39,13 @@ Paperlane is free, needs no account and sets no cookies.
 
 ## What you can do
 
-- **Search the night.** One box ranks every paper against what you type, best match first, and shows the words that matched. Titles count twice, exact phrases get a bonus, and British and American spellings match each other. It runs in your browser with BM25, the formula behind most search engines, and nothing you type is sent anywhere.
+- **Search the night.** One box ranks every paper against what you type, best match first, and shows the words that matched. It uses BM25, the formula behind most search engines, and counts words in a title twice. British and American spellings match each other. The search runs in your browser, so nothing you type is sent anywhere, and Paperlane never ranks a paper by who wrote it.
 - **Skim by field.** With no search, papers sit under their main field, three at a time until you ask for the rest. Fields you pick move to the top next time.
 - **Keep code and proofs.** The **Code** and **Lean** buttons keep only papers that link to code or to a Lean formalisation.
 - **Open any paper.** Paste an arXiv link or id into the box in the header. Papers from any issue open on their own page, and older papers are looked up for you.
 - **Take the Markdown.** Every paper has a Markdown version one click away, ready for a chat window or your notes.
 
-Paperlane never ranks a paper by who wrote it.
-
-## Not a mathematician?
+## If you are not a mathematician
 
 Paste this into ChatGPT, Claude, Gemini or any assistant that can open web pages:
 
@@ -59,7 +55,7 @@ Paste this into ChatGPT, Claude, Gemini or any assistant that can open web pages
 
 Many assistants can now run scheduled routines. Open [ask AI in routine mode](https://pragyaangaur.github.io/Paperlane/ask.html?mode=routine), pick a time and your timezone, type what you work on, and Paperlane writes a prompt that sets up a routine for every weekday. Each run reads the new issue and sends you the three papers worth your time. On days with no new issue it says so in one line. The page shows when the new issue arrives in your own timezone, so you can pick a time after it.
 
-## Why not just ask your AI to read arXiv?
+## What Paperlane does for your AI
 
 - **A night of maths is a short novel.** Paperlane reads it once and hands your assistant an index of about 7,500 words, so the answer is fast and cheap.
 - **Some answers need real work.** Checking every linked repository for a Lean project takes real requests, and compiling the proofs (coming next) takes real computing time. Paperlane does this once, for everyone.
@@ -94,7 +90,7 @@ curl -s https://pragyaangaur.github.io/Paperlane/latest-titles.md | head
   <img src="docs/how-it-works.svg" alt="Every night arXiv announces new papers, a daily job at 06:00 UTC collects them, checks code and Lean projects, and publishes the issue for you and your AI agent" width="100%">
 </p>
 
-A scheduled job collects the night's announcement, looks up each paper's details, and checks every linked GitHub repository for a Lean project. It then publishes the issue in every format at once. Every tag comes from a simple check that anyone can repeat, and no language model decides anything about a paper.
+A scheduled job collects the night's announcement and looks up the details of each paper. It checks every linked GitHub repository for a Lean project and then publishes the issue in every format at once. Every tag comes from a simple check that anyone can repeat, and no language model decides anything about a paper.
 
 ## What the tags mean
 

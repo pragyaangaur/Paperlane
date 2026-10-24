@@ -31,6 +31,6 @@
 </g>
   <text x="300" y="164" font-family="Geist, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="96" font-weight="700" fill="#111210" letter-spacing="-4.5">Paperlane</text>
   <rect x="302" y="226" width="610" height="7" rx="3" fill="#c8f53c"/>
-  <text x="304" y="222" font-family="'Latin Modern Roman', 'CMU Serif', 'Computer Modern', Georgia, 'Times New Roman', serif" font-size="40" font-style="italic" fill="#111210">The day's mathematics, read in a minute.</text>
+  <text x="304" y="222" font-family="'Latin Modern Roman', 'CMU Serif', 'Computer Modern', Georgia, 'Times New Roman', serif" font-size="40" font-style="italic" fill="#111210">Read the day's mathematics in a minute.</text>
   <text x="306" y="268" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="16" fill="#393b36">$ curl paperlane/latest.md  # every new paper, in Markdown</text>
 </svg>

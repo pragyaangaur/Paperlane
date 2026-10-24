@@ -592,8 +592,8 @@ def archive_html(days, numbers, built, base):
             f'<span class="mono c">{st["papers"]} papers · {st["lean"]} ∎</span></a></li>'
         )
     body = f"""<div class="wrap narrow">
-  <header class="issue-head"><p class="kicker mono">archive</p><h1>Every issue, <em>so far</em></h1>
-  <p class="lede small">Each day stays here. To open one paper from any day, paste its arXiv link or id into the box at the top.</p></header>
+  <header class="issue-head"><p class="kicker mono">archive</p><h1>Every issue is <em>kept here</em></h1>
+  <p class="lede small">Every past issue stays online. To open one paper from any day, paste its arXiv link or id into the box at the top.</p></header>
   <ol class="toc archive-toc">{''.join(rows)}</ol>
 </div>"""
     return page("Archive · Paperlane", body, "", built, "Every issue of Paperlane.", base, "archive", "archive")
@@ -623,14 +623,14 @@ def about_html(days, base, built):
     ]
     rows = "".join(f'<tr><td class="mono"><a href="{f}">{esc(f)}</a></td><td>{esc(t)}</td></tr>' for f, t in files)
     body = f"""<div class="wrap narrow prose">
-  <header class="issue-head"><p class="kicker mono">about</p><h1>A quieter way to <em>keep up with mathematics</em></h1></header>
+  <header class="issue-head"><p class="kicker mono">about</p><h1>Keep up with mathematics <em>in a few minutes</em></h1></header>
   <p class="lede small">Paperlane collects the new mathematics papers every weekday and sets them in one list that you can make your own in seconds. It is free and needs no account.</p>
 
   <h2>How search works</h2>
-  <p>Type a topic, a phrase or a name and Paperlane ranks the papers with BM25, the standard formula behind most search engines, over titles, abstracts and authors. Titles count twice, exact phrases get a bonus, and British and American spellings match each other. Only papers that match are shown, best first, with the words that matched under each one. This runs in your browser and nothing you type is sent anywhere.</p>
+  <p>Type a topic or an author's name, and Paperlane ranks the papers with BM25, the standard formula behind most search engines. It reads titles, abstracts and author names, and it counts words in a title twice. A phrase that appears word for word gets a bonus, and British and American spellings match each other. Only papers that match are shown, best first, with the words that matched under each one. This runs in your browser and nothing you type is sent anywhere.</p>
   <p>With no search, papers sit under their main field, largest field first, and the fields you picked move to the top. You can also list them newest first or shortest first. Paperlane never ranks a paper by who wrote it.</p>
 
-  <h2>Why not just ask your AI to read arXiv?</h2>
+  <h2>What Paperlane does for <em>your AI</em></h2>
   <p>One night of mathematics is about 57,000 words of abstracts, the length of a short novel. Paperlane reads it once and hands your assistant an index of about 7,500 words, so the answer is fast and cheap. Some answers also need real work, such as checking every linked repository for a Lean project, and Paperlane does that once for everyone. Every issue stays in the archive, so you can look back and see when a paper was revised.</p>
 
   <h2>What the tags mean</h2>
@@ -641,7 +641,7 @@ def about_html(days, base, built):
     <div><dt class="mono t-rev">v2</dt><dd>A revised version of an older paper.</dd></div>
     <div><dt class="mono">via cs.CC</dt><dd>A paper from another subject that its authors also listed under mathematics.</dd></div>
   </dl>
-  <p>Every tag comes from a simple check that anyone can repeat. Paperlane never ranks papers or scores authors.</p>
+  <p>Every tag comes from a simple check that anyone can repeat, and no language model decides any tag. Paperlane never scores authors.</p>
 
   <h2>When it updates</h2>
   <p>New papers are announced from Sunday to Thursday evening, US Eastern time. Paperlane picks them up at 06:00 UTC the next morning, so a new issue appears from Monday to Friday.</p>
