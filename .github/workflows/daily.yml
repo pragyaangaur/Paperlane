@@ -1,0 +1,82 @@
+name: Daily feed
+
+on:
+  schedule:
+    # arXiv announces at 20:00 US Eastern, but its RSS feed is rebuilt at midnight
+    # Eastern (04:00 UTC in summer, 05:00 UTC in winter). 06:00 UTC is after both.
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    inputs:
+      api_date:
+        description: "Backfill a day (YYYY-MM-DD) from the arXiv API instead of the RSS feed"
+        required: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily-feed
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.fetch.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test
+        run: python -m unittest
+
+      - name: Fetch tonight's papers
+        id: fetch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          API_DATE: ${{ inputs.api_date }}
+        run: |
+          if [ -n "$API_DATE" ]; then
+            python -m paperlane fetch --api-date "$API_DATE"
+          else
+            python -m paperlane fetch
+          fi
+
+      - name: Commit the stored day
+        if: steps.fetch.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/days
+          git commit -m "Add papers for ${{ steps.fetch.outputs.date }}"
+          git push
+
+      - name: Configure Pages
+        id: pages
+        if: steps.fetch.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/configure-pages@v5
+
+      - name: Build the site
+        if: steps.fetch.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
+
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.fetch.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
