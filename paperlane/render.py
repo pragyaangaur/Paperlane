@@ -285,13 +285,10 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 {body}
 </main>
 <footer class="site">
-  <div class="foot">
-    <div class="colophon">
-      <a class="brand small" href="{prefix}index.html">{LOGO}<span>Paperlane</span></a>
-      <p>A daily journal of new mathematics, for people and their agents.</p>
-    </div>
-    <nav class="mono"><a href="{prefix}today.html">today</a><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}about.html#agents">agents</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}">source</a></nav>
-    <p class="mono built">updated {esc(built)}</p>
+  <div class="foot mono">
+    <a class="brand small" href="{prefix}index.html">{LOGO}<span>Paperlane</span></a>
+    <nav><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}">source</a></nav>
+    <span class="built">updated {esc(built)}</span>
   </div>
 </footer>
 </body>
@@ -303,35 +300,26 @@ def ask_html(base, built):
     body = f"""<div class="wrap ask-wrap">
   <header class="issue-head"><p class="kicker mono">ask&#8209;ai</p>
   <h1>Hand today's papers to <em>your</em> assistant.</h1>
-  <p class="lede small">Paperlane writes the prompt, and any assistant that can open web pages does the reading. Nothing you type here leaves your browser.</p></header>
-  <div class="ask-grid" id="ask">
-    <section class="ask-builder">
-      <div class="modes mono" role="tablist">
-        <button type="button" role="tab" data-mode="work" aria-selected="true">for my work</button>
-        <button type="button" role="tab" data-mode="curious" aria-selected="false">just curious</button>
-        <button type="button" role="tab" data-mode="routine" aria-selected="false">daily routine</button>
-      </div>
-      <div id="ask-time" class="time-row" hidden>
-        <label for="routine-time" class="mono">run every weekday at</label>
-        <div class="time-line"><input id="routine-time" type="time" value="07:30" step="300" aria-label="Time"><select id="routine-tz" aria-label="Timezone"></select></div>
-        <p class="hint mono" id="time-hint"></p>
-      </div>
-      <div id="ask-work"><label for="interests" class="mono">what do you work on?</label>
-      <input id="interests" class="interest-input" type="text" placeholder="extremal graph theory, polyominoes" autocomplete="off" data-interests></div>
-      <pre class="terminal" id="prompt" data-base="{esc(base)}"></pre>
-      <div class="ask-actions">
-        <button id="copy-prompt" type="button" class="btn primary">Copy prompt</button>
-      </div>
-    </section>
-    <aside class="ask-steps">
-      <ol>
-        <li><b>Choose a mode.</b> Use <i>for my work</i> to get the three papers closest to your research, or <i>just curious</i> for the most surprising results in plain words. Use <i>daily routine</i> to have your assistant send you a briefing every weekday at the time you pick.</li>
-        <li><b>Send the prompt.</b> Copy it and paste it into any assistant that can open web pages. For a routine, paste it where your assistant sets up scheduled tasks or routines.</li>
-        <li><b>Read the answer.</b> Your assistant reads Paperlane's index of the issue, opens the abstracts it needs, and links every paper it mentions.</li>
-      </ol>
-      <p class="mono small-link">files for agents: <a href="llms.txt">llms.txt</a> · <a href="latest-titles.md">latest-titles.md</a> · <a href="latest.md">latest.md</a> · <a href="latest.json">latest.json</a></p>
-    </aside>
-  </div>
+  <p class="lede small">Pick what you want, copy the prompt, and paste it into any assistant that can open web pages.</p></header>
+  <section class="ask-builder" id="ask">
+    <div class="modes mono" role="tablist">
+      <button type="button" role="tab" data-mode="work" aria-selected="true">for my work</button>
+      <button type="button" role="tab" data-mode="curious" aria-selected="false">just curious</button>
+      <button type="button" role="tab" data-mode="routine" aria-selected="false">every morning</button>
+    </div>
+    <div id="ask-time" class="time-row" hidden>
+      <label for="routine-time" class="mono">run every weekday at</label>
+      <div class="time-line"><input id="routine-time" type="time" value="07:30" step="300" aria-label="Time"><select id="routine-tz" aria-label="Timezone"></select></div>
+      <p class="hint mono" id="time-hint"></p>
+    </div>
+    <div id="ask-work"><label for="interests" class="mono">what do you work on?</label>
+    <input id="interests" class="interest-input" type="text" placeholder="extremal graph theory, polyominoes" autocomplete="off" data-interests></div>
+    <pre class="terminal" id="prompt" data-base="{esc(base)}"></pre>
+    <div class="ask-actions">
+      <button id="copy-prompt" type="button" class="btn primary">Copy prompt</button>
+      <p class="mono hint" id="ask-note">Nothing you type here leaves your browser.</p>
+    </div>
+  </section>
 </div>"""
     return page("Ask your AI · Paperlane", body, "", built, "Hand today's new maths papers to your own AI assistant with one prompt.", base, "ask-page", "ask")
 
@@ -358,9 +346,9 @@ def authors_text(authors, limit=6):
 
 
 def tags(p):
-    """One quiet line of metadata: fields, origin, signals, length."""
+    """One quiet line of metadata: main field, origin, signals, length."""
     s = p.get("signals") or {}
-    out = [f'<span class="t-field" title="{esc(categories.name(c))}">{esc(c)}</span>' for c in (p.get("math_categories") or [])[:3]]
+    out = [f'<span class="t-field" title="{esc(categories.name(c))}">{esc(c)}</span>' for c in (p.get("math_categories") or [])[:1]]
     if section_of(p) == "cross":
         out.append(f'<span title="Cross-listed from another field">via {esc(p["primary_category"])}</span>')
     if s.get("new_version"):
@@ -458,7 +446,7 @@ def toolbar_html(day):
     )
     return f"""<div class="toolbar" id="filters">
   <div class="row1">
-    <label class="search"><span class="mono prompt" aria-hidden="true">/</span><span class="sr">Search these papers</span><input type="search" id="f-q" placeholder="Search titles, authors and abstracts" autocomplete="off"></label>
+    <label class="search"><span class="mono prompt" aria-hidden="true">/</span><span class="sr">Search these papers</span><input type="search" id="f-q" placeholder="Search, or describe what you work on" autocomplete="off"></label>
     <div class="pop">
       <button type="button" class="chip" id="f-fields" aria-expanded="false" aria-controls="f-panel">Fields<span id="f-fields-n" class="mono"></span></button>
       <div class="panel" id="f-panel" hidden>
@@ -471,19 +459,9 @@ def toolbar_html(day):
     <button type="button" class="chip" id="f-code" aria-pressed="false">Code <em class="mono">{st['code']}</em></button>
     <button type="button" class="chip lean" id="f-lean" aria-pressed="false">∎ Lean <em class="mono">{lean_any}</em></button>
   </div>
-  <div class="row2 mono">
-    <span class="lbl">order</span>
-    <div class="seg" role="radiogroup" aria-label="Order">
-      <button type="button" role="radio" data-sort="field" aria-checked="true">by field</button>
-      <button type="button" role="radio" data-sort="me" aria-checked="false">for me</button>
-      <button type="button" role="radio" data-sort="newest" aria-checked="false">newest</button>
-      <button type="button" role="radio" data-sort="short" aria-checked="false">shortest</button>
-    </div>
-    <label class="me-box" id="f-me" hidden><span class="lbl">interests</span><input type="text" id="f-interests" placeholder="graph colouring, random walks" autocomplete="off" data-interests></label>
-  </div>
-  <p class="why-line mono" id="f-why"></p>
 </div>
-<div class="results mono"><span id="f-count" aria-live="polite"></span><span id="f-pills"></span><button type="button" class="link" data-clear hidden>clear all</button></div>"""
+<div class="results mono"><span id="f-count" aria-live="polite"></span><span id="f-pills"></span><button type="button" class="link" data-clear hidden>clear</button>
+  <label class="sort"><span class="sr">Order</span><select id="f-sort"><option value="field">by field</option><option value="newest">newest</option><option value="short">shortest</option></select></label></div>"""
 
 
 def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest=False):
@@ -514,10 +492,6 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
             f'<section class="group" id="g-revised" data-field="_rev"><h2><span>Revised papers</span><i class="leader"></i><span class="n mono">{len(revised)}</span></h2>\n'
             + "\n".join(rows) + '\n<button type="button" class="more mono" hidden></button>\n</section>'
         )
-    jump_items = [(cat, categories.name(cat), len(ps)) for cat, ps in sorted(groups.items(), key=lambda kv: (-len(kv[1]), categories.name(kv[0])))]
-    if revised:
-        jump_items.append(("revised", "Revised", len(revised)))
-    jump = "".join(f'<a href="#g-{c}">{esc(n)} <em>{k}</em></a>' for c, n, k in jump_items)
     rebuilt = ""
     if day.get("source") == "api-window":
         rebuilt = ' · <span class="rebuilt" title="Rebuilt from submission times, so it may differ slightly from the announcement and has no revised papers.">rebuilt</span>'
@@ -532,12 +506,11 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
   <header class="issue-head">
     <p class="kicker mono">no. {number} · {'today' if is_latest else 'from the archive'}{rebuilt}<span class="day-nav">{' '.join(nav)}</span></p>
     <h1>{d:%A}, <em>{d.day} {d:%B %Y}</em></h1>
-    <p class="stats mono">{st['papers']} papers · {st['fields']} fields · {st['code']} with code · {st['lean']} ∎ lean</p>
+    <p class="stats mono">{st['papers']} papers in {st['fields']} fields</p>
   </header>
   {toolbar_html(day)}
   <p class="empty" id="f-empty" hidden>Nothing matches. <button type="button" class="link" data-clear>Clear the filters</button></p>
   <p class="empty" id="f-lookup" hidden></p>
-  <nav class="jump mono" id="jump" aria-label="Jump to a field">{jump}</nav>
   <div id="list">
   {''.join(sections)}
   </div>
@@ -555,153 +528,50 @@ CURIOUS_PROMPT = (
 )
 
 
-SAMPLE_LANE = ("graph theory, random walks", [("graph", r"\bgraph"), ("random", r"\brandom\b"), ("walks", r"\bwalk")])
+# Things a newcomer might type. The home page offers the ones that match something in the issue.
+TRY_WORDS = [
+    ("prime numbers", r"\bprimes?\b"), ("knots", r"\bknots?\b"), ("black holes", r"\bblack holes?\b"),
+    ("random walks", r"\brandom walks?\b"), ("games", r"\bgames?\b"), ("infinity", r"\binfinit"),
+    ("symmetry", r"\bsymmetr"), ("chaos", r"\bchao"), ("fluids", r"\bfluids?\b"), ("neural networks", r"\bneural network"),
+    ("quantum", r"\bquantum\b"), ("shapes", r"\bshapes?\b"), ("graphs", r"\bgraphs?\b"),
+]
 
 
-def sample_lane(day, limit=3):
-    """A small real example of a ranked lane, for the home page."""
-    scored = []
-    for p in day["papers"]:
-        title, abstract = p["title"].lower(), p["abstract"].lower()
-        hits, score = [], 0
-        for word, pattern in SAMPLE_LANE[1]:
-            n = 2 * len(re.findall(pattern, title)) + len(re.findall(pattern, abstract))
-            if n:
-                hits.append(word)
-                score += n + 3
-        if hits:
-            scored.append((score, p["id"], p, hits))
-    scored.sort(key=lambda x: (-x[0], x[1]))
-    return [(p, hits) for _, _, p, hits in scored[:limit]]
+def try_words(day, limit=6):
+    text = [(p["title"] + " " + p["abstract"]).lower() for p in day["papers"]]
+    found = [w for w, pat in TRY_WORDS if sum(1 for t in text if re.search(pat, t)) >= 2]
+    return found[:limit]
 
 
-def nice_count(n):
-    return f"{int(round(n, -2)):,}" if n >= 1000 else str(n)
-
-
-def home_html(day, number, base, built, titles_sample, words_full, words_titles, fresh):
+def home_html(day, number, base, built, fresh):
     st = day_stats(day)
     d = date.fromisoformat(day["date"])
     when = "last night" if fresh else f"on {d:%A}"
-    fc = field_counts(day)
-    toc = "".join(
-        f'<li><a href="today.html?cat={c}"><span>{esc(categories.name(c))}</span><i class="leader"></i><span class="mono">{n}</span></a></li>'
-        for c, n in fc[:8]
-    )
-    index = "".join(
-        f'<button type="button" class="ix" data-cat="{c}" aria-pressed="false"><span class="box" aria-hidden="true"></span><span>{esc(categories.name(c))}</span><i class="leader"></i><em class="mono">{n}</em></button>'
-        for c, n in sorted(fc, key=lambda kv: categories.name(kv[0]))
-    )
-    sample = "\n".join(esc(line) for line in titles_sample)
-    wf, wt = nice_count(words_full), nice_count(words_titles)
-    curious_text = CURIOUS_PROMPT.format(base=base)
-    curious = esc(curious_text)
-    lane_rows = "".join(
-        f'<li><a href="p/{anchor(p)}.html"><span class="mono n">{i:02d}</span><span class="t">{esc(p["title"])}</span>'
-        f'<span class="mono m">matched {" ".join(f"<mark>{esc(h)}</mark>" for h in hits)}</span></a></li>'
-        for i, (p, hits) in enumerate(sample_lane(day), 1)
-    )
-    body = f"""<section class="masthead wrap-wide">
-  <div class="mh-copy">
-    <a class="live" href="today.html"><span class="pulse" aria-hidden="true"></span><span class="mono">issue no. {number} is out · {d:%a} {d.day} {d:%b}</span><span aria-hidden="true">→</span></a>
-    <h1>{st['papers']} new maths papers came out {when}.<br><em>Your AI can read them for you.</em></h1>
-    <p class="lede">Mathematics moves forward every night, and almost nobody sees it happen. Paperlane turns each night's papers into one short issue that you can skim in a minute and your AI assistant can read in seconds.</p>
-    <div class="cta"><a class="btn primary" href="today.html">Read today's issue →</a><a class="btn" href="ask.html">Ask my AI about it</a></div>
-    <p class="works mono">free · no account · new issue every weekday at 06:00 UTC</p>
+    words = try_words(day)
+    chips = "".join(f'<button type="button" data-try="{esc(w)}">{esc(w)}</button>' for w in words)
+    curious = esc(CURIOUS_PROMPT.format(base=base))
+    body = f"""<section class="hero wrap">
+  <a class="live" href="today.html"><span class="pulse" aria-hidden="true"></span><span class="mono">issue no. {number} · {d:%a} {d.day} {d:%b}</span></a>
+  <h1>{st['papers']} new maths papers came out {when}.<br><em>What are you curious about?</em></h1>
+  <div class="finder" id="finder">
+    <label class="finder-box"><span class="sr">Find papers in this issue</span>
+      <input id="finder-q" type="search" placeholder="Type a topic or a word" autocomplete="off" spellcheck="false" enterkeyhint="search"></label>
+    {f'<p class="tries mono"><span>try</span>{chips}</p>' if chips else ''}
+    <ol class="finds" id="finds" aria-live="polite"></ol>
+    <p class="finds-foot mono" id="finds-foot" hidden><a id="finds-all" href="today.html"></a><a id="finds-ai" href="ask.html"></a></p>
   </div>
-  <aside class="contents">
-    <div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span class="mono">paperlane / today</span></div>
-    <p class="mono label">in this issue</p>
-    <ol class="toc">{toc}</ol>
-    <p class="mono foot-note">{st['papers']} papers · {st['code']} with code · {st['lean']} ∎ lean</p>
-  </aside>
+  <p class="browse mono"><a href="today.html">or browse all {st['papers']} papers →</a></p>
 </section>
 
-<section class="ways wrap-wide">
-  <article class="way">
-    <p class="kicker mono">if you do research</p>
-    <h3>Get your field every morning, <em>ranked for you</em>.</h3>
-    <p>Pick your fields and say what you work on. Paperlane puts the closest papers first and shows the words that matched, so the morning's reading takes a minute.</p>
-    <div class="lane-preview">
-      <p class="mono label">example lane · “{esc(SAMPLE_LANE[0])}” · from this issue</p>
-      <ol>{lane_rows}</ol>
-    </div>
-    <a class="btn primary" href="#lane">Set up my lane →</a>
-  </article>
-  <article class="way curious">
-    <p class="kicker mono">if you are just curious</p>
-    <h3>The AI you already pay for can read <em>the frontier</em>.</h3>
-    <p>Your assistant already reads the news for you. Paste this prompt into it and hear what mathematicians found {when}, in plain words.</p>
-    <pre class="terminal prompt-box" id="curious-prompt">{curious}</pre>
-    <div class="way-actions"><button type="button" class="btn primary" data-copy-from="#curious-prompt">Copy prompt</button></div>
-  </article>
-</section>
-
-<section class="versus wrap-wide">
-  <h2>Keeping up with maths, <em>before and after</em></h2>
-  <div class="versus-grid">
-    <div class="side old">
-      <p class="mono label">the usual way</p>
-      <ul>
-        <li>{st['papers']} titles in one long column</li>
-        <li>No way to put your own field first</li>
-        <li>No sign of which papers have code or a checked proof</li>
-        <li>About {wf} words of abstracts, the length of a short novel</li>
-        <li>Listing pages that most AI assistants cannot read in one go</li>
-      </ul>
-    </div>
-    <div class="side new">
-      <p class="mono label">with paperlane</p>
-      <ul>
-        <li>Your fields first, ranked against your own work</li>
-        <li>Three papers per field until you ask for more</li>
-        <li>Code and Lean projects marked on every paper</li>
-        <li>A {wt}-word index of the whole night</li>
-        <li>One link that any AI assistant can read</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="lane wrap-wide" id="lane">
-  <h2>Make it <em>your</em> lane</h2>
-  <div class="lane-grid">
-    <div>
-      <p class="step mono">01 · pick fields</p>
-      <div class="field-index">{index}</div>
-    </div>
-    <div>
-      <p class="step mono">02 · say what you work on</p>
-      <input class="interest-input" id="lane-interests" type="text" placeholder="e.g. extremal graph theory, polyominoes" autocomplete="off" data-interests>
-      <p class="hint">Papers are ranked in your browser with BM25 over titles and abstracts. Your interests never leave this device, and no author is ever scored.</p>
-      <p class="step mono">03 · read</p>
-      <a class="btn primary" id="lane-go" href="today.html">Open my lane →</a>
-    </div>
-  </div>
-</section>
-
-<section class="why-not wrap-wide">
-  <h2>Why not just ask your AI to <em>read arXiv</em>?</h2>
-  <div class="why-grid">
-    <div><h3>A night of maths is a short novel.</h3><p>The latest issue holds about {wf} words of abstracts. Paperlane reads them once and hands your assistant a {wt}-word index, so its answer takes seconds and costs almost nothing.</p></div>
-    <div><h3>Some answers need real work.</h3><p>Knowing whether a paper's code holds a Lean project means checking every linked repository, and Paperlane will soon compile the proofs too. That work happens once, for everyone, and your assistant reads the result.</p></div>
-    <div><h3>Nothing is made up.</h3><p>Every tag comes from a plain check that anyone can repeat. An assistant summarising on its own can claim a proof exists when it does not.</p></div>
-    <div><h3>It remembers.</h3><p>Every issue stays in the archive, so you and your agent can look back across weeks and see when a paper was revised.</p></div>
-  </div>
-</section>
-
-<section class="machines wrap-wide">
-  <div>
-    <p class="kicker mono">for agents and tools</p>
-    <h2>Plain text, all the way down</h2>
-    <p>Every issue and every paper is also published as Markdown and JSON. Point an assistant at it, or use <a href="ask.html">ask&#8209;ai</a> for a ready prompt. You can even <a href="ask.html?mode=routine">set up a daily routine</a> so your assistant briefs you every weekday on its own.</p>
-    <p class="mono small-link"><a href="llms.txt">llms.txt</a> · <a href="latest-titles.md">latest-titles.md</a> · <a href="latest.json">latest.json</a> · <a href="feed.xml">rss</a></p>
-  </div>
-  <pre class="terminal"><span class="cmd">$ curl -s {esc(base)}/latest-titles.md | grep -m3 "^- "</span>
-{sample}</pre>
+<section class="hook wrap">
+  <p class="kicker mono">no maths degree needed</p>
+  <h2>Let your AI <em>explain them</em>.</h2>
+  <p>The assistant you already use can read the whole issue in seconds. Paste this in and hear what mathematicians found {when}, in plain words.</p>
+  <pre class="terminal prompt-box" id="curious-prompt">{curious}</pre>
+  <p class="hook-actions"><button type="button" class="btn primary" data-copy-from="#curious-prompt">Copy prompt</button><a class="mono" href="ask.html">more prompts →</a></p>
 </section>"""
-    return page(f"Paperlane · {st['papers']} new maths papers, read by your AI", body, "", built,
-                "Every night's new mathematics papers in one short issue that you can skim in a minute and your AI assistant can read in seconds.", base, "home", "home")
+    return page(f"Paperlane · {st['papers']} new maths papers {when}", body, "", built,
+                "Every night's new mathematics papers in one short issue that you can search in seconds and your AI assistant can read for you.", base, "home", "home")
 
 
 def archive_html(days, numbers, built, base):
@@ -749,10 +619,12 @@ def about_html(days, base, built):
   <header class="issue-head"><p class="kicker mono">about</p><h1>A quieter way to <em>keep up with mathematics</em></h1></header>
   <p class="lede small">Paperlane collects the new mathematics papers every weekday and sets them in one list that you can make your own in seconds. It is free and needs no account.</p>
 
-  <h2>How the order works</h2>
-  <p><b>By field</b> groups the papers under their main field, largest field first, with your own fields moved to the top. Inside a field, papers keep the order in which they were submitted.</p>
-  <p><b>For me</b> ranks papers against the interests you type, using BM25 (the classic search-engine formula) over titles and abstracts, with titles counted twice. Under each paper it shows the words that matched. This runs in your browser and nothing is sent anywhere.</p>
-  <p><b>Newest</b> puts the latest submissions first, and <b>shortest</b> sorts by page count when the authors give one.</p>
+  <h2>How search works</h2>
+  <p>Type a topic, a phrase or a name and Paperlane ranks the papers with BM25, the standard formula behind most search engines, over titles, abstracts and authors. Titles count twice, exact phrases get a bonus, and British and American spellings match each other. Only papers that match are shown, best first, with the words that matched under each one. This runs in your browser and nothing you type is sent anywhere.</p>
+  <p>With no search, papers sit under their main field, largest field first, and the fields you picked move to the top. You can also list them newest first or shortest first. Paperlane never ranks a paper by who wrote it.</p>
+
+  <h2>Why not just ask your AI to read arXiv?</h2>
+  <p>One night of mathematics is about 57,000 words of abstracts, the length of a short novel. Paperlane reads it once and hands your assistant an index of about 7,500 words, so the answer is fast and cheap. Some answers also need real work, such as checking every linked repository for a Lean project, and Paperlane does that once for everyone. Every issue stays in the archive, so you can look back and see when a paper was revised.</p>
 
   <h2>What the tags mean</h2>
   <dl class="glossary">
@@ -929,10 +801,8 @@ def build(days, out, base, built_dt=None, goatcounter=None):
 
     latest = days[0]
     titles = titles_md(latest, base, built)
-    sample = [line[:118] + ("…" if len(line) > 118 else "") for line in titles.splitlines() if line.startswith("- ")][:3]
-    full = day_md(latest, base, built)
     fresh = (built_dt.date() - date.fromisoformat(latest["date"])).days <= 1
-    (out / "index.html").write_text(home_html(latest, numbers[latest["date"]], base, built, sample, len(full.split()), len(titles.split()), fresh))
+    (out / "index.html").write_text(home_html(latest, numbers[latest["date"]], base, built, fresh))
     older = days[1]["date"] if len(days) > 1 else None
     (out / "today.html").write_text(day_html(latest, base, built, "", numbers[latest["date"]], None, older, is_latest=True))
     (out / "about.html").write_text(about_html(days, base, built))

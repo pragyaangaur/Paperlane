@@ -103,7 +103,7 @@ class RenderTest(unittest.TestCase):
                 self.assertTrue((out / name).exists(), name)
             index = (out / "today.html").read_text()
             home = (out / "index.html").read_text()
-            self.assertIn('data-cat="math.CO"', home)
+            self.assertIn('id="finder-q"', home)
             self.assertIn("An abstract &amp; more.", index)
             self.assertIn("Lean project", index)
             self.assertIn('data-cats="math.CO"', index)

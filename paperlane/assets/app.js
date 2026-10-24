@@ -140,6 +140,9 @@
   // ---------- Shared bits ----------
   function interestsSync() {
     var inputs = $$("[data-interests]");
+    // A link from the home page can carry what the reader typed there.
+    var given = new URLSearchParams(location.search).get("i");
+    if (given) store.set("paperlane-interests", given.trim());
     var saved = store.get("paperlane-interests") || "";
     inputs.forEach(function (i) { i.value = saved; });
     inputs.forEach(function (i) {
@@ -193,80 +196,111 @@
   }
 
   // ---------- Home ----------
+  // The home page is one box. Whatever the reader types is ranked against the latest issue as they type.
   function home() {
     if (!body.classList.contains("home")) return;
     if (/[?&](cat|q|code|lean|hide|sort)=/.test(location.search)) { location.replace("today.html" + location.search); return; }
-    var boxes = $$(".ix");
-    var go = $("#lane-go");
-    var saved = (store.get("paperlane-fields") || "").split(",").filter(Boolean);
-    boxes.forEach(function (t) { t.setAttribute("aria-pressed", saved.indexOf(t.dataset.cat) >= 0); });
-    function update() {
-      var cats = boxes.filter(function (t) { return t.getAttribute("aria-pressed") === "true"; }).map(function (t) { return t.dataset.cat; });
-      var interests = (store.get("paperlane-interests") || "").trim();
-      var params = [];
-      if (cats.length) params.push("cat=" + cats.join(","));
-      if (interests) params.push("sort=me");
-      go.href = "today.html" + (params.length ? "?" + params.join("&") : "");
-      go.textContent = cats.length || interests ? "Open my lane →" : "Open today's issue →";
-      store.set("paperlane-fields", cats.join(","));
+    var root = $("#finder");
+    if (!root) return;
+    var input = $("#finder-q"), list = $("#finds"), foot = $("#finds-foot"), all = $("#finds-all"), ai = $("#finds-ai");
+    var papers = null, ranker = null, loading = null, timer;
+
+    function load() {
+      if (!loading) loading = fetch("latest.json").then(function (r) { return r.json(); }).then(function (data) {
+        papers = data.papers;
+        ranker = new Ranker(papers.map(function (p) {
+          return p.title + " " + p.title + " " + p.abstract + " " + (p.authors || []).join(" ");
+        }));
+      }).catch(function () { loading = null; });
+      return loading;
     }
-    go.addEventListener("click", function () { track("open-lane"); });
-    boxes.forEach(function (t) {
-      t.addEventListener("click", function () { t.setAttribute("aria-pressed", t.getAttribute("aria-pressed") !== "true"); update(); });
+    function show() {
+      var query = input.value.trim();
+      $$(".tries button", root).forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.try === query); });
+      if (!query) { list.innerHTML = ""; foot.hidden = true; root.classList.remove("open"); return; }
+      load().then(function () {
+        if (!ranker || input.value.trim() !== query) return;
+        var ranked = ranker.rank(query).map(function (r, i) { return { r: r, p: papers[i] }; })
+          .filter(function (x) { return x.r.score > 0; })
+          .sort(function (a, b) { return b.r.score - a.r.score; });
+        root.classList.add("open");
+        if (!ranked.length) {
+          list.innerHTML = '<li class="none">Nothing on that in this issue. Try a broader word.</li>';
+          foot.hidden = true;
+          return;
+        }
+        list.innerHTML = ranked.slice(0, 5).map(function (x) {
+          var p = x.p, href = "p/" + p.id.replace("/", "-") + ".html";
+          return '<li><a href="' + href + '"><span class="t">' + esc(p.title) + '</span><span class="m mono">' +
+            esc((p.authors || [])[0] || "") + ((p.authors || []).length > 1 ? " et al." : "") + " · " +
+            x.r.hits.slice(0, 3).map(function (h) { return "<mark>" + esc(h) + "</mark>"; }).join(" ") + "</span></a></li>";
+        }).join("");
+        renderMath(list);
+        var n = ranked.length;
+        all.textContent = n > 5 ? "see all " + n + " →" : "open in the issue →";
+        all.href = "today.html?q=" + encodeURIComponent(query);
+        ai.textContent = "have my AI explain these →";
+        ai.href = "ask.html?i=" + encodeURIComponent(query);
+        foot.hidden = false;
+      });
+    }
+    input.addEventListener("focus", load);
+    input.addEventListener("input", function () {
+      clearTimeout(timer);
+      timer = setTimeout(show, 90);
     });
-    document.addEventListener("interests", update);
-    update();
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && input.value.trim()) { track("finder-enter"); location.href = "today.html?q=" + encodeURIComponent(input.value.trim()); }
+    });
+    $$(".tries button", root).forEach(function (b) {
+      b.addEventListener("click", function () { input.value = b.dataset.try; track("finder-try"); show(); });
+    });
+    list.addEventListener("click", function (e) { if (e.target.closest("a")) track("finder-open"); });
   }
 
   // ---------- The issue page ----------
+  // One search box. A query ranks the issue with BM25 and shows only the papers that match, best first.
+  // With no query the papers sit under their fields, or in one list by date or length.
   function issue() {
     var bar = $("#filters");
     if (!bar) return;
     var list = $("#list"), flat = $("#flat");
     var papers = $$("article.paper", list);
     var groupOf = papers.map(function (p) { return p.parentNode; });
-    var text = papers.map(function (p) {
-      return [".title", ".authors", ".abstract"].map(function (s) { var el = $(s, p); return el ? el.textContent : ""; }).join(" ").concat(" " + p.id).toLowerCase().replace(/\s+/g, " ");
-    });
-    // Ranking text: the title counts twice, then the abstract and the field names.
     var ranker = new Ranker(papers.map(function (p) {
       var title = $(".title", p).textContent;
-      return title + " " + title + " " + $(".abstract", p).textContent + " " + $(".tags", p).getAttribute("data-fields");
+      return title + " " + title + " " + $(".abstract", p).textContent + " " + $(".authors", p).textContent + " " + $(".tags", p).getAttribute("data-fields");
     }));
-    var q = $("#f-q"), code = $("#f-code"), lean = $("#f-lean"), sub = $("#f-sub"), why = $("#f-why");
-    var fieldsBtn = $("#f-fields"), panel = $("#f-panel"), meBox = $("#f-me"), interests = $("#f-interests");
+    var q = $("#f-q"), code = $("#f-code"), lean = $("#f-lean"), sub = $("#f-sub"), sortSel = $("#f-sort");
+    var fieldsBtn = $("#f-fields"), panel = $("#f-panel");
     var catBoxes = $$('input[name="cat"]', panel), kindBoxes = $$('input[name="kind"]', panel);
-    var seg = $$(".seg button");
     var names = {};
     catBoxes.forEach(function (b) { names[b.value] = $("span", b.parentNode).textContent; });
     var kindNames = { cross: "cross-lists", replace: "revised" };
     var lane = (store.get("paperlane-fields") || "").split(",").filter(Boolean);
 
-    // Your own fields go to the top of the field order.
+    // Fields the reader picked before go to the top of the field order.
     lane.slice().reverse().forEach(function (c) {
       var g = $('section.group[data-field="' + c + '"]', list);
       if (g) list.insertBefore(g, list.firstChild);
     });
 
     var params = new URLSearchParams(location.search);
-    q.value = params.get("q") || "";
+    // Older links ranked "for me" with ?sort=me&i=...; that is now a plain search.
+    q.value = params.get("q") || params.get("i") || "";
     code.setAttribute("aria-pressed", params.get("code") === "1");
     lean.setAttribute("aria-pressed", params.get("lean") === "1");
     var cats = (params.get("cat") || "").split(",").filter(Boolean);
     catBoxes.forEach(function (b) { b.checked = cats.indexOf(b.value) >= 0; });
     var hide = (params.get("hide") || "").split(",").filter(Boolean);
     kindBoxes.forEach(function (b) { b.checked = hide.indexOf(b.value) < 0; });
-    // A shared lane link can carry its interests.
-    if (params.get("i")) {
-      store.set("paperlane-interests", params.get("i"));
-      $$("[data-interests]").forEach(function (el) { el.value = params.get("i"); });
-    }
-    var sort = params.get("sort") || (store.get("paperlane-interests") ? "me" : "field");
+    var sort = params.get("sort");
+    sortSel.value = sort === "newest" || sort === "short" ? sort : "field";
 
     function pressed(b) { return b.getAttribute("aria-pressed") === "true"; }
     function state() {
       return {
-        q: q.value.trim().toLowerCase(),
+        q: q.value.trim(),
         code: pressed(code),
         lean: pressed(lean),
         cats: catBoxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; }),
@@ -283,13 +317,12 @@
       return b;
     }
 
-    // Long issues fold: each field shows its first few papers, flat orders show a page at a time.
-    var FOLD = 3, PAGE = 25;
+    // Long issues fold: each field shows its first few papers, flat lists show a page at a time.
+    var FOLD = 3, PAGE = 20;
     var expanded = {}, flatLimit = PAGE;
-    var flatMore = $("#flat-more"), jump = $("#jump");
+    var flatMore = $("#flat-more");
 
-    function fold(s) {
-      var folding = !s.q;
+    function fold() {
       papers.forEach(function (p) { p.classList.remove("folded"); });
       if (!list.hidden) {
         $$("section.group", list).forEach(function (g) {
@@ -298,27 +331,19 @@
           var name = $("h2 span", g).textContent;
           if (rows.length <= FOLD + 1) { more.hidden = true; return; }
           more.hidden = false;
-          if (folding && !expanded[field]) {
+          if (!expanded[field]) {
             rows.slice(FOLD).forEach(function (p) { if (!p.classList.contains("open")) p.classList.add("folded"); });
-            more.textContent = "Show all " + rows.length + " in " + name + " ↓";
-          } else more.textContent = "Show fewer in " + name + " ↑";
+            more.textContent = (rows.length - FOLD) + " more in " + name + " ↓";
+          } else more.textContent = "Show fewer ↑";
         });
         flatMore.hidden = true;
       } else {
         var rows = $$("article.paper:not([hidden])", flat);
-        if (folding && rows.length > flatLimit) {
+        if (rows.length > flatLimit) {
           rows.slice(flatLimit).forEach(function (p) { if (!p.classList.contains("open")) p.classList.add("folded"); });
           flatMore.hidden = false;
-          flatMore.textContent = "Show " + Math.min(PAGE, rows.length - flatLimit) + " more · " + (rows.length - flatLimit) + " left ↓";
+          flatMore.textContent = (rows.length - flatLimit) + " more ↓";
         } else flatMore.hidden = true;
-      }
-      if (jump) {
-        jump.hidden = !!list.hidden;
-        $$("a", jump).forEach(function (a) {
-          var g = document.getElementById(a.getAttribute("href").slice(1));
-          a.hidden = !g || g.hidden;
-          if (g) $("em", a).textContent = $(".n", g).textContent;
-        });
       }
     }
     // Make sure one paper is on screen even if it sits in a folded part of the list.
@@ -340,63 +365,58 @@
     });
     flatMore.addEventListener("click", function () { flatLimit += PAGE; apply(); track("show-more"); });
 
-    var meQuery = "";
-    function arrange() {
-      flatLimit = PAGE;
-      seg.forEach(function (b) { b.setAttribute("aria-checked", b.dataset.sort === sort); });
-      meBox.hidden = sort !== "me";
+    // Puts the papers in order and returns which ones the query matched (null when there is no query).
+    var lastKey = "";
+    function arrange(s) {
+      var key = s.q + "|" + sortSel.value;
+      if (key !== lastKey) flatLimit = PAGE;
+      lastKey = key;
       $$(".why", list.parentNode).forEach(function (w) { w.hidden = true; });
-      var query = interests.value.trim();
-      meQuery = "";
-      if (sort === "field" || (sort === "me" && !query)) {
-        // Put every paper back in its field, in submission order.
-        papers.slice().sort(function (a, b) { return a.dataset.order - b.dataset.order; })
-          .forEach(function (p) { var g = groupOf[papers.indexOf(p)]; g.insertBefore(p, $(".more", g)); });
-        list.hidden = false;
-        flat.hidden = true;
-        why.innerHTML = sort === "me"
-          ? "Type what you work on and the list is ranked as you type."
-          : "Grouped by main field, largest first" + (lane.length ? ", with your fields on top" : "") + ". Within a field, in order of submission.";
-        return;
-      }
-      var order;
-      if (sort === "me") {
-        var ranked = ranker.rank(query);
+      if (s.q) {
+        var ranked = ranker.rank(s.q), parsed = parseId(s.q);
         papers.forEach(function (p, i) {
           var r = ranked[i];
-          p._score = r.score;
+          p._score = r.score + (parsed && p.id === anchorOf(parsed.id) ? 100 : 0);
           var w = $(".why", p);
           if (r.score > 0) {
             w.innerHTML = "matched " + r.hits.slice(0, 4).map(function (h) { return "<mark>" + esc(h) + "</mark>"; }).join(" ");
             w.hidden = false;
           }
         });
-        order = papers.slice().sort(function (a, b) { return b._score - a._score || a.dataset.order - b.dataset.order; });
-        meQuery = query;
-      } else if (sort === "newest") {
-        order = papers.slice().sort(function (a, b) { return b.id.localeCompare(a.id); });
-        why.textContent = "Latest submissions first.";
-      } else {
-        order = papers.slice().sort(function (a, b) { return (a.dataset.pages || 1e6) - (b.dataset.pages || 1e6) || a.dataset.order - b.dataset.order; });
-        why.textContent = "Fewest pages first, as stated by the authors. Papers without a page count go last.";
+        papers.slice().sort(function (a, b) { return b._score - a._score || a.dataset.order - b.dataset.order; })
+          .forEach(function (p) { flat.appendChild(p); });
+        list.hidden = true;
+        flat.hidden = false;
+        return function (p) { return p._score > 0; };
       }
+      if (sortSel.value === "field") {
+        papers.slice().sort(function (a, b) { return a.dataset.order - b.dataset.order; })
+          .forEach(function (p) { var g = groupOf[papers.indexOf(p)]; g.insertBefore(p, $(".more", g)); });
+        list.hidden = false;
+        flat.hidden = true;
+        return null;
+      }
+      var order = sortSel.value === "newest"
+        ? papers.slice().sort(function (a, b) { return b.id.localeCompare(a.id); })
+        : papers.slice().sort(function (a, b) { return (a.dataset.pages || 1e6) - (b.dataset.pages || 1e6) || a.dataset.order - b.dataset.order; });
       order.forEach(function (p) { flat.appendChild(p); });
       list.hidden = true;
       flat.hidden = false;
+      return null;
     }
 
     function apply() {
       var s = state();
-      var words = s.q.split(" ").filter(Boolean);
+      var matches = arrange(s);
       var shown = 0;
-      papers.forEach(function (p, i) {
+      papers.forEach(function (p) {
         var pc = p.dataset.cats.split(" ");
         var ok =
           (!s.cats.length || s.cats.some(function (c) { return pc.indexOf(c) >= 0; })) &&
           s.hide.indexOf(p.dataset.kind) < 0 &&
           (!s.code || p.dataset.code) &&
           (!s.lean || p.dataset.lean) &&
-          words.every(function (w) { return text[i].indexOf(w) >= 0; });
+          (!matches || matches(p));
         p.hidden = !ok;
         if (ok) shown++;
       });
@@ -406,17 +426,15 @@
         $(".n", g).textContent = n;
       });
       var active = s.cats.length + s.hide.length + (s.code ? 1 : 0) + (s.lean ? 1 : 0) + (s.q ? 1 : 0);
-      $("#f-count").textContent = active ? shown + " of " + papers.length + " papers" : papers.length + " papers";
+      $("#f-count").textContent = s.q
+        ? (shown === 1 ? "1 paper" : shown + " papers") + " on “" + s.q + "”, best match first"
+        : active ? shown + " of " + papers.length + " papers" : papers.length + " papers";
+      $(".sort", bar.nextElementSibling).hidden = !!s.q;
       $("#f-fields-n").textContent = s.cats.length || "";
       fieldsBtn.classList.toggle("on", s.cats.length > 0);
       $$("[data-clear]").forEach(function (b) { if (b.closest(".results")) b.hidden = !active; });
       $("#f-empty").hidden = shown > 0;
-      fold(s);
-      if (meQuery) {
-        var matched = papers.filter(function (p) { return !p.hidden && p._score > 0; }).length;
-        why.innerHTML = "Ranked for <b>“" + esc(meQuery) + "”</b> with BM25 over titles and abstracts, in your browser. " +
-          (matched === 1 ? "1 paper matches" : matched + " papers match") + ", and the rest follow in field order.";
-      }
+      fold();
 
       var pills = $("#f-pills");
       pills.innerHTML = "";
@@ -436,13 +454,12 @@
       } else hint.hidden = true;
 
       var out = new URLSearchParams();
-      if (s.q) out.set("q", q.value.trim());
+      if (s.q) out.set("q", s.q);
       if (s.cats.length) out.set("cat", s.cats.join(","));
       if (s.code) out.set("code", "1");
       if (s.lean) out.set("lean", "1");
       if (s.hide.length) out.set("hide", s.hide.join(","));
-      if (sort !== "field") out.set("sort", sort);
-      if (meQuery) out.set("i", meQuery);
+      if (sortSel.value !== "field") out.set("sort", sortSel.value);
       var str = out.toString();
       history.replaceState(null, "", location.pathname + (str ? "?" + str.replace(/%2C/g, ",") : "") + location.hash);
     }
@@ -468,22 +485,13 @@
     [code, lean].forEach(function (b) {
       b.addEventListener("click", function () { b.setAttribute("aria-pressed", !pressed(b)); apply(); });
     });
-    seg.forEach(function (b) {
-      b.addEventListener("click", function () {
-        sort = b.dataset.sort;
-        track("sort-" + sort);
-        arrange();
-        apply();
-        if (sort === "me" && !interests.value.trim()) interests.focus();
-      });
+    sortSel.addEventListener("change", function () { track("sort-" + sortSel.value); apply(); });
+    panel.addEventListener("change", function () {
+      store.set("paperlane-fields", catBoxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; }).join(","));
+      apply();
     });
     var timer;
-    document.addEventListener("interests", function () {
-      clearTimeout(timer);
-      timer = setTimeout(function () { if (sort === "me") { arrange(); apply(); } }, 120);
-    });
-    panel.addEventListener("change", apply);
-    q.addEventListener("input", apply);
+    q.addEventListener("input", function () { clearTimeout(timer); timer = setTimeout(apply, 120); });
     sub.addEventListener("input", function () {
       var needle = sub.value.trim().toLowerCase();
       catBoxes.forEach(function (b) {
@@ -493,9 +501,8 @@
     $$("[data-clear]").forEach(function (b) { b.addEventListener("click", window.paperlaneClear); });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") togglePanel(false);
-      if (e.key === "/" && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); q.focus(); }
+      if (e.key === "/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); q.focus(); }
     });
-    arrange();
     apply();
   }
 
@@ -636,6 +643,9 @@
       }
       workBox.hidden = mode === "curious";
       timeBox.hidden = mode !== "routine";
+      $("#ask-note").textContent = mode === "routine"
+        ? "Paste it where your assistant sets up scheduled tasks or routines."
+        : "Nothing you type here leaves your browser.";
       $$(".modes button", root).forEach(function (b) { b.setAttribute("aria-selected", b.dataset.mode === mode); });
     }
     $$(".modes button", root).forEach(function (b) {
