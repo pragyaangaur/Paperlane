@@ -3,8 +3,12 @@ name: Daily feed
 on:
   schedule:
     # arXiv announces at 20:00 US Eastern, but its RSS feed is rebuilt at midnight
-    # Eastern (04:00 UTC in summer, 05:00 UTC in winter). 06:00 UTC is after both.
-    - cron: "0 6 * * *"
+    # Eastern (04:00 UTC in summer, 05:00 UTC in winter). 05:30 UTC is after both.
+    - cron: "30 5 * * *"
+  # A push that changes the code or the stored days rebuilds the site without fetching.
+  push:
+    branches: [main]
+    paths: ["paperlane/**", "data/days/**", ".github/workflows/daily.yml"]
   workflow_dispatch:
     inputs:
       api_date:
@@ -37,6 +41,7 @@ jobs:
 
       - name: Fetch tonight's papers
         id: fetch
+        if: github.event_name != 'push'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           API_DATE: ${{ inputs.api_date }}
@@ -54,28 +59,29 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/days
           git commit -m "Add papers for ${{ steps.fetch.outputs.date }}"
+          git pull --rebase
           git push
 
       - name: Configure Pages
         id: pages
-        if: steps.fetch.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.fetch.outputs.changed == 'true' || github.event_name != 'schedule'
         uses: actions/configure-pages@v5
 
       - name: Build the site
-        if: steps.fetch.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.fetch.outputs.changed == 'true' || github.event_name != 'schedule'
         env:
           # Set this repository variable to a GoatCounter site code to turn on visitor counts.
           PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
         run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
 
       - uses: actions/upload-pages-artifact@v3
-        if: steps.fetch.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.fetch.outputs.changed == 'true' || github.event_name != 'schedule'
         with:
           path: _site
 
   deploy:
     needs: build
-    if: needs.build.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.build.outputs.changed == 'true' || github.event_name != 'schedule'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
