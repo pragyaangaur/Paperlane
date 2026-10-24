@@ -27,6 +27,15 @@
     else done();
   }
 
+  // Links that leave Paperlane (arXiv, PDFs, code) open in a new tab.
+  function externalize(root) {
+    $$('a[href^="http"]', root || document).forEach(function (a) {
+      if (a.host === location.host) return;
+      a.target = "_blank";
+      if (!/noopener/.test(a.rel)) a.rel = (a.rel + " noopener").trim();
+    });
+  }
+
   function renderMath(el) {
     if (!window.renderMathInElement || !el) return;
     window.renderMathInElement(el, {
@@ -609,6 +618,7 @@
         ]).join("\n");
       }
       makeMarkdown();
+      externalize(pageEl);
       renderMath(pageEl);
       code.forEach(function (u, i) {
         var m = u.match(/github\.com\/([^\/]+)\/([^\/#?]+)/i);
@@ -635,6 +645,7 @@
     rows();
     ask();
     lookupPage();
+    externalize();
     renderMath($("main"));
   });
 })();
