@@ -604,7 +604,7 @@ def home_html(day, number, base, built, titles_sample, words_full, words_titles,
     body = f"""<section class="masthead wrap-wide">
   <div class="mh-copy">
     <a class="live" href="today.html"><span class="pulse" aria-hidden="true"></span><span class="mono">issue no. {number} is out · {d:%a} {d.day} {d:%b}</span><span aria-hidden="true">→</span></a>
-    <h1>{st['papers']} new maths papers came out {when}. <em>Your AI can read them for you.</em></h1>
+    <h1>{st['papers']} new maths papers came out {when}.<br><em>Your AI can read them for you.</em></h1>
     <p class="lede">Mathematics moves forward every night, and almost nobody sees it happen. Paperlane turns each night's papers into one short issue that you can skim in a minute and your AI assistant can read in seconds.</p>
     <div class="cta"><a class="btn primary" href="today.html">Read today's issue →</a><a class="btn" href="ask.html">Ask my AI about it</a></div>
     <p class="works mono">free · no account · new issue every weekday at 06:00 UTC</p>
