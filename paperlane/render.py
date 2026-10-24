@@ -269,7 +269,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
     <nav class="mono">
       {nav("today.html", "today", "today")}
       {nav("archive.html", "archive", "archive")}
-      {nav("ask.html", "ask&#8209;ai", "ask")}
+      {nav("ask.html", "ask AI", "ask")}
       {nav("about.html", "about", "about")}
     </nav>
     <div class="tools">
@@ -298,7 +298,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 
 def ask_html(base, built):
     body = f"""<div class="wrap ask-wrap">
-  <header class="issue-head"><p class="kicker mono">ask&#8209;ai</p>
+  <header class="issue-head"><p class="kicker mono">ask AI</p>
   <h1>Hand today's papers to <em>your</em> assistant.</h1>
   <p class="lede small">Pick what you want, copy the prompt, and paste it into any assistant that can open web pages.</p></header>
   <section class="ask-builder" id="ask">
@@ -309,7 +309,14 @@ def ask_html(base, built):
     </div>
     <div id="ask-time" class="time-row" hidden>
       <label for="routine-time" class="mono">run every weekday at</label>
-      <div class="time-line"><input id="routine-time" type="time" value="07:30" step="300" aria-label="Time"><select id="routine-tz" aria-label="Timezone"></select></div>
+      <div class="time-line"><input id="routine-time" type="time" value="07:30" step="300" aria-label="Time">
+      <div class="tz" id="tz"><input type="hidden" id="routine-tz">
+        <button type="button" class="tz-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Timezone"><span class="tz-name"></span><span class="tz-off mono"></span><span class="tz-caret" aria-hidden="true">▾</span></button>
+        <div class="tz-pop" hidden>
+          <input type="search" class="tz-q" placeholder="Search a city or country" autocomplete="off" spellcheck="false" aria-label="Search timezones">
+          <ul class="tz-list" role="listbox" aria-label="Timezones"></ul>
+        </div>
+      </div></div>
       <p class="hint mono" id="time-hint"></p>
     </div>
     <div id="ask-work"><label for="interests" class="mono">what do you work on?</label>

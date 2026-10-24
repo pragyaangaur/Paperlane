@@ -564,6 +564,101 @@
 
   // ---------- Ask your AI ----------
   // The ask page builds a prompt and links that open common assistants with the prompt filled in.
+  // ---------- Timezone picker ----------
+  // A small searchable list. With no search it shows the reader's own zone and some common ones;
+  // typing searches every zone by city, region, country or offset.
+  var ZONE_NAMES = { "Asia/Calcutta": "Kolkata", "Asia/Saigon": "Ho Chi Minh City", "Asia/Katmandu": "Kathmandu", "Asia/Rangoon": "Yangon", "Europe/Kiev": "Kyiv", "UTC": "UTC" };
+  var COUNTRIES = {
+    "india": "Asia/Kolkata Asia/Calcutta", "usa": "America/New_York America/Chicago America/Denver America/Los_Angeles", "united states": "America/New_York America/Chicago America/Denver America/Los_Angeles",
+    "eastern": "America/New_York", "central": "America/Chicago", "mountain": "America/Denver", "pacific": "America/Los_Angeles",
+    "uk": "Europe/London", "united kingdom": "Europe/London", "england": "Europe/London", "britain": "Europe/London", "france": "Europe/Paris", "germany": "Europe/Berlin",
+    "spain": "Europe/Madrid", "italy": "Europe/Rome", "netherlands": "Europe/Amsterdam", "switzerland": "Europe/Zurich", "sweden": "Europe/Stockholm", "poland": "Europe/Warsaw",
+    "ireland": "Europe/Dublin", "portugal": "Europe/Lisbon", "greece": "Europe/Athens", "ukraine": "Europe/Kyiv Europe/Kiev", "russia": "Europe/Moscow", "turkey": "Europe/Istanbul",
+    "japan": "Asia/Tokyo", "china": "Asia/Shanghai", "korea": "Asia/Seoul", "taiwan": "Asia/Taipei", "singapore": "Asia/Singapore", "hong kong": "Asia/Hong_Kong",
+    "australia": "Australia/Sydney Australia/Melbourne Australia/Brisbane Australia/Perth Australia/Adelaide", "new zealand": "Pacific/Auckland",
+    "canada": "America/Toronto America/Vancouver America/Halifax America/Edmonton", "brazil": "America/Sao_Paulo", "mexico": "America/Mexico_City", "argentina": "America/Argentina/Buenos_Aires",
+    "chile": "America/Santiago", "colombia": "America/Bogota", "peru": "America/Lima", "south africa": "Africa/Johannesburg", "nigeria": "Africa/Lagos", "egypt": "Africa/Cairo", "kenya": "Africa/Nairobi",
+    "uae": "Asia/Dubai", "emirates": "Asia/Dubai", "saudi": "Asia/Riyadh", "israel": "Asia/Jerusalem", "iran": "Asia/Tehran", "pakistan": "Asia/Karachi", "bangladesh": "Asia/Dhaka",
+    "nepal": "Asia/Kathmandu Asia/Katmandu", "sri lanka": "Asia/Colombo", "vietnam": "Asia/Ho_Chi_Minh Asia/Saigon", "thailand": "Asia/Bangkok", "indonesia": "Asia/Jakarta",
+    "malaysia": "Asia/Kuala_Lumpur", "philippines": "Asia/Manila",
+  };
+  var COMMON = ["UTC", "America/Los_Angeles", "America/Chicago", "America/New_York", "America/Sao_Paulo", "Europe/London", "Europe/Paris", "Europe/Berlin", "Europe/Moscow",
+    "Africa/Lagos", "Asia/Dubai", "Asia/Kolkata", "Asia/Calcutta", "Asia/Shanghai", "Asia/Singapore", "Asia/Tokyo", "Australia/Sydney", "Pacific/Auckland"];
+  function zoneCity(z) { return ZONE_NAMES[z] || z.split("/").pop().replace(/_/g, " "); }
+  function zoneRegion(z) { return z.indexOf("/") < 0 ? "" : z.split("/").slice(0, -1).join(" / ").replace(/_/g, " "); }
+
+  function tzPicker(root, zones, detected, offset) {
+    var hidden = $("#routine-tz", root), btn = $(".tz-btn", root), pop = $(".tz-pop", root), q = $(".tz-q", root), list = $(".tz-list", root);
+    var offs = {}, items = [], active = 0;
+    zones.forEach(function (z) { offs[z] = offset(z); });
+    var countryOf = {};
+    Object.keys(COUNTRIES).forEach(function (c) { COUNTRIES[c].split(" ").forEach(function (z) { countryOf[z] = (countryOf[z] || "") + " " + c; }); });
+    function hay(z) { return (zoneCity(z) + " " + z.replace(/_/g, " ") + " " + (countryOf[z] || "") + " " + offs[z]).toLowerCase(); }
+    var hays = {};
+    zones.forEach(function (z) { hays[z] = hay(z); });
+
+    function label() {
+      var z = hidden.value;
+      $(".tz-name", btn).textContent = zoneCity(z);
+      $(".tz-off", btn).textContent = offs[z] || "";
+    }
+    function draw() {
+      var needle = q.value.trim().toLowerCase().replace(/^gmt/, "utc");
+      if (!needle) {
+        var seen = {};
+        items = [hidden.value, detected].concat(COMMON).filter(function (z) {
+          if (seen[z] || zones.indexOf(z) < 0) return false;
+          seen[z] = 1;
+          return true;
+        });
+      } else {
+        var words = needle.split(/\s+/);
+        items = zones.filter(function (z) { return words.every(function (w) { return hays[z].indexOf(w) >= 0; }); });
+        // A country typed in full comes first, then cities that start with the search, then the rest.
+        var rank = function (z) {
+          if ((" " + (countryOf[z] || "") + " ").indexOf(" " + needle + " ") >= 0) return 0;
+          return zoneCity(z).toLowerCase().indexOf(needle) === 0 ? 1 : 2;
+        };
+        items.sort(function (a, b) { return rank(a) - rank(b); });
+      }
+      active = Math.max(0, items.indexOf(hidden.value));
+      list.innerHTML = items.length ? items.map(function (z, i) {
+        return '<li role="option" data-z="' + esc(z) + '" aria-selected="' + (z === hidden.value) + '"' + (i === active ? ' class="on"' : "") + '>' +
+          '<span class="c">' + esc(zoneCity(z)) + (z === detected ? ' <em class="mono">your zone</em>' : "") + '</span>' +
+          '<span class="r mono">' + esc(zoneRegion(z)) + '</span><span class="o mono">' + esc(offs[z]) + "</span></li>";
+      }).join("") : '<li class="none mono">No timezone matches that.</li>';
+      if (!needle) list.insertAdjacentHTML("beforeend", '<li class="none mono">Type to search all ' + zones.length + " timezones.</li>");
+    }
+    function mark() {
+      $$("li[data-z]", list).forEach(function (li, i) { li.classList.toggle("on", i === active); });
+      var on = $("li.on", list);
+      if (on) on.scrollIntoView({ block: "nearest" });
+    }
+    function open(yes) {
+      pop.hidden = !yes;
+      btn.setAttribute("aria-expanded", yes);
+      if (yes) { q.value = ""; draw(); mark(); setTimeout(function () { q.focus(); }, 0); }
+    }
+    function pick(z) {
+      hidden.value = z;
+      label();
+      open(false);
+      btn.focus();
+      hidden.dispatchEvent(new Event("change"));
+    }
+    btn.addEventListener("click", function () { open(pop.hidden); });
+    q.addEventListener("input", function () { draw(); active = 0; mark(); });
+    q.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown") { e.preventDefault(); active = Math.min(active + 1, items.length - 1); mark(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); active = Math.max(active - 1, 0); mark(); }
+      else if (e.key === "Enter") { e.preventDefault(); if (items[active]) pick(items[active]); }
+      else if (e.key === "Escape") { open(false); btn.focus(); }
+    });
+    list.addEventListener("click", function (e) { var li = e.target.closest("li[data-z]"); if (li) pick(li.dataset.z); });
+    document.addEventListener("click", function (e) { if (!pop.hidden && !root.contains(e.target)) open(false); });
+    label();
+  }
+
   function ask() {
     var root = $("#ask");
     if (!root) return;
@@ -589,10 +684,8 @@
     var saved = store.get("paperlane-timezone");
     if (zones.indexOf(detected) < 0) zones.unshift(detected);
     if (zones.indexOf("UTC") < 0) zones.unshift("UTC");
-    tzSelect.innerHTML = zones.map(function (z) {
-      return '<option value="' + esc(z) + '">' + esc(z.replace(/_/g, " ")) + " (" + esc(offsetOf(z, now)) + ")</option>";
-    }).join("");
     tzSelect.value = saved && zones.indexOf(saved) >= 0 ? saved : detected;
+    tzPicker($("#tz"), zones, detected, function (z) { return offsetOf(z, now); });
 
     function minutesIn(zone, when) {
       var parts = new Intl.DateTimeFormat("en-GB", { timeZone: zone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(when);
@@ -608,7 +701,7 @@
       var arriveMins = minutesIn(zone, publish);
       var v = (timeInput.value || "07:30").split(":");
       var chosen = Number(v[0]) * 60 + Number(v[1]);
-      var place = zone.replace(/_/g, " ");
+      var place = zoneCity(zone);
       if (chosen < arriveMins) {
         hint.textContent = "A new issue arrives at about " + hhmm(arriveMins) + " in " + place + ". At this time your routine would read the previous issue, so " + hhmm(Math.min(arriveMins + 30, 1439)) + " or later works better.";
         hint.classList.add("warn");
@@ -805,6 +898,113 @@
     }
   }
 
+  // ---------- Headline highlights ----------
+  // The highlighter box behind an emphasised headline phrase is drawn per line, from the ink of the first
+  // letter to the ink of the last, so italic side bearings never leave a gap or an overhang.
+  var measureCtx = null;
+  function ink(text, font) {
+    measureCtx = measureCtx || document.createElement("canvas").getContext("2d");
+    measureCtx.font = font;
+    var m = measureCtx.measureText(text);
+    return { left: -m.actualBoundingBoxLeft, right: m.actualBoundingBoxRight, width: m.width };
+  }
+  function fitBands() {
+    $$("h1 em, h2 em").forEach(function (em) {
+      var head = em.closest("h1, h2");
+      $$(".band", head).forEach(function (b) { b.remove(); });
+      em.classList.remove("fit");
+      var cs = getComputedStyle(em);
+      if (cs.backgroundImage === "none") return;
+      if (!em.dataset.split) {
+        em.innerHTML = em.textContent.split(/(\s+)/).map(function (w) { return !w || /^\s+$/.test(w) ? w : '<span class="w">' + esc(w) + "</span>"; }).join("");
+        em.dataset.split = "1";
+      }
+      var font = cs.fontStyle + " " + cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+      var size = parseFloat(cs.fontSize);
+      var lines = [];
+      $$(".w", em).forEach(function (w) {
+        var r = w.getBoundingClientRect(), line = lines[lines.length - 1];
+        if (!line || Math.abs(r.top - line.top) > size * 0.4) lines.push(line = { top: r.top, h: r.height, first: w, firstR: r });
+        line.last = w; line.lastR = r;
+      });
+      var box = head.getBoundingClientRect();
+      lines.forEach(function (line) {
+        var a = line.first.textContent, z = line.last.textContent;
+        var start = ink(a.charAt(0), font), end = ink(z.charAt(z.length - 1), font), word = ink(z, font);
+        var left = line.firstR.left + start.left;
+        var right = line.lastR.left + word.width - end.width + end.right;
+        var band = document.createElement("span");
+        band.className = "band";
+        band.setAttribute("aria-hidden", "true");
+        band.style.left = (left - box.left) + "px";
+        band.style.width = Math.max(0, right - left) + "px";
+        band.style.top = (line.top - box.top + (line.h - size * 0.5) * 0.88) + "px";
+        band.style.height = size * 0.5 + "px";
+        head.appendChild(band);
+      });
+      em.classList.add("fit");
+    });
+  }
+  function bands() {
+    fitBands();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBands);
+    var t;
+    window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(fitBands, 80); });
+  }
+
+  // ---------- Sheets in the wind ----------
+  // Small sheets of paper drift through the empty margins on wide screens. They move only when the page
+  // scrolls: down blows them up and along, up brings them back the way they came.
+  var SHEET = '<svg viewBox="0 0 30 36" aria-hidden="true"><path class="s" d="M2.5 2.5h18l7 7v24h-25z"/><path class="f" d="M20.5 2.5v7h7"/>' +
+    '<path class="l" d="M7 13h12M7 18.5h15M7 24h9"/></svg>';
+  function drift() {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var layer = document.createElement("div");
+    layer.className = "drift";
+    layer.setAttribute("aria-hidden", "true");
+    var seed = 7;
+    function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    var sheets = [];
+    for (var i = 0; i < 12; i++) {
+      var el = document.createElement("i");
+      el.innerHTML = SHEET;
+      if (i % 4 === 1) el.classList.add("lit");
+      layer.appendChild(el);
+      sheets.push({
+        el: el, side: i % 2, gx: 0.15 + rnd() * 0.7, y0: rnd(), speed: 0.18 + rnd() * 0.42,
+        size: 16 + rnd() * 22, amp: 10 + rnd() * 26, phase: rnd() * 6.28, tilt: -30 + rnd() * 60,
+      });
+    }
+    document.body.appendChild(layer);
+    var content = $("main .wrap, main .hero") || $("main");
+    var W = 0, H = 0, gutter = 0, left = 0, queued = false;
+    function measure() {
+      W = window.innerWidth; H = window.innerHeight;
+      var box = content.getBoundingClientRect();
+      left = box.left; gutter = Math.min(box.left, W - box.right);
+      layer.hidden = gutter < 140;
+      sheets.forEach(function (sh) { sh.el.style.width = sh.size + "px"; });
+      draw();
+    }
+    function draw() {
+      queued = false;
+      if (layer.hidden) return;
+      var y = window.scrollY;
+      sheets.forEach(function (sh) {
+        var t = y * sh.speed, span = H + 120;
+        var top = (((sh.y0 * span - t) % span) + span) % span - 60;
+        var base = sh.side ? W - gutter + sh.gx * (gutter - sh.size) : sh.gx * (gutter - sh.size);
+        var x = base + Math.sin(t / 90 + sh.phase) * Math.min(sh.amp, gutter * 0.25);
+        var rot = sh.tilt + Math.sin(t / 70 + sh.phase) * 35;
+        var flip = 0.45 + 0.55 * Math.abs(Math.cos(t / 120 + sh.phase));
+        sh.el.style.transform = "translate3d(" + x.toFixed(1) + "px," + top.toFixed(1) + "px,0) rotate(" + rot.toFixed(1) + "deg) scaleX(" + flip.toFixed(3) + ")";
+      });
+    }
+    window.addEventListener("scroll", function () { if (!queued) { queued = true; requestAnimationFrame(draw); } }, { passive: true });
+    window.addEventListener("resize", measure);
+    measure();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     interestsSync();
     theme();
@@ -817,5 +1017,7 @@
     lookupPage();
     externalize();
     renderMath($("main"));
+    drift();
+    bands();
   });
 })();
