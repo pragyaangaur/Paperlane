@@ -458,3 +458,42 @@ article.first-page { background: none; border: 0; padding: 56px 0 0; box-shadow:
   .jump a { white-space: nowrap; }
 }
 
+/* Home: two ways in, before and after, and the honest answer to "why not my own AI" */
+.masthead h1 { font-size: clamp(2.4rem, 4.8vw, 3.7rem); }
+.masthead h1 em { white-space: normal; display: block; margin-top: 0.08em; }
+.ways { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding-top: 8px; padding-bottom: 56px; align-items: start; }
+.way { background: var(--leaf); border: 1px solid var(--rule); border-radius: 16px; padding: 26px 28px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.way h3 { font-size: 1.45rem; line-height: 1.2; letter-spacing: -0.03em; font-weight: 650; margin: 0 0 6px; }
+.way h3 em { font-family: var(--serif); font-weight: 400; text-decoration: underline; text-decoration-color: var(--lime); text-decoration-thickness: 0.2em; text-underline-offset: 0.08em; }
+.way p { color: var(--ink-2); margin: 0 0 14px; }
+.way .kicker { margin-bottom: 8px; }
+.way.curious { background: #111210; color: #eceee6; border-color: #111210; }
+.way.curious h3, .way.curious p { color: #eceee6; }
+.way.curious .kicker { color: #8f9288; }
+.prompt-box { width: 100%; margin: 0 0 14px; background: #1c1d19; border: 1px solid #2a2c26; font-size: 0.76rem; }
+.versus { padding-bottom: 56px; }
+.versus h2, .why-not h2 { font-size: 2.1rem; margin: 0 0 22px; }
+.versus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.side { border-radius: 16px; padding: 22px 26px; border: 1px solid var(--rule); }
+.side ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.side li { position: relative; padding-left: 28px; }
+.side li::before { position: absolute; left: 0; top: 0.05em; font-family: var(--mono); font-size: 0.85rem; width: 18px; height: 18px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; }
+.side.old { background: var(--paper); color: var(--muted); }
+.side.old li::before { content: "×"; color: var(--muted); border: 1px solid var(--rule); }
+.side.new { background: var(--leaf); border-color: var(--ink); }
+.side.new li::before { content: "✓"; background: var(--lime); color: #111210; }
+.side .label { margin: 0 0 14px; color: var(--muted); }
+.why-not { border-top: 1px solid var(--rule); padding-top: 48px; padding-bottom: 40px; }
+.why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.why-grid > div { background: var(--leaf); border: 1px solid var(--rule); border-radius: 16px; padding: 22px 26px; }
+.why-grid h3 { margin: 0 0 6px; font-size: 1.12rem; letter-spacing: -0.02em; font-weight: 650; }
+.why-grid p { margin: 0; color: var(--ink-2); }
+.modes { display: inline-flex; gap: 4px; padding: 3px; border: 1px solid var(--rule); border-radius: 9px; margin: 0 0 14px; }
+.modes button { background: none; border: 0; padding: 4px 12px; border-radius: 6px; cursor: pointer; color: var(--muted); font: inherit; }
+.modes button[aria-selected="true"] { background: var(--lime); color: #111210; }
+#prompt { margin: 0; }
+@media (max-width: 900px) {
+  .ways, .versus-grid, .why-grid { grid-template-columns: 1fr; }
+  .versus h2, .why-not h2 { font-size: 1.7rem; }
+}
+

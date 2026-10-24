@@ -304,9 +304,13 @@ def ask_dialog(prefix, base):
   <form method="dialog" class="close"><button aria-label="Close">×</button></form>
   <p class="kicker mono">ask&#8209;ai</p>
   <h2>Hand today's papers to <em>your</em> assistant</h2>
-  <p>Say what you work on. Paperlane writes the prompt, and any assistant that can open web pages does the reading.</p>
-  <label for="interests" class="mono">interests</label>
-  <input id="interests" type="text" placeholder="extremal graph theory, polyominoes" data-interests>
+  <p>Paperlane writes the prompt, and any assistant that can open web pages does the reading.</p>
+  <div class="modes mono" role="tablist">
+    <button type="button" role="tab" data-mode="work" aria-selected="true">for my work</button>
+    <button type="button" role="tab" data-mode="curious" aria-selected="false">just curious</button>
+  </div>
+  <div id="ask-work"><label for="interests" class="mono">what do you work on?</label>
+  <input id="interests" type="text" placeholder="extremal graph theory, polyominoes" data-interests></div>
   <pre class="terminal" id="prompt" data-base="{esc(base)}"></pre>
   <div class="row"><button id="copy-prompt" type="button" class="btn primary">Copy prompt</button>
   <a class="mono small-link" href="{prefix}about.html#agents">files for agents →</a></div>
@@ -525,9 +529,21 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
     return page(title, body, prefix, built, f"{st['papers']} new maths papers from {long_date(day['date'])}, with code and Lean tags.", base, "day", "today" if is_latest else "archive")
 
 
-def home_html(day, number, base, built, titles_sample):
+CURIOUS_PROMPT = (
+    "Read {base}/latest-titles.md, the list of new maths papers from the latest Paperlane issue. "
+    "Pick the two results a curious person with no maths degree would find most surprising, read their abstracts in "
+    "{base}/latest.md, and explain each one in plain words with an everyday example."
+)
+
+
+def nice_count(n):
+    return f"{int(round(n, -2)):,}" if n >= 1000 else str(n)
+
+
+def home_html(day, number, base, built, titles_sample, words_full, words_titles, fresh):
     st = day_stats(day)
     d = date.fromisoformat(day["date"])
+    when = "last night" if fresh else f"on {d:%A}"
     fc = field_counts(day)
     toc = "".join(
         f'<li><a href="today.html?cat={c}"><span>{esc(categories.name(c))}</span><i class="leader"></i><span class="mono">{n}</span></a></li>'
@@ -538,13 +554,15 @@ def home_html(day, number, base, built, titles_sample):
         for c, n in sorted(fc, key=lambda kv: categories.name(kv[0]))
     )
     sample = "\n".join(esc(line) for line in titles_sample)
+    wf, wt = nice_count(words_full), nice_count(words_titles)
+    curious = esc(CURIOUS_PROMPT.format(base=base))
     body = f"""<section class="masthead wrap-wide">
   <div class="mh-copy">
     <a class="live" href="today.html"><span class="pulse" aria-hidden="true"></span><span class="mono">issue no. {number} is out · {d:%a} {d.day} {d:%b}</span><span aria-hidden="true">→</span></a>
-    <h1>The day's mathematics, <em>read in a minute.</em></h1>
-    <p class="lede">Every weekday, Paperlane gathers the new mathematics papers into one quiet list. Make it your lane: pick your fields, say what you work on, and the papers that matter to you come first.</p>
-    <div class="cta"><a class="btn primary" href="today.html">Read today's {st['papers']} papers →</a><a class="btn" href="#lane">Set up my lane</a></div>
-    <p class="works mono">free · no account · updated every weekday 06:00 UTC</p>
+    <h1>{st['papers']} new maths papers came out {when}. <em>Your AI can read them for you.</em></h1>
+    <p class="lede">Mathematics moves forward every night, and almost nobody sees it happen. Paperlane turns each night's papers into one short issue that you can skim in a minute and your AI assistant can read in seconds.</p>
+    <div class="cta"><a class="btn primary" href="today.html">Read today's issue →</a><button type="button" class="btn" data-open-ask>Ask my AI about it</button></div>
+    <p class="works mono">free · no account · new issue every weekday at 06:00 UTC</p>
   </div>
   <aside class="contents">
     <div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span class="mono">paperlane / today</span></div>
@@ -552,6 +570,48 @@ def home_html(day, number, base, built, titles_sample):
     <ol class="toc">{toc}</ol>
     <p class="mono foot-note">{st['papers']} papers · {st['code']} with code · {st['lean']} ∎ lean</p>
   </aside>
+</section>
+
+<section class="ways wrap-wide">
+  <article class="way">
+    <p class="kicker mono">if you do research</p>
+    <h3>Get your field every morning, <em>ranked for you</em>.</h3>
+    <p>Pick your fields and say what you work on. Paperlane puts the closest papers first and shows the words that matched, so the morning's reading takes a minute.</p>
+    <a class="btn" href="#lane">Set up my lane →</a>
+  </article>
+  <article class="way curious">
+    <p class="kicker mono">if you are just curious</p>
+    <h3>The AI you already pay for can read <em>the frontier</em>.</h3>
+    <p>Your assistant already reads the news for you. Paste this prompt into it and hear what mathematicians found {when}, in plain words.</p>
+    <pre class="terminal prompt-box" id="curious-prompt">{curious}</pre>
+    <button type="button" class="btn primary" data-copy-from="#curious-prompt">Copy prompt</button>
+  </article>
+</section>
+
+<section class="versus wrap-wide">
+  <h2>Keeping up with maths, <em>before and after</em></h2>
+  <div class="versus-grid">
+    <div class="side old">
+      <p class="mono label">the usual way</p>
+      <ul>
+        <li>{st['papers']} titles in one long column</li>
+        <li>No way to put your own field first</li>
+        <li>No sign of which papers have code or a checked proof</li>
+        <li>About {wf} words of abstracts, the length of a short novel</li>
+        <li>Listing pages that most AI assistants cannot read in one go</li>
+      </ul>
+    </div>
+    <div class="side new">
+      <p class="mono label">with paperlane</p>
+      <ul>
+        <li>Your fields first, ranked against your own work</li>
+        <li>Three papers per field until you ask for more</li>
+        <li>Code and Lean projects marked on every paper</li>
+        <li>A {wt}-word index of the whole night</li>
+        <li>One link that any AI assistant can read</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
 <section class="lane wrap-wide" id="lane">
@@ -571,27 +631,28 @@ def home_html(day, number, base, built, titles_sample):
   </div>
 </section>
 
+<section class="why-not wrap-wide">
+  <h2>Why not just ask your AI to <em>read arXiv</em>?</h2>
+  <div class="why-grid">
+    <div><h3>A night of maths is a short novel.</h3><p>The latest issue holds about {wf} words of abstracts. Paperlane reads them once and hands your assistant a {wt}-word index, so its answer takes seconds and costs almost nothing.</p></div>
+    <div><h3>Some answers need real work.</h3><p>Knowing whether a paper's code holds a Lean project means checking every linked repository, and Paperlane will soon compile the proofs too. That work happens once, for everyone, and your assistant reads the result.</p></div>
+    <div><h3>Nothing is made up.</h3><p>Every tag comes from a plain check that anyone can repeat. An assistant summarising on its own can claim a proof exists when it does not.</p></div>
+    <div><h3>It remembers.</h3><p>Every issue stays in the archive, so you and your agent can look back across weeks and see when a paper was revised.</p></div>
+  </div>
+</section>
+
 <section class="machines wrap-wide">
   <div>
-    <p class="kicker mono">for agents</p>
+    <p class="kicker mono">for agents and tools</p>
     <h2>Plain text, all the way down</h2>
-    <p>Every day and every paper is also published as Markdown and JSON. Point an assistant at it, or press <button type="button" class="link" data-open-ask>ask&#8209;ai</button> for a ready prompt.</p>
+    <p>Every issue and every paper is also published as Markdown and JSON. Point an assistant at it, or use <button type="button" class="link" data-open-ask>ask&#8209;ai</button> for a ready prompt.</p>
     <p class="mono small-link"><a href="llms.txt">llms.txt</a> · <a href="latest-titles.md">latest-titles.md</a> · <a href="latest.json">latest.json</a> · <a href="feed.xml">rss</a></p>
   </div>
   <pre class="terminal"><span class="cmd">$ curl -s {esc(base)}/latest-titles.md | grep -m3 "^- "</span>
 {sample}</pre>
-</section>
-
-<section class="checks wrap-wide">
-  <dl>
-    <div><dt class="mono t-lean">∎ lean</dt><dd>A linked repository holds a Lean project. The proof may be machine-checked.</dd></div>
-    <div><dt class="mono t-lean soft">□ lean</dt><dd>The paper says it is formalised in Lean, but no repository was found.</dd></div>
-    <div><dt class="mono t-code">code</dt><dd>The abstract or comments link to code on GitHub, GitLab or similar.</dd></div>
-  </dl>
-  <p class="mono note">Every tag is a check anyone can repeat. Nothing here ranks a paper or an author.</p>
 </section>"""
-    return page("Paperlane · The day's mathematics, read in a minute", body, "", built,
-                "A free daily journal of new mathematics papers for people and their AI agents.", base, "home", "home")
+    return page(f"Paperlane · {st['papers']} new maths papers, read by your AI", body, "", built,
+                "Every night's new mathematics papers in one short issue that you can skim in a minute and your AI assistant can read in seconds.", base, "home", "home")
 
 
 def archive_html(days, numbers, built, base):
@@ -820,7 +881,9 @@ def build(days, out, base, built_dt=None, goatcounter=None):
     latest = days[0]
     titles = titles_md(latest, base, built)
     sample = [line[:118] + ("…" if len(line) > 118 else "") for line in titles.splitlines() if line.startswith("- ")][:3]
-    (out / "index.html").write_text(home_html(latest, numbers[latest["date"]], base, built, sample))
+    full = day_md(latest, base, built)
+    fresh = (built_dt.date() - date.fromisoformat(latest["date"])).days <= 1
+    (out / "index.html").write_text(home_html(latest, numbers[latest["date"]], base, built, sample, len(full.split()), len(titles.split()), fresh))
     older = days[1]["date"] if len(days) > 1 else None
     (out / "today.html").write_text(day_html(latest, base, built, "", numbers[latest["date"]], None, older, is_latest=True))
     (out / "about.html").write_text(about_html(days, base, built))
