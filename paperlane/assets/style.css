@@ -565,3 +565,11 @@ h1 em, h2 em, .lane h2 em, .machines h2 em, .way h3 em, .versus h2 em, .why-not 
 .time-row .hint { margin: 8px 0 0; font-size: 0.72rem; }
 .time-row .hint.warn { color: var(--ink); background: var(--hl); padding: 4px 8px; border-radius: 6px; display: inline-block; }
 
+/* Big headlines sit tighter than their selection boxes, so selected headline text changes colour instead of
+   getting a background box. Nothing overlaps, and body text keeps the normal highlight. */
+h1::selection, h1 *::selection, h2::selection, h2 *::selection, h3::selection, h3 *::selection,
+article.first-page .title::selection, article.first-page .title *::selection { background: transparent; color: #4b6a00; }
+:root[data-theme="dark"] h1::selection, :root[data-theme="dark"] h1 *::selection, :root[data-theme="dark"] h2::selection,
+:root[data-theme="dark"] h2 *::selection, :root[data-theme="dark"] h3::selection, :root[data-theme="dark"] h3 *::selection,
+:root[data-theme="dark"] article.first-page .title::selection, :root[data-theme="dark"] article.first-page .title *::selection { background: transparent; color: #c8f53c; }
+
