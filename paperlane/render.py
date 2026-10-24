@@ -3,6 +3,7 @@
 import html
 import json
 import re
+import urllib.parse
 import shutil
 from datetime import date, datetime, timezone
 from email.utils import format_datetime
@@ -268,7 +269,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
     <nav class="mono">
       {nav("today.html", "today", "today")}
       {nav("archive.html", "archive", "archive")}
-      <button type="button" data-open-ask>ask&#8209;ai</button>
+      {nav("ask.html", "ask&#8209;ai", "ask")}
       {nav("about.html", "about", "about")}
     </nav>
     <div class="tools">
@@ -283,7 +284,6 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <main>
 {body}
 </main>
-{ask_dialog(prefix, base)}
 <footer class="site">
   <div class="foot">
     <div class="colophon">
@@ -291,7 +291,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
       <p>A daily journal of new mathematics, for people and their agents.</p>
     </div>
     <nav class="mono"><a href="{prefix}today.html">today</a><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}about.html#agents">agents</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}">source</a></nav>
-    <p class="mono built">set in Geist, Geist Mono &amp; Latin Modern · built {esc(built)}</p>
+    <p class="mono built">updated {esc(built)}</p>
   </div>
 </footer>
 </body>
@@ -299,22 +299,44 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 """
 
 
-def ask_dialog(prefix, base):
-    return f"""<dialog class="ask" id="ask">
-  <form method="dialog" class="close"><button aria-label="Close">×</button></form>
-  <p class="kicker mono">ask&#8209;ai</p>
-  <h2>Hand today's papers to <em>your</em> assistant</h2>
-  <p>Paperlane writes the prompt, and any assistant that can open web pages does the reading.</p>
-  <div class="modes mono" role="tablist">
-    <button type="button" role="tab" data-mode="work" aria-selected="true">for my work</button>
-    <button type="button" role="tab" data-mode="curious" aria-selected="false">just curious</button>
+def ask_html(base, built):
+    body = f"""<div class="wrap ask-wrap">
+  <header class="issue-head"><p class="kicker mono">ask&#8209;ai</p>
+  <h1>Hand today's papers to <em>your</em> assistant.</h1>
+  <p class="lede small">Paperlane writes the prompt, and any assistant that can open web pages does the reading. Nothing you type here leaves your browser.</p></header>
+  <div class="ask-grid" id="ask">
+    <section class="ask-builder">
+      <div class="modes mono" role="tablist">
+        <button type="button" role="tab" data-mode="work" aria-selected="true">for my work</button>
+        <button type="button" role="tab" data-mode="curious" aria-selected="false">just curious</button>
+        <button type="button" role="tab" data-mode="routine" aria-selected="false">daily routine</button>
+      </div>
+      <div id="ask-time" class="time-row" hidden>
+        <label for="routine-time" class="mono">run every weekday at</label>
+        <div class="time-line"><input id="routine-time" type="time" value="07:30" step="300"><span class="mono" id="routine-tz"></span></div>
+        <p class="hint mono" id="time-hint"></p>
+      </div>
+      <div id="ask-work"><label for="interests" class="mono">what do you work on?</label>
+      <input id="interests" class="interest-input" type="text" placeholder="extremal graph theory, polyominoes" autocomplete="off" data-interests></div>
+      <pre class="terminal" id="prompt" data-base="{esc(base)}"></pre>
+      <div class="ask-actions">
+        <button id="copy-prompt" type="button" class="btn primary">Copy prompt</button>
+        <a class="btn" id="open-chatgpt" target="_blank" rel="noopener" href="https://chatgpt.com/">ChatGPT ↗</a>
+        <a class="btn" id="open-claude" target="_blank" rel="noopener" href="https://claude.ai/new">Claude ↗</a>
+        <a class="btn" id="open-perplexity" target="_blank" rel="noopener" href="https://www.perplexity.ai/">Perplexity ↗</a>
+      </div>
+    </section>
+    <aside class="ask-steps">
+      <ol>
+        <li><b>Choose a mode.</b> Use <i>for my work</i> to get the three papers closest to your research, or <i>just curious</i> for the most surprising results in plain words. Use <i>daily routine</i> to have your assistant send you a briefing every weekday at the time you pick.</li>
+        <li><b>Send the prompt.</b> Copy it into any assistant, or use an open button to start a chat with the prompt already filled in. For a routine, paste it where your assistant sets up scheduled tasks or routines.</li>
+        <li><b>Read the answer.</b> Your assistant reads Paperlane's index of the issue, opens the abstracts it needs, and links every paper it mentions.</li>
+      </ol>
+      <p class="mono small-link">files for agents: <a href="llms.txt">llms.txt</a> · <a href="latest-titles.md">latest-titles.md</a> · <a href="latest.md">latest.md</a> · <a href="latest.json">latest.json</a></p>
+    </aside>
   </div>
-  <div id="ask-work"><label for="interests" class="mono">what do you work on?</label>
-  <input id="interests" type="text" placeholder="extremal graph theory, polyominoes" data-interests></div>
-  <pre class="terminal" id="prompt" data-base="{esc(base)}"></pre>
-  <div class="row"><button id="copy-prompt" type="button" class="btn primary">Copy prompt</button>
-  <a class="mono small-link" href="{prefix}about.html#agents">files for agents →</a></div>
-</dialog>"""
+</div>"""
+    return page("Ask your AI · Paperlane", body, "", built, "Hand today's new maths papers to your own AI assistant with one prompt.", base, "ask-page", "ask")
 
 
 def linkify(text):
@@ -536,6 +558,26 @@ CURIOUS_PROMPT = (
 )
 
 
+SAMPLE_LANE = ("graph theory, random walks", [("graph", r"\bgraph"), ("random", r"\brandom\b"), ("walks", r"\bwalk")])
+
+
+def sample_lane(day, limit=3):
+    """A small real example of a ranked lane, for the home page."""
+    scored = []
+    for p in day["papers"]:
+        title, abstract = p["title"].lower(), p["abstract"].lower()
+        hits, score = [], 0
+        for word, pattern in SAMPLE_LANE[1]:
+            n = 2 * len(re.findall(pattern, title)) + len(re.findall(pattern, abstract))
+            if n:
+                hits.append(word)
+                score += n + 3
+        if hits:
+            scored.append((score, p["id"], p, hits))
+    scored.sort(key=lambda x: (-x[0], x[1]))
+    return [(p, hits) for _, _, p, hits in scored[:limit]]
+
+
 def nice_count(n):
     return f"{int(round(n, -2)):,}" if n >= 1000 else str(n)
 
@@ -555,13 +597,20 @@ def home_html(day, number, base, built, titles_sample, words_full, words_titles,
     )
     sample = "\n".join(esc(line) for line in titles_sample)
     wf, wt = nice_count(words_full), nice_count(words_titles)
-    curious = esc(CURIOUS_PROMPT.format(base=base))
+    curious_text = CURIOUS_PROMPT.format(base=base)
+    curious = esc(curious_text)
+    q = urllib.parse.quote(curious_text)
+    lane_rows = "".join(
+        f'<li><a href="p/{anchor(p)}.html"><span class="mono n">{i:02d}</span><span class="t">{esc(p["title"])}</span>'
+        f'<span class="mono m">matched {" ".join(f"<mark>{esc(h)}</mark>" for h in hits)}</span></a></li>'
+        for i, (p, hits) in enumerate(sample_lane(day), 1)
+    )
     body = f"""<section class="masthead wrap-wide">
   <div class="mh-copy">
     <a class="live" href="today.html"><span class="pulse" aria-hidden="true"></span><span class="mono">issue no. {number} is out · {d:%a} {d.day} {d:%b}</span><span aria-hidden="true">→</span></a>
     <h1>{st['papers']} new maths papers came out {when}. <em>Your AI can read them for you.</em></h1>
     <p class="lede">Mathematics moves forward every night, and almost nobody sees it happen. Paperlane turns each night's papers into one short issue that you can skim in a minute and your AI assistant can read in seconds.</p>
-    <div class="cta"><a class="btn primary" href="today.html">Read today's issue →</a><button type="button" class="btn" data-open-ask>Ask my AI about it</button></div>
+    <div class="cta"><a class="btn primary" href="today.html">Read today's issue →</a><a class="btn" href="ask.html">Ask my AI about it</a></div>
     <p class="works mono">free · no account · new issue every weekday at 06:00 UTC</p>
   </div>
   <aside class="contents">
@@ -577,14 +626,18 @@ def home_html(day, number, base, built, titles_sample, words_full, words_titles,
     <p class="kicker mono">if you do research</p>
     <h3>Get your field every morning, <em>ranked for you</em>.</h3>
     <p>Pick your fields and say what you work on. Paperlane puts the closest papers first and shows the words that matched, so the morning's reading takes a minute.</p>
-    <a class="btn" href="#lane">Set up my lane →</a>
+    <div class="lane-preview">
+      <p class="mono label">example lane · “{esc(SAMPLE_LANE[0])}” · from this issue</p>
+      <ol>{lane_rows}</ol>
+    </div>
+    <a class="btn primary" href="#lane">Set up my lane →</a>
   </article>
   <article class="way curious">
     <p class="kicker mono">if you are just curious</p>
     <h3>The AI you already pay for can read <em>the frontier</em>.</h3>
     <p>Your assistant already reads the news for you. Paste this prompt into it and hear what mathematicians found {when}, in plain words.</p>
     <pre class="terminal prompt-box" id="curious-prompt">{curious}</pre>
-    <button type="button" class="btn primary" data-copy-from="#curious-prompt">Copy prompt</button>
+    <div class="way-actions"><button type="button" class="btn primary" data-copy-from="#curious-prompt">Copy prompt</button><a class="btn dark" href="https://chatgpt.com/?q={q}" target="_blank" rel="noopener">Open in ChatGPT ↗</a><a class="btn dark" href="https://claude.ai/new?q={q}" target="_blank" rel="noopener">Claude ↗</a></div>
   </article>
 </section>
 
@@ -645,7 +698,7 @@ def home_html(day, number, base, built, titles_sample, words_full, words_titles,
   <div>
     <p class="kicker mono">for agents and tools</p>
     <h2>Plain text, all the way down</h2>
-    <p>Every issue and every paper is also published as Markdown and JSON. Point an assistant at it, or use <button type="button" class="link" data-open-ask>ask&#8209;ai</button> for a ready prompt.</p>
+    <p>Every issue and every paper is also published as Markdown and JSON. Point an assistant at it, or use <a href="ask.html">ask&#8209;ai</a> for a ready prompt. You can even <a href="ask.html?mode=routine">set up a daily routine</a> so your assistant briefs you every weekday on its own.</p>
     <p class="mono small-link"><a href="llms.txt">llms.txt</a> · <a href="latest-titles.md">latest-titles.md</a> · <a href="latest.json">latest.json</a> · <a href="feed.xml">rss</a></p>
   </div>
   <pre class="terminal"><span class="cmd">$ curl -s {esc(base)}/latest-titles.md | grep -m3 "^- "</span>
@@ -895,6 +948,7 @@ def build(days, out, base, built_dt=None, goatcounter=None):
         (out / "latest" / f"{c}.md").write_text(day_md(latest, base, built, sel, f"Paperlane: {categories.name(c)} ({c})"))
     (out / "archive.html").write_text(archive_html(days, numbers, built, base))
     (out / "paper.html").write_text(lookup_html(built, base))
+    (out / "ask.html").write_text(ask_html(base, built))
     (out / "feed.xml").write_text(rss(days, base, built_dt))
     (out / "llms.txt").write_text(llms_txt(days, base, built))
     print(f"Built {len(days)} days into {out}")
