@@ -10,7 +10,7 @@
   <a href="https://pragyaangaur.github.io/Paperlane/about.html">How it works</a>
 </p>
 
-A few hundred new mathematics papers appear every weekday. Paperlane sets each day as one quiet issue, like the contents page of a journal. You pick your fields and say what you work on, and the papers that matter to you come first. Every paper is also plain Markdown, so your own AI assistant can read the whole issue for you. It is free and needs no account.
+A few hundred new mathematics papers appear every weekday. Paperlane sets each day as one quiet issue in the typeface of a LaTeX paper, and it highlights the ones that matter to you the way you would mark a printout. You pick your fields and say what you work on, and the papers that matter to you come first. Every paper is also plain Markdown, so your own AI assistant can read the whole issue for you. It is free and needs no account.
 
 <p align="center">
   <img src="docs/home.png" alt="The Paperlane home page: a journal masthead, today's contents and the lane builder" width="90%">
@@ -20,7 +20,7 @@ A few hundred new mathematics papers appear every weekday. Paperlane sets each d
 
 1. **Pick your fields.** Tick Combinatorics, Probability or any other field. Paperlane remembers them on your device.
 2. **Say what you work on.** Type a few phrases such as "graph colouring, random walks".
-3. **Read.** Your papers rise to the top, and under each one Paperlane shows the words that matched.
+3. **Read.** Your papers rise to the top, and under each one Paperlane highlights the words that matched.
 
 <p align="center">
   <img src="docs/lane.png" alt="An issue ranked for graph colouring and random walks, with the matched words highlighted under each paper" width="90%">
@@ -43,7 +43,7 @@ Click a paper to read its abstract in place, or open its own page. Each page car
 
 <table>
   <tr>
-    <td width="70%"><img src="docs/paper-dark.png" alt="A single paper page in the dark theme, set like the first page of a paper"></td>
+    <td width="70%"><img src="docs/paper.png" alt="A single paper page set like the first page of a LaTeX preprint, with its Lean project highlighted"></td>
     <td width="30%"><img src="docs/phone.png" alt="Paperlane on a phone"></td>
   </tr>
 </table>
