@@ -19,7 +19,9 @@
   <a href="https://pragyaangaur.github.io/Paperlane/about.html">About</a>
 </p>
 
-Every weekday a few hundred new mathematics papers appear, and keeping up means scrolling a long list of titles. Paperlane turns each day into one short issue that you can shape around your own work. You pick your fields and type what you are working on, and the papers that matter to you come first. Every paper is also published as plain Markdown, so your AI assistant can read the whole issue and tell you what to look at.
+Every weekday a few hundred new mathematics papers come out. One night of them is about 57,000 words of abstracts, the length of a short novel, and almost nobody sees it happen. Paperlane turns each night into one short issue that you can skim in a minute and your AI assistant can read in seconds.
+
+If you do research, you pick your fields and say what you work on, and the papers closest to your work come first. If you are simply curious, you paste one prompt into the AI you already pay for, and it tells you what mathematicians found last night in plain words.
 
 Paperlane is free, needs no account and sets no cookies.
 
@@ -59,6 +61,19 @@ The page always says which order is in use, so nothing about the ranking is hidd
 | **shortest** | Sorts by the page count that the authors give. |
 
 Paperlane never ranks a paper by who wrote it.
+
+## Not a mathematician?
+
+Paste this into ChatGPT, Claude, Gemini or any assistant that can open web pages:
+
+> Read https://pragyaangaur.github.io/Paperlane/latest-titles.md, the list of new maths papers from the latest Paperlane issue. Pick the two results a curious person with no maths degree would find most surprising, read their abstracts in https://pragyaangaur.github.io/Paperlane/latest.md, and explain each one in plain words with an everyday example.
+
+## Why not just ask your AI to read arXiv?
+
+- **A night of maths is a short novel.** Paperlane reads it once and hands your assistant an index of about 7,500 words, so the answer is fast and cheap.
+- **Some answers need real work.** Checking every linked repository for a Lean project takes real requests, and compiling the proofs (coming next) takes real computing time. Paperlane does this once, for everyone.
+- **Nothing is made up.** Every tag is a plain check that anyone can repeat, so an assistant reading Paperlane cannot be fooled into claiming a proof that does not exist.
+- **It remembers.** Every issue stays in the archive, so you can look back across weeks and see when a paper was revised.
 
 ## For your AI agent
 
