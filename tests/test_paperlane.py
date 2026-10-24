@@ -99,7 +99,8 @@ class RenderTest(unittest.TestCase):
             out = Path(tmp)
             for name in ["index.html", "today.html", "about.html", "latest.md", "latest.json", "latest-titles.md", "feed.xml", "llms.txt",
                          "archive.html", "days/2026-10-23.html", "latest/math.CO.md", "assets/app.js",
-                         "p/2610.00001.md", "p/2610.00001.html", "p/2610.00003.md"]:
+                         "p/2610.00001.md", "p/2610.00001.html", "p/2610.00003.md",
+                         "404.html", "sitemap.xml", "assets/og.png"]:
                 self.assertTrue((out / name).exists(), name)
             index = (out / "today.html").read_text()
             home = (out / "index.html").read_text()
@@ -130,6 +131,10 @@ class RenderTest(unittest.TestCase):
         html_out = render.linkify("Code at https://github.com/x/y. <b>")
         self.assertIn('<a href="https://github.com/x/y" target="_blank" rel="nofollow noopener">https://github.com/x/y</a>.', html_out)
         self.assertIn("&lt;b&gt;", html_out)
+
+    def test_tex_text(self):
+        self.assertEqual(render.tex_text("Lax--Wendroff and A---B <i>"), "Lax\u2013Wendroff and A\u2014B &lt;i&gt;")
+        self.assertEqual(render.tex_text("x -- y"), "x -- y")
 
 
 if __name__ == "__main__":

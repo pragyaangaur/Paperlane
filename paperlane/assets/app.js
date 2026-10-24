@@ -705,10 +705,10 @@
       return h * 60 + m;
     }
     function hhmm(mins) { return String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0"); }
-    // Paperlane publishes at 06:00 UTC. Show that moment in the chosen timezone, using today's date so daylight saving is right.
+    // Paperlane publishes at about 05:30 UTC. Show that moment in the chosen timezone, using today's date so daylight saving is right.
     function timeHint() {
       var zone = tzSelect.value;
-      var publish = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 6, 0));
+      var publish = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 5, 30));
       var arriveMins = minutesIn(zone, publish);
       var v = (timeInput.value || "07:30").split(":");
       var chosen = Number(v[0]) * 60 + Number(v[1]);
@@ -909,6 +909,29 @@
     }
   }
 
+  // ---------- Missing pages ----------
+  // A link to a paper Paperlane never listed lands on the 404 page. Send it to the lookup instead.
+  function notFound() {
+    if (!body.classList.contains("notfound")) return;
+    var m = /\/p\/([^/]+?)(?:\.html|\.md)?$/.exec(location.pathname) || /\/abs\/([^/]+)$/.exec(location.pathname);
+    var parsed = m && parseId(decodeURIComponent(m[1]).replace(/^([a-z-]+(?:\.[A-Z]{2})?)-(\d{7})/, "$1/$2"));
+    if (parsed) location.replace(body.dataset.prefix + "paper.html?id=" + encodeURIComponent(parsed.id + parsed.v));
+  }
+
+  // ---------- Fresh wording ----------
+  // "Last night" is right only on the day an issue comes out. After that the page names the day instead.
+  function freshWording() {
+    var now = new Date();
+    var today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    $$("[data-when]").forEach(function (el) {
+      var p = el.dataset.when.split("-").map(Number);
+      var issue = Date.UTC(p[0], p[1] - 1, p[2]);
+      var days = Math.round((today - issue) / 864e5);
+      el.textContent = days <= 0 ? "last night"
+        : days === 1 ? "yesterday" : "on " + new Date(issue).toLocaleDateString("en-GB", { weekday: "long", timeZone: "UTC" });
+    });
+  }
+
   // ---------- Headline highlights ----------
   // The highlighter box behind an emphasised headline phrase is drawn per line, from the ink of the first
   // letter to the ink of the last, so italic side bearings never leave a gap or an overhang.
@@ -1018,6 +1041,8 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     interestsSync();
+    notFound();
+    freshWording();
     theme();
     lookupForm();
     home();

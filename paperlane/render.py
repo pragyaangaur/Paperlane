@@ -23,6 +23,12 @@ ARXIV_THANKS = "Thank you to arXiv for use of its open access interoperability."
 esc = html.escape
 
 
+def tex_text(text):
+    """Escape a title or abstract and set TeX dashes (-- and ---) between words as real dashes, as LaTeX would."""
+    text = re.sub(r"(?<=\w)---(?=\w)", "\u2014", text)
+    return esc(re.sub(r"(?<=\w)--(?=\w)", "\u2013", text))
+
+
 def section_of(p):
     t = p.get("announce_type", "new")
     return "replace" if t.startswith("replace") else ("cross" if t == "cross" else "new")
@@ -235,7 +241,7 @@ def analytics_tag():
     return f'<script data-goatcounter="https://{code}.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>'
 
 
-def page(title, body, prefix, built, description="", base="", kind="page", active=""):
+def page(title, body, prefix, built, description="", base="", kind="page", active="", path=""):
     def nav(href, label, key):
         cur = ' aria-current="page"' if key == active else ""
         return f'<a href="{prefix}{href}"{cur}>{label}</a>'
@@ -248,10 +254,22 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(description)}">
 <meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fdfdfc">
+<link rel="canonical" href="{esc(base)}/{esc(path)}">
+<meta property="og:site_name" content="Paperlane">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{esc(base)}/{esc(path)}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(description)}">
+<meta property="og:image" content="{esc(base)}/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Paperlane: hundreds of new maths papers come out every night. Find yours in seconds.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{esc(base)}/assets/og.png">
 {THEME_BOOT}
 <link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{prefix}assets/icon-180.png">
 {FONTS}
 <link rel="stylesheet" href="{KATEX}/katex.min.css">
 <link rel="stylesheet" href="{prefix}assets/style.css">
@@ -287,7 +305,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <footer class="site">
   <div class="foot mono">
     <a class="brand small" href="{prefix}index.html">{LOGO}<span>Paperlane</span></a>
-    <nav><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}">source</a></nav>
+    <nav><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}" target="_blank" rel="noopener">source</a></nav>
     <span class="built">updated {esc(built)}</span>
   </div>
 </footer>
@@ -297,9 +315,9 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 
 
 def ask_html(base, built):
-    body = f"""<div class="wrap ask-wrap">
+    body = f"""<div class="wrap">
   <header class="issue-head"><p class="kicker mono">ask AI</p>
-  <h1>Hand today's papers to <em>your</em> assistant.</h1>
+  <h1>Hand the latest papers to <em>your</em> assistant.</h1>
   <p class="lede small">Pick what you want, copy the prompt, and paste it into any assistant that can open web pages.</p></header>
   <section class="ask-builder" id="ask">
     <div class="modes mono" role="tablist">
@@ -328,7 +346,7 @@ def ask_html(base, built):
     </div>
   </section>
 </div>"""
-    return page("Ask your AI · Paperlane", body, "", built, "Hand today's new maths papers to your own AI assistant with one prompt.", base, "ask-page", "ask")
+    return page("Ask your AI · Paperlane", body, "", built, "Hand today's new maths papers to your own AI assistant with one prompt.", base, "ask-page", "ask", "ask.html")
 
 
 def linkify(text):
@@ -425,13 +443,13 @@ def paper_html(p, day, prefix="", order=0):
     return f"""<article class="paper" {' '.join(attrs)}>
   <button type="button" class="head" aria-expanded="false">
     <span class="num mono" aria-hidden="true"></span>
-    <span class="title">{esc(p['title'])}</span>
+    <span class="title">{tex_text(p['title'])}</span>
     <span class="authors">{esc(authors_text(p['authors']))}</span>
     <span class="tags mono" data-fields="{esc(' '.join(categories.name(c) for c in p.get('math_categories') or []))}">{tags(p)}</span>
     <span class="why mono" hidden></span>
   </button>
   <div class="body">
-    <p class="abstract">{esc(p['abstract'])}</p>
+    <p class="abstract">{tex_text(p['abstract'])}</p>
     <dl class="facts">{details_html(p)}</dl>
     {actions_html(p, prefix, pid)}
   </div>
@@ -464,7 +482,7 @@ def toolbar_html(day):
       </div>
     </div>
     <button type="button" class="chip" id="f-code" aria-pressed="false">Code <em class="mono">{st['code']}</em></button>
-    <button type="button" class="chip lean" id="f-lean" aria-pressed="false">∎ Lean <em class="mono">{lean_any}</em></button>
+    <button type="button" class="chip lean" id="f-lean" aria-pressed="false">Lean <em class="mono">{lean_any}</em></button>
   </div>
 </div>
 <div class="results mono"><span id="f-count" aria-live="polite"></span><span id="f-pills"></span><button type="button" class="link" data-clear hidden>clear</button>
@@ -511,7 +529,7 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
     d = date.fromisoformat(day["date"])
     body = f"""<div class="wrap">
   <header class="issue-head">
-    <p class="kicker mono">no. {number} · {'today' if is_latest else 'from the archive'}{rebuilt}<span class="day-nav">{' '.join(nav)}</span></p>
+    <p class="kicker mono">no. {number} · {'latest issue' if is_latest else 'from the archive'}{rebuilt}<span class="day-nav">{' '.join(nav)}</span></p>
     <h1>{d:%A}, <em>{d.day} {d:%B %Y}</em></h1>
     <p class="stats mono">{st['papers']} papers in {st['fields']} fields</p>
   </header>
@@ -525,7 +543,7 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
   <button type="button" class="more mono" id="flat-more" hidden></button>
 </div>"""
     title = f"{d:%A} {d.day} {d:%B %Y} · Paperlane"
-    return page(title, body, prefix, built, f"{st['papers']} new maths papers from {long_date(day['date'])}, with code and Lean tags.", base, "day", "today" if is_latest else "archive")
+    return page(title, body, prefix, built, f"{st['papers']} new maths papers from {long_date(day['date'])}, with code and Lean tags.", base, "day", "today" if is_latest else "archive", "today.html" if is_latest else f"days/{day['date']}.html")
 
 
 CURIOUS_PROMPT = (
@@ -550,16 +568,19 @@ def try_words(day, limit=6):
     return found[:limit]
 
 
-def home_html(day, number, base, built, fresh):
+def home_html(day, number, base, built, age):
     st = day_stats(day)
     d = date.fromisoformat(day["date"])
-    when = "last night" if fresh else f"on {d:%A}"
+    # Same wording as freshWording in app.js, by the number of days since the issue came out.
+    when = "last night" if age <= 0 else "yesterday" if age == 1 else f"on {d:%A}"
+    # The page is built once per issue, so the browser rechecks the wording against the reader's own date.
+    when_html = f'<span data-when="{day["date"]}">{when}</span>'
     words = try_words(day)
     chips = "".join(f'<button type="button" data-try="{esc(w)}">{esc(w)}</button>' for w in words)
     curious = esc(CURIOUS_PROMPT.format(base=base))
     body = f"""<section class="hero wrap">
   <a class="live" href="today.html"><span class="pulse" aria-hidden="true"></span><span class="mono">issue no. {number} · {d:%a} {d.day} {d:%b}</span></a>
-  <h1>{st['papers']} new maths papers came out {when}.<br><em>What are you curious about?</em></h1>
+  <h1>{st['papers']} new maths papers came out {when_html}.<br><em>What are you curious about?</em></h1>
   <div class="finder" id="finder">
     <label class="finder-box"><span class="sr">Find papers in this issue</span>
       <input id="finder-q" type="search" placeholder="Type a topic or a word" autocomplete="off" spellcheck="false" enterkeyhint="search"></label>
@@ -573,11 +594,11 @@ def home_html(day, number, base, built, fresh):
 <section class="hook wrap">
   <p class="kicker mono">no maths degree needed</p>
   <h2>Let your AI <em>explain them</em>.</h2>
-  <p>The assistant you already use can read the whole issue in seconds. Paste this in and hear what mathematicians found {when}, in plain words.</p>
+  <p>The assistant you already use can read the whole issue in seconds. Paste this in and hear what mathematicians found {when_html}, in plain words.</p>
   <pre class="terminal prompt-box" id="curious-prompt">{curious}</pre>
   <p class="hook-actions"><button type="button" class="btn primary" data-copy-from="#curious-prompt">Copy prompt</button><a class="mono" href="ask.html">more prompts →</a></p>
 </section>"""
-    return page(f"Paperlane · {st['papers']} new maths papers {when}", body, "", built,
+    return page("Paperlane · New maths papers, every morning", body, "", built,
                 "Every night's new mathematics papers in one short issue that you can search in seconds and your AI assistant can read for you.", base, "home", "home")
 
 
@@ -589,18 +610,18 @@ def archive_html(days, numbers, built, base):
         rows.append(
             f'<li><a href="days/{d["date"]}.html"><span class="mono no">no. {numbers[d["date"]]}</span>'
             f'<span class="d">{dd:%A}, <em>{dd.day} {dd:%B %Y}</em></span><i class="leader"></i>'
-            f'<span class="mono c">{st["papers"]} papers · {st["lean"]} ∎</span></a></li>'
+            f'<span class="mono c">{st["papers"]} papers{f" · {st['lean']} with Lean" if st["lean"] else ""}</span></a></li>'
         )
-    body = f"""<div class="wrap narrow">
+    body = f"""<div class="wrap">
   <header class="issue-head"><p class="kicker mono">archive</p><h1>Every issue is <em>kept here</em></h1>
   <p class="lede small">Every past issue stays online. To open one paper from any day, paste its arXiv link or id into the box at the top.</p></header>
   <ol class="toc archive-toc">{''.join(rows)}</ol>
 </div>"""
-    return page("Archive · Paperlane", body, "", built, "Every issue of Paperlane.", base, "archive", "archive")
+    return page("Archive · Paperlane", body, "", built, "Every issue of Paperlane, one per weekday.", base, "archive", "archive", "archive.html")
 
 
 def lookup_html(built, base):
-    body = """<div class="wrap narrow">
+    body = """<div class="wrap">
   <article class="first-page" id="lk-page">
     <p class="kicker mono" id="lk-eyebrow">open a paper</p>
     <h1 id="lk-title">Open any paper</h1>
@@ -608,7 +629,25 @@ def lookup_html(built, base):
     <div id="lk-result"></div>
   </article>
 </div>"""
-    return page("Open a paper · Paperlane", body, "", built, "Open any arXiv paper on Paperlane by its link or id.", base, "lookup-page")
+    return page("Open a paper · Paperlane", body, "", built, "Open any arXiv paper on Paperlane by its link or id.", base, "lookup-page", "", "paper.html")
+
+
+def notfound_html(base, built):
+    # GitHub Pages serves this file for any missing path, so every link in it is absolute.
+    body = """<div class="wrap">
+  <header class="issue-head"><p class="kicker mono">404</p><h1>This page is <em>not here</em></h1>
+  <p class="lede small">The link may be mistyped, or the page may have moved. Today's issue and the archive are one click away.</p></header>
+  <p class="hook-actions"><a class="btn primary" href="{0}/today.html">Read today's issue</a><a class="mono" href="{0}/archive.html">open the archive →</a></p>
+</div>""".format(esc(base))
+    return page("Not found · Paperlane", body, base + "/", built, "This page is not on Paperlane.", base, "notfound", "", "404.html")
+
+
+def sitemap(days, base):
+    urls = ["", "today.html", "archive.html", "about.html", "ask.html"]
+    urls += [f"days/{d['date']}.html" for d in days]
+    urls += sorted({f"p/{anchor(p)}.html" for d in days for p in d["papers"]})
+    rows = "".join(f"<url><loc>{esc(base)}/{u}</loc></url>" for u in urls)
+    return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{rows}</urlset>\n'
 
 
 def about_html(days, base, built):
@@ -622,7 +661,7 @@ def about_html(days, base, built):
         ("feed.xml", "RSS for your feed reader"),
     ]
     rows = "".join(f'<tr><td class="mono"><a href="{f}">{esc(f)}</a></td><td>{esc(t)}</td></tr>' for f, t in files)
-    body = f"""<div class="wrap narrow prose">
+    body = f"""<div class="wrap prose">
   <header class="issue-head"><p class="kicker mono">about</p><h1>Keep up with mathematics <em>in a few minutes</em></h1></header>
   <p class="lede small">Paperlane collects the new mathematics papers every weekday and sets them in one list that you can make your own in seconds. It is free and needs no account.</p>
 
@@ -644,7 +683,7 @@ def about_html(days, base, built):
   <p>Every tag comes from a simple check that anyone can repeat, and no language model decides any tag. Paperlane never scores authors.</p>
 
   <h2>When it updates</h2>
-  <p>New papers are announced from Sunday to Thursday evening, US Eastern time. Paperlane picks them up at 06:00 UTC the next morning, so a new issue appears from Monday to Friday.</p>
+  <p>New papers are announced from Sunday to Thursday evening, US Eastern time. Paperlane picks them up at 05:30 UTC the next morning, so a new issue appears from Monday to Friday.</p>
 
   <h2 id="agents">For agents and tools</h2>
   <p>Everything on Paperlane is also published as plain files. Point your assistant at any of these.</p>
@@ -655,9 +694,9 @@ def about_html(days, base, built):
 
   <h2>Where the data comes from</h2>
   <p>Titles, authors, abstracts and categories come from <a href="https://arxiv.org" target="_blank" rel="noopener">arXiv</a>, and every paper links to arXiv for the full text. Papers that Paperlane has not listed are looked up through Semantic Scholar or OpenAlex. {ARXIV_THANKS}</p>
-  <p>Paperlane is open source on <a href="{REPO}">GitHub</a>, where you can report a problem or ask for a feature.</p>
+  <p>Paperlane is open source on <a href="{REPO}" target="_blank" rel="noopener">GitHub</a>, where you can report a problem or ask for a feature.</p>
 </div>"""
-    return page("About · Paperlane", body, "", built, "How Paperlane orders papers, what its tags mean and the files it publishes for agents.", base, "about", "about")
+    return page("About · Paperlane", body, "", built, "How Paperlane search works, what its tags mean and the files it publishes for agents.", base, "about", "about", "about.html")
 
 
 # Feeds and indexes
@@ -712,7 +751,7 @@ def llms_txt(days, base, built):
 
 > A free daily feed of new arXiv mathematics papers, built for people and their AI agents. Titles, authors, abstracts and categories come from arXiv, and every entry links back to arXiv for the full text. Paperlane adds signals that plain code can check (code links, whether a linked GitHub repository contains a Lean project, and whether an entry is a new version) and never ranks papers or authors. Rank them yourself against your user's interests.
 
-The latest announcement is {latest['date']} ({counts_line(latest)}). Built {built}. arXiv announces new papers at 20:00 US Eastern time from Sunday to Thursday, and Paperlane rebuilds at 06:00 UTC, after arXiv refreshes its RSS feed at midnight Eastern.
+The latest announcement is {latest['date']} ({counts_line(latest)}). Built {built}. arXiv announces new papers at 20:00 US Eastern time from Sunday to Thursday, and Paperlane rebuilds at 05:30 UTC, after arXiv refreshes its RSS feed at midnight Eastern.
 
 ## Today
 
@@ -756,19 +795,19 @@ def single_html(p, day, base, built, number):
     pid = anchor(p)
     s = p.get("signals") or {}
     attrs = f'id="{pid}" data-cats="{" ".join(p.get("math_categories") or [])}"'
-    body = f"""<div class="wrap narrow">
+    body = f"""<div class="wrap">
   <article class="first-page paper open" {attrs}>
     <p class="kicker mono">no. {number} · <a href="../days/{day['date']}.html#{pid}">{long_date(day['date'])}</a></p>
-    <h1 class="title">{esc(p['title'])}</h1>
+    <h1 class="title">{tex_text(p['title'])}</h1>
     <p class="authors">{esc(authors_text(p['authors'], 12))}</p>
     <p class="tags mono">{tags(p)}</p>
     <h2 class="abs-h">Abstract</h2>
-    <p class="abstract">{esc(p['abstract'])}</p>
+    <p class="abstract">{tex_text(p['abstract'])}</p>
     <dl class="facts">{details_html(p)}</dl>
     {actions_html(p, "../", pid)}
   </article>
 </div>"""
-    return page(f"{p['title']} · Paperlane", body, "../", built, p["abstract"][:200], base, "single")
+    return page(f"{p['title']} · Paperlane", body, "../", built, p["abstract"][:200], base, "single", "", f"p/{pid}.html")
 
 
 def json_day(day, base):
@@ -808,8 +847,8 @@ def build(days, out, base, built_dt=None, goatcounter=None):
 
     latest = days[0]
     titles = titles_md(latest, base, built)
-    fresh = (built_dt.date() - date.fromisoformat(latest["date"])).days <= 1
-    (out / "index.html").write_text(home_html(latest, numbers[latest["date"]], base, built, fresh))
+    age = (built_dt.date() - date.fromisoformat(latest["date"])).days
+    (out / "index.html").write_text(home_html(latest, numbers[latest["date"]], base, built, age))
     older = days[1]["date"] if len(days) > 1 else None
     (out / "today.html").write_text(day_html(latest, base, built, "", numbers[latest["date"]], None, older, is_latest=True))
     (out / "about.html").write_text(about_html(days, base, built))
@@ -824,4 +863,6 @@ def build(days, out, base, built_dt=None, goatcounter=None):
     (out / "ask.html").write_text(ask_html(base, built))
     (out / "feed.xml").write_text(rss(days, base, built_dt))
     (out / "llms.txt").write_text(llms_txt(days, base, built))
+    (out / "404.html").write_text(notfound_html(base, built))
+    (out / "sitemap.xml").write_text(sitemap(days, base))
     print(f"Built {len(days)} days into {out}")
