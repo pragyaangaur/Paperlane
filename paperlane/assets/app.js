@@ -559,22 +559,47 @@
   function ask() {
     var dlg = $("#ask");
     if (!dlg) return;
-    var box = $("#prompt"), interests = $("#interests");
+    var box = $("#prompt"), interests = $("#interests"), workBox = $("#ask-work");
+    var mode = "work";
     function update() {
-      var i = interests.value.trim() || "X and Y";
-      box.textContent =
-        "Read " + base + "/latest-titles.md, Paperlane's index of today's new maths papers. " +
-        "My interests are " + i + ". Pick the candidates that fit, read their abstracts in " + base +
-        "/latest.md, and tell me which three papers I should read and why.";
+      if (mode === "curious") {
+        box.textContent =
+          "Read " + base + "/latest-titles.md, the list of new maths papers from the latest Paperlane issue. " +
+          "Pick the two results a curious person with no maths degree would find most surprising, read their abstracts in " +
+          base + "/latest.md, and explain each one in plain words with an everyday example.";
+      } else {
+        var i = interests.value.trim() || "X and Y";
+        box.textContent =
+          "Read " + base + "/latest-titles.md, Paperlane's index of today's new maths papers. " +
+          "My interests are " + i + ". Pick the candidates that fit, read their abstracts in " + base +
+          "/latest.md, and tell me which three papers I should read and why.";
+      }
+      workBox.hidden = mode === "curious";
+      $$(".modes button", dlg).forEach(function (b) { b.setAttribute("aria-selected", b.dataset.mode === mode); });
     }
+    $$(".modes button", dlg).forEach(function (b) {
+      b.addEventListener("click", function () { mode = b.dataset.mode; update(); });
+    });
     interests.addEventListener("input", update);
     document.addEventListener("interests", update);
     update();
     $$("[data-open-ask]").forEach(function (b) {
-      b.addEventListener("click", function () { track("open-ask-ai"); update(); dlg.showModal ? dlg.showModal() : dlg.setAttribute("open", ""); interests.focus(); });
+      b.addEventListener("click", function () { track("open-ask-ai"); update(); dlg.showModal ? dlg.showModal() : dlg.setAttribute("open", ""); if (mode === "work") interests.focus(); });
     });
     dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
-    $("#copy-prompt").addEventListener("click", function (e) { track("copy-prompt"); copy(box.textContent, e.target); });
+    $("#copy-prompt").addEventListener("click", function (e) { track("copy-prompt-" + mode); copy(box.textContent, e.target); });
+  }
+
+  // Copy buttons that copy the text of another element, such as the curious prompt on the home page.
+  function copyButtons() {
+    $$("[data-copy-from]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var src = $(b.dataset.copyFrom);
+        if (!src) return;
+        track("copy-curious-prompt");
+        copy(src.textContent, b);
+      });
+    });
   }
 
   // ---------- Lookup ----------
@@ -719,6 +744,7 @@
     issue();
     rows();
     ask();
+    copyButtons();
     lookupPage();
     externalize();
     renderMath($("main"));
