@@ -225,7 +225,7 @@
           .sort(function (a, b) { return b.r.score - a.r.score; });
         root.classList.add("open");
         if (!ranked.length) {
-          list.innerHTML = '<li class="none">Nothing on that in this issue. Try a broader word.</li>';
+          list.innerHTML = '<li class="none">No paper in this issue matches that. Try a broader word.</li>';
           foot.hidden = true;
           return;
         }
@@ -582,15 +582,23 @@
     "nepal": "Asia/Kathmandu Asia/Katmandu", "sri lanka": "Asia/Colombo", "vietnam": "Asia/Ho_Chi_Minh Asia/Saigon", "thailand": "Asia/Bangkok", "indonesia": "Asia/Jakarta",
     "malaysia": "Asia/Kuala_Lumpur", "philippines": "Asia/Manila",
   };
-  var COMMON = ["UTC", "America/Los_Angeles", "America/Chicago", "America/New_York", "America/Sao_Paulo", "Europe/London", "Europe/Paris", "Europe/Berlin", "Europe/Moscow",
-    "Africa/Lagos", "Asia/Dubai", "Asia/Kolkata", "Asia/Calcutta", "Asia/Shanghai", "Asia/Singapore", "Asia/Tokyo", "Australia/Sydney", "Pacific/Auckland"];
+  // One or two well-known cities for most offsets, shown in offset order when the search box is empty.
+  var COMMON = ["Pacific/Honolulu", "America/Anchorage", "America/Los_Angeles", "America/Denver", "America/Chicago", "America/New_York",
+    "America/Sao_Paulo", "Atlantic/Azores", "Europe/London", "Africa/Lagos", "Europe/Paris", "Europe/Berlin", "Africa/Cairo", "Europe/Moscow",
+    "Asia/Dubai", "Asia/Karachi", "Asia/Kolkata", "Asia/Calcutta", "Asia/Kathmandu", "Asia/Katmandu", "Asia/Dhaka", "Asia/Bangkok", "Asia/Shanghai", "Asia/Singapore",
+    "Asia/Tokyo", "Australia/Sydney", "Pacific/Auckland"];
+  function offsetMinutes(label) {
+    var m = /([+-])(\d+)(?::(\d+))?/.exec(label || "");
+    return m ? (m[1] === "-" ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] || 0)) : 0;
+  }
   function zoneCity(z) { return ZONE_NAMES[z] || z.split("/").pop().replace(/_/g, " "); }
   function zoneRegion(z) { return z.indexOf("/") < 0 ? "" : z.split("/").slice(0, -1).join(" / ").replace(/_/g, " "); }
 
   function tzPicker(root, zones, detected, offset) {
     var hidden = $("#routine-tz", root), btn = $(".tz-btn", root), pop = $(".tz-pop", root), q = $(".tz-q", root), list = $(".tz-list", root);
     var offs = {}, items = [], active = 0;
-    zones.forEach(function (z) { offs[z] = offset(z); });
+    var mins = {};
+    zones.forEach(function (z) { offs[z] = offset(z); mins[z] = offsetMinutes(offs[z]); });
     var countryOf = {};
     Object.keys(COUNTRIES).forEach(function (c) { COUNTRIES[c].split(" ").forEach(function (z) { countryOf[z] = (countryOf[z] || "") + " " + c; }); });
     function hay(z) { return (zoneCity(z) + " " + z.replace(/_/g, " ") + " " + (countryOf[z] || "") + " " + offs[z]).toLowerCase(); }
@@ -605,12 +613,15 @@
     function draw() {
       var needle = q.value.trim().toLowerCase().replace(/^gmt/, "utc");
       if (!needle) {
+        // The reader's own zone, then UTC, then the common cities from the most negative offset to the most positive.
         var seen = {};
-        items = [hidden.value, detected].concat(COMMON).filter(function (z) {
+        seen[detected] = seen.UTC = 1;
+        var rest = COMMON.concat(hidden.value).filter(function (z) {
           if (seen[z] || zones.indexOf(z) < 0) return false;
           seen[z] = 1;
           return true;
-        });
+        }).sort(function (a, b) { return mins[a] - mins[b]; });
+        items = [detected, "UTC"].filter(function (z, i, all) { return zones.indexOf(z) >= 0 && all.indexOf(z) === i; }).concat(rest);
       } else {
         var words = needle.split(/\s+/);
         items = zones.filter(function (z) { return words.every(function (w) { return hays[z].indexOf(w) >= 0; }); });
@@ -619,7 +630,7 @@
           if ((" " + (countryOf[z] || "") + " ").indexOf(" " + needle + " ") >= 0) return 0;
           return zoneCity(z).toLowerCase().indexOf(needle) === 0 ? 1 : 2;
         };
-        items.sort(function (a, b) { return rank(a) - rank(b); });
+        items.sort(function (a, b) { return rank(a) - rank(b) || mins[a] - mins[b]; });
       }
       active = Math.max(0, items.indexOf(hidden.value));
       list.innerHTML = items.length ? items.map(function (z, i) {
