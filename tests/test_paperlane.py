@@ -115,6 +115,14 @@ class RenderTest(unittest.TestCase):
             feed = (out / "feed.xml").read_text()
             self.assertEqual(feed.count("<item>"), 2)  # new versions stay out of the feed
             self.assertIn("https://example.org/paperlane/latest-titles.md", (out / "llms.txt").read_text())
+            self.assertTrue((out / "paper.html").exists())
+            self.assertIn('data-md="p/2610.00001.md"', index)
+            self.assertIn('name="cat" value="math.CO"', index)
+
+    def test_linkify(self):
+        html_out = render.linkify("Code at https://github.com/x/y. <b>")
+        self.assertIn('<a href="https://github.com/x/y" rel="nofollow">https://github.com/x/y</a>.', html_out)
+        self.assertIn("&lt;b&gt;", html_out)
 
 
 if __name__ == "__main__":
