@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 300" width="1280" height="300">
+  <rect width="1280" height="300" fill="#fdfdfc"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#111210"/>
+    </marker>
+  </defs>
+  <g font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#111210">
+    <!-- 1 -->
+    <rect x="20" y="80" width="225" height="140" rx="16" fill="#ffffff" stroke="#dcded7"/>
+    <text x="42" y="116" font-family="Menlo, Consolas, monospace" font-size="14" fill="#6a6d65">01 · every night</text>
+    <text x="42" y="152" font-size="22" font-weight="700">arXiv announces</text>
+    <text x="42" y="180" font-size="17" fill="#393b36">a few hundred new</text>
+    <text x="42" y="202" font-size="17" fill="#393b36">maths papers</text>
+    <!-- 2 -->
+    <rect x="295" y="80" width="215" height="140" rx="16" fill="#ffffff" stroke="#dcded7"/>
+    <text x="317" y="116" font-family="Menlo, Consolas, monospace" font-size="14" fill="#6a6d65">02 · 06:00 UTC</text>
+    <text x="317" y="152" font-size="22" font-weight="700">Daily job</text>
+    <text x="317" y="180" font-size="17" fill="#393b36">collects the issue</text>
+    <text x="317" y="202" font-size="17" fill="#393b36">and every detail</text>
+    <!-- 3 -->
+    <rect x="560" y="80" width="245" height="140" rx="16" fill="#ffffff" stroke="#111210"/>
+    <text x="582" y="116" font-family="Menlo, Consolas, monospace" font-size="14" fill="#6a6d65">03 · checks</text>
+    <text x="582" y="152" font-size="22" font-weight="700">Code and Lean</text>
+    <rect x="582" y="166" width="200" height="22" rx="4" fill="#d9f763"/>
+    <text x="590" y="182" font-family="Menlo, Consolas, monospace" font-size="14">∎ lean project found</text>
+    <text x="582" y="208" font-size="17" fill="#393b36">no model guesses</text>
+    <!-- 4 -->
+    <rect x="855" y="80" width="235" height="140" rx="16" fill="#ffffff" stroke="#dcded7"/>
+    <text x="877" y="116" font-family="Menlo, Consolas, monospace" font-size="14" fill="#6a6d65">04 · the issue</text>
+    <text x="877" y="152" font-size="22" font-weight="700">Published as</text>
+    <text x="877" y="180" font-family="Menlo, Consolas, monospace" font-size="14" fill="#393b36">web · markdown</text>
+    <text x="877" y="202" font-family="Menlo, Consolas, monospace" font-size="14" fill="#393b36">json · rss · llms.txt</text>
+    <!-- readers -->
+    <rect x="1150" y="70" width="100" height="64" rx="14" fill="#c8f53c"/>
+    <text x="1200" y="109" font-size="20" font-weight="700" text-anchor="middle">You</text>
+    <rect x="1150" y="166" width="100" height="64" rx="14" fill="#111210"/>
+    <text x="1200" y="196" font-size="16" font-weight="700" text-anchor="middle" fill="#fdfdfc">Your AI</text>
+    <text x="1200" y="216" font-size="16" font-weight="700" text-anchor="middle" fill="#fdfdfc">agent</text>
+  </g>
+  <g stroke="#111210" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <path d="M247 150 H291"/>
+    <path d="M512 150 H556"/>
+    <path d="M807 150 H851"/>
+    <path d="M1092 140 C1116 140 1122 102 1146 102"/>
+    <path d="M1092 160 C1116 160 1122 198 1146 198"/>
+  </g>
+</svg>

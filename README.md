@@ -103,14 +103,9 @@ curl -s https://pragyaangaur.github.io/Paperlane/latest-titles.md | head
 
 ## How it works
 
-```mermaid
-flowchart LR
-  A["arXiv announces<br/>new maths papers"] --> B["Daily job<br/>06:00 UTC"]
-  B --> C["Checks<br/>code links, Lean projects,<br/>revised versions"]
-  C --> D["Issue<br/>web page, Markdown,<br/>JSON, RSS, llms.txt"]
-  D --> E["You"]
-  D --> F["Your AI agent"]
-```
+<p align="center">
+  <img src="docs/how-it-works.svg" alt="Every night arXiv announces new papers, a daily job at 06:00 UTC collects them, checks code and Lean projects, and publishes the issue for you and your AI agent" width="100%">
+</p>
 
 A scheduled job collects the night's announcement, looks up each paper's details, and checks every linked GitHub repository for a Lean project. It then publishes the issue in every format at once. Every tag comes from a simple check that anyone can repeat, and no language model decides anything about a paper.
 
