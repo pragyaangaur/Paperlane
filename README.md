@@ -57,7 +57,7 @@ Paste this into ChatGPT, Claude, Gemini or any assistant that can open web pages
 
 ## Get a briefing every morning
 
-Many assistants can now run scheduled routines. Open [ask-ai in routine mode](https://pragyaangaur.github.io/Paperlane/ask.html?mode=routine), pick a time and your timezone, type what you work on, and Paperlane writes a prompt that sets up a routine for every weekday. Each run reads the new issue and sends you the three papers worth your time. On days with no new issue it says so in one line. The page shows when the new issue arrives in your own timezone, so you can pick a time after it.
+Many assistants can now run scheduled routines. Open [ask AI in routine mode](https://pragyaangaur.github.io/Paperlane/ask.html?mode=routine), pick a time and your timezone, type what you work on, and Paperlane writes a prompt that sets up a routine for every weekday. Each run reads the new issue and sends you the three papers worth your time. On days with no new issue it says so in one line. The page shows when the new issue arrives in your own timezone, so you can pick a time after it.
 
 ## Why not just ask your AI to read arXiv?
 
@@ -68,7 +68,7 @@ Many assistants can now run scheduled routines. Open [ask-ai in routine mode](ht
 
 ## For your AI agent
 
-Open [**ask-ai**](https://pragyaangaur.github.io/Paperlane/ask.html) to build a prompt and copy it, or write your own:
+Open [**ask AI**](https://pragyaangaur.github.io/Paperlane/ask.html) to build a prompt and copy it, or write your own:
 
 > Read https://pragyaangaur.github.io/Paperlane/latest-titles.md, Paperlane's index of today's new maths papers. My interests are extremal graph theory and polyominoes. Pick the candidates that fit, read their abstracts in https://pragyaangaur.github.io/Paperlane/latest.md, and tell me which three papers I should read and why.
 
