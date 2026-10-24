@@ -328,7 +328,7 @@ footer.site { border-top: 1px solid var(--ink); margin-top: 88px; }
 .brand { font-weight: 700; letter-spacing: -0.01em; }
 h1, h2, .lane h2, .machines h2 { font-weight: 400; }
 h1 em, .lane h2 em, .machines h2 em, dialog.ask h2 em { color: inherit; background: linear-gradient(transparent 58%, var(--hl) 58%, var(--hl) 92%, transparent 92%); padding: 0 0.06em; }
-.issue-head h1 em { background: none; }
+.day .issue-head h1 em { background: none; }
 a:hover { color: var(--ink); text-decoration-color: var(--ink); text-decoration-thickness: 2px; }
 .btn.primary:hover { background: var(--hl); border-color: var(--ink); color: #111210; }
 header nav a[aria-current="page"] { box-shadow: inset 0 -3px 0 var(--lime); }
@@ -461,7 +461,7 @@ article.first-page { background: none; border: 0; padding: 56px 0 0; box-shadow:
 /* Home: two ways in, before and after, and the honest answer to "why not my own AI" */
 .masthead h1 { font-size: clamp(2.4rem, 4.8vw, 3.7rem); }
 .masthead h1 em { white-space: normal; display: block; margin-top: 0.08em; }
-.ways { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding-top: 8px; padding-bottom: 56px; align-items: start; }
+.ways { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding-top: 8px; padding-bottom: 56px; align-items: stretch; }
 .way { background: var(--leaf); border: 1px solid var(--rule); border-radius: 16px; padding: 26px 28px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .way h3 { font-size: 1.45rem; line-height: 1.2; letter-spacing: -0.03em; font-weight: 650; margin: 0 0 6px; }
 .way h3 em { font-family: var(--serif); font-weight: 400; text-decoration: underline; text-decoration-color: var(--lime); text-decoration-thickness: 0.2em; text-underline-offset: 0.08em; }
@@ -491,9 +491,77 @@ article.first-page { background: none; border: 0; padding: 56px 0 0; box-shadow:
 .modes { display: inline-flex; gap: 4px; padding: 3px; border: 1px solid var(--rule); border-radius: 9px; margin: 0 0 14px; }
 .modes button { background: none; border: 0; padding: 4px 12px; border-radius: 6px; cursor: pointer; color: var(--muted); font: inherit; }
 .modes button[aria-selected="true"] { background: var(--lime); color: #111210; }
-#prompt { margin: 0; }
+
 @media (max-width: 900px) {
   .ways, .versus-grid, .why-grid { grid-template-columns: 1fr; }
   .versus h2, .why-not h2 { font-size: 1.7rem; }
 }
+
+/* One continuous highlighter band under emphasised words, line by line, never broken between words. */
+h1 em, h2 em, .lane h2 em, .machines h2 em, .way h3 em, .versus h2 em, .why-not h2 em {
+  text-decoration: none;
+  background-image: linear-gradient(var(--lime), var(--lime));
+  background-repeat: no-repeat; background-size: 100% 0.15em; background-position: 0 94%;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 0.05em;
+}
+.day .issue-head h1 em { background: none; padding: 0; }
+
+/* The two ways in are the same height, with their actions on the bottom edge. */
+.way > .btn, .way .way-actions { margin-top: auto; }
+.way-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn.dark { background: #1c1d19; border-color: #2e302a; color: #eceee6; }
+.btn.dark:hover { border-color: #eceee6; background: #1c1d19; color: #fff; }
+.lane-preview { width: 100%; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); padding: 12px 14px 6px; margin: 0 0 18px; }
+.lane-preview .label { color: var(--muted); margin: 0 0 8px; }
+.lane-preview ol { list-style: none; margin: 0; padding: 0; }
+.lane-preview li a { display: grid; grid-template-columns: 2rem 1fr; column-gap: 8px; padding: 8px 0; border-top: 1px solid var(--rule-soft); text-decoration: none; color: var(--ink); }
+.lane-preview li:first-child a { border-top: 0; }
+.lane-preview .n { grid-row: span 2; color: var(--faint); padding-top: 0.2em; }
+.lane-preview .t { font-family: var(--serif); font-size: 1.02rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.lane-preview .m { color: var(--muted); font-size: 0.7rem; margin-top: 3px; }
+.lane-preview mark { background: var(--hl); color: var(--ink); padding: 0 3px; }
+.lane-preview li a:hover .t { text-decoration: underline; text-decoration-color: var(--lime); text-decoration-thickness: 2px; }
+
+/* Ask page */
+.ask-wrap { max-width: 1080px; }
+.ask-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 28px; margin-top: 30px; align-items: start; }
+.ask-builder { background: var(--leaf); border: 1px solid var(--rule); border-radius: 16px; padding: 24px; }
+.ask-builder label { display: block; color: var(--muted); margin: 0 0 6px; font-size: 0.8rem; }
+.ask-builder .interest-input { margin-bottom: 16px; }
+.ask-builder #prompt.terminal { margin: 0 0 16px; font-size: 0.78rem; min-height: 120px; }
+.ask-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.ask-steps ol { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 18px; }
+.ask-steps li { counter-increment: step; position: relative; padding-left: 44px; color: var(--ink-2); }
+.ask-steps li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 9px; background: var(--lime); color: #111210; font-family: var(--mono); font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
+.ask-steps b { color: var(--ink); display: block; }
+.ask-steps .small-link { margin-top: 26px; font-size: 0.74rem; }
+
+/* Dark mode: brighter ink, a clearer step between page and card, and heavier type rendering so thin serifs stay legible. */
+:root[data-theme="dark"] {
+  --paper: #0f100e; --leaf: #1a1c18; --ink: #f2f3ed; --ink-2: #d5d8ce; --muted: #a7aa9f; --faint: #7a7d73;
+  --rule: #33362f; --rule-soft: #262822; --hl: #46561a;
+}
+:root[data-theme="dark"] body { -webkit-font-smoothing: auto; -moz-osx-font-smoothing: auto; }
+:root[data-theme="dark"] article.paper .title, :root[data-theme="dark"] .abstract, :root[data-theme="dark"] .group h2,
+:root[data-theme="dark"] .toc li a span:first-child, :root[data-theme="dark"] .ix, :root[data-theme="dark"] .lane-preview .t,
+:root[data-theme="dark"] h1 em, :root[data-theme="dark"] h2 em, :root[data-theme="dark"] .way h3 em { text-shadow: 0 0 0.4px currentColor; }
+:root[data-theme="dark"] article.paper .authors { color: var(--ink-2); text-shadow: 0 0 0.3px currentColor; }
+:root[data-theme="dark"] article.paper .tags { color: var(--muted); }
+:root[data-theme="dark"] .num { background: #121311; border-color: var(--rule); color: var(--muted); }
+:root[data-theme="dark"] .way.curious { background: #050605; border-color: var(--rule); }
+:root[data-theme="dark"] .jump a:focus-visible { outline: 2px solid var(--lime); outline-offset: 1px; }
+
+@media (max-width: 900px) {
+  .ask-grid { grid-template-columns: 1fr; }
+}
+.ask-actions .btn { padding: 9px 14px; }
+.ask-actions .btn:not(.primary) { font-weight: 500; }
+.time-row { margin: 0 0 14px; }
+.time-row label { display: block; color: var(--muted); margin: 0 0 6px; font-size: 0.8rem; }
+.time-line { display: flex; align-items: center; gap: 12px; }
+.time-line input { font-family: var(--mono); font-size: 1.05rem; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 10px; background: var(--leaf); color: var(--ink); outline: 0; }
+.time-line input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px var(--lime); }
+.time-line span { color: var(--muted); font-size: 0.78rem; }
+.time-row .hint { margin: 8px 0 0; font-size: 0.72rem; }
+.time-row .hint.warn { color: var(--ink); background: var(--hl); padding: 4px 8px; border-radius: 6px; display: inline-block; }
 
