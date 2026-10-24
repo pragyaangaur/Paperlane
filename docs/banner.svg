@@ -1,29 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f4f5ff"/>
-      <stop offset="1" stop-color="#fbfbfa"/>
-    </linearGradient>
-    <linearGradient id="fade" x1="0" x2="1">
-      <stop offset="0" stop-color="#3346d3" stop-opacity="0"/>
-      <stop offset="1" stop-color="#3346d3" stop-opacity=".35"/>
-    </linearGradient>
-  </defs>
-  <rect width="1280" height="360" rx="24" fill="url(#bg)"/>
-  <rect x=".5" y=".5" width="1279" height="359" rx="23.5" fill="none" stroke="#e3e5f3"/>
-  <path d="M-20 330 C 300 330, 520 250, 760 205 S 1120 130, 1300 70" fill="none" stroke="url(#fade)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 14"/>
-  <path d="M-20 360 C 320 350, 560 290, 800 250 S 1140 180, 1300 130" fill="none" stroke="url(#fade)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 18" opacity=".6"/>
-  <g transform="translate(96 108) scale(3.6)">
-    <rect width="40" height="40" rx="10" fill="#3346d3"/>
-    <path d="M5.5 34.5 Q 9.5 30.5 14 27.5" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-linecap="round" stroke-dasharray="0.1 4.2"/>
-    <path d="M32 8.5 L8.5 18.2 L16.6 21.6 Z" fill="#fff"/>
-    <path d="M32 8.5 L16.6 21.6 L20.4 31.5 Z" fill="#fff" fill-opacity=".78"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 340" width="1280" height="340">
+  <rect width="1280" height="340" fill="#f6f1e6"/>
+  <rect x="40" y="34" width="1200" height="2" fill="#1d1b17"/>
+  <rect x="40" y="40" width="1200" height="0.8" fill="#1d1b17"/>
+  <rect x="40" y="300" width="1200" height="0.8" fill="#1d1b17"/>
+  <rect x="40" y="304" width="1200" height="2" fill="#1d1b17"/>
+  <g font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="15" fill="#776f62">
+    <text x="40" y="26">no. 1 · a daily journal of new mathematics</text>
+    <text x="1240" y="26" text-anchor="end">for people and their agents</text>
+    <text x="40" y="328">325 papers a day · ∎ lean · code · markdown · rss · llms.txt</text>
+    <text x="1240" y="328" text-anchor="end">pragyaangaur.github.io/Paperlane</text>
   </g>
-  <text x="280" y="178" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="76" font-weight="700" letter-spacing="-3" fill="#16171d">Paperlane</text>
-  <text x="284" y="232" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="30" fill="#5f6270">New maths papers every day, made for you and your AI agent.</text>
-  <g font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600">
-    <rect x="284" y="262" width="118" height="34" rx="17" fill="#eef0fd"/><text x="343" y="284" text-anchor="middle" fill="#3346d3">Pick fields</text>
-    <rect x="412" y="262" width="138" height="34" rx="17" fill="#e4f4ea"/><text x="481" y="284" text-anchor="middle" fill="#1f7a4a">✓ Lean tags</text>
-    <rect x="560" y="262" width="146" height="34" rx="17" fill="#f3f3f1"/><text x="633" y="284" text-anchor="middle" fill="#5f6270">Markdown too</text>
+  <g transform="translate(70 86) scale(3.9)">
+    <g fill="none" stroke="#a8321f" stroke-width="1.6" stroke-linecap="round">
+      <path d="M1.8 20.6c3.1.9 5.6-.9 8.6-.2"/><path d="M1.2 27.4c2.3-1.6 4.6-1.4 6.3-.2 1.5 1.1 3.3 1.2 5.1.2"/><path d="M4.6 34.2c2.4.6 4.3-.5 6.6.1"/>
+    </g>
+    <g transform="rotate(-15 29 24)">
+      <path d="M16.5 8.6c5.3-1.2 10.6 1.1 16.4-.5l5 4.9c-1.6 9.4 1.4 17.9-.6 27.6-6.2 1.6-12.6-1.6-18.6.6-1.8-.2-3.2-1.6-3.1-3.6 1.4-9.4-1.6-19.3.9-29z" fill="#fbf7ee" stroke="#1d1b17" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M32.9 8.1l.3 5.1 4.7-.2" fill="#e8dfcb" stroke="#1d1b17" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M18.7 41.2c.9-1.5 2.4-2 3.9-1.4" fill="none" stroke="#1d1b17" stroke-width="1.3" stroke-linecap="round"/>
+      <g fill="none" stroke="#1d1b17" stroke-width="1.45" stroke-linecap="round">
+        <path d="M20.5 16.6c2.3-1.2 4 .9 6.1-.2 1.9-1 3.3.4 4.9-.3"/><path d="M20.6 22.5c2.8-.9 5 .8 7.6-.1 1.6-.5 2.8 0 4.1-.3"/><path d="M20.7 28.5c2.2-.8 4.1.6 6.1-.2"/>
+      </g>
+      <rect x="29.2" y="26.6" width="3" height="3" fill="#a8321f"/>
+    </g>
   </g>
+  <text x="300" y="168" font-family="'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif" font-size="92" fill="#1d1b17" letter-spacing="-2">Paperlane</text>
+  <text x="304" y="232" font-family="'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif" font-size="40" font-style="italic" fill="#a8321f">The day's mathematics, read in a minute.</text>
+  <text x="306" y="268" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="16" fill="#47423a">$ curl paperlane/latest.md  # every new paper, in Markdown</text>
 </svg>

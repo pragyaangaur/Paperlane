@@ -1,68 +1,72 @@
 <p align="center">
-  <img src="docs/banner.svg" alt="Paperlane: new maths papers every day, made for you and your AI agent." width="100%">
+  <img src="docs/banner.svg" alt="Paperlane. The day's mathematics, read in a minute." width="100%">
 </p>
 
 <p align="center">
-  <a href="https://pragyaangaur.github.io/Paperlane/"><b>Open Paperlane →</b></a>
+  <a href="https://pragyaangaur.github.io/Paperlane/"><b>Read today's issue</b></a>
   &nbsp;·&nbsp;
-  <a href="https://pragyaangaur.github.io/Paperlane/today.html">Today's papers</a>
+  <a href="https://pragyaangaur.github.io/Paperlane/#lane">Set up your lane</a>
   &nbsp;·&nbsp;
-  <a href="https://pragyaangaur.github.io/Paperlane/about.html">About</a>
+  <a href="https://pragyaangaur.github.io/Paperlane/about.html">How it works</a>
 </p>
 
-A few hundred new mathematics papers appear every weekday, and the usual listing is hard to skim. Paperlane puts each day on one calm page. You pick your fields, glance at titles and open only the papers you care about. Every paper is also plain Markdown, so your own AI assistant can read the whole day for you. It is free and needs no account.
+A few hundred new mathematics papers appear every weekday. Paperlane sets each day as one quiet issue, like the contents page of a journal. You pick your fields and say what you work on, and the papers that matter to you come first. Every paper is also plain Markdown, so your own AI assistant can read the whole issue for you. It is free and needs no account.
 
 <p align="center">
-  <img src="docs/home.png" alt="The Paperlane home page with a search box and a grid of fields to pick from" width="88%">
+  <img src="docs/home.png" alt="The Paperlane home page: a journal masthead, today's contents and the lane builder" width="90%">
 </p>
 
-## How it works
+## Make it your lane
 
-1. **Pick your fields.** Choose Combinatorics, Probability or any other field on the home page. Paperlane remembers your choice on your device.
-2. **Skim the list.** Each paper shows only its title, authors and a few tags. Click a paper to read its abstract.
-3. **Go deeper.** Open the PDF, copy the paper's Markdown, or copy a link to share.
+1. **Pick your fields.** Tick Combinatorics, Probability or any other field. Paperlane remembers them on your device.
+2. **Say what you work on.** Type a few phrases such as "graph colouring, random walks".
+3. **Read.** Your papers rise to the top, and under each one Paperlane shows the words that matched.
 
 <p align="center">
-  <img src="docs/today.png" alt="Today's list filtered to papers with Lean, showing a green Lean project tag" width="88%">
+  <img src="docs/lane.png" alt="An issue ranked for graph colouring and random walks, with the matched words highlighted under each paper" width="90%">
 </p>
 
-## What you get
+## How the order works
 
-- **Filters that stay out of the way.** One search box and three buttons sit above the list: Fields, Has code and Lean. Every filtered view has its own link, so you can bookmark it or send it to a colleague.
-- **Code and Lean, spotted for you.** Papers that link to code get a **Code** tag. If the linked repository holds a Lean project, the paper gets a green **✓ Lean project** tag.
-- **Any paper from a link.** Paste an arXiv link or id into the search box at the top of any page, and Paperlane opens that paper with its abstract and a Markdown copy.
-- **Markdown for every paper.** The Markdown button shows a clean copy right under the paper, ready for a chat window or your notes.
-- **Light and dark.** Paperlane follows your system theme, and the switch in the header lets you pick one yourself.
+There are four orders, and the page always says which one is in use.
+
+- **By field** groups papers under their main field, largest field first, with your own fields on top. Inside a field, papers keep the order in which they were submitted.
+- **For me** ranks papers against your interests with BM25, the classic search ranking formula, over titles and abstracts. Titles count twice, exact phrases get a bonus, and British and American spellings match each other. This runs in your browser, and your interests are never sent anywhere.
+- **Newest** puts the latest submissions first.
+- **Shortest** sorts by the page count that the authors give.
+
+Paperlane never ranks a paper by its authors or their reputation.
+
+## Every paper, set like a first page
+
+Click a paper to read its abstract in place, or open its own page. Each page carries the same tags, a PDF link and a Markdown copy that you can paste into a chat.
 
 <table>
   <tr>
-    <td width="68%"><img src="docs/today-dark.png" alt="Paperlane in dark mode, filtered to Combinatorics"></td>
-    <td width="32%"><img src="docs/phone.png" alt="Paperlane on a phone"></td>
+    <td width="70%"><img src="docs/paper-dark.png" alt="A single paper page in the dark theme, set like the first page of a paper"></td>
+    <td width="30%"><img src="docs/phone.png" alt="Paperlane on a phone"></td>
   </tr>
 </table>
-
-## Let your AI pick your papers
-
-Click **Ask your AI** on the site and type what you work on. Paperlane writes a prompt for you to paste into any assistant that can open web pages:
-
-> Read https://pragyaangaur.github.io/Paperlane/latest-titles.md, Paperlane's index of today's new maths papers. My interests are extremal graph theory and polyominoes. Pick the candidates that fit, read their abstracts, and tell me which three papers I should read and why.
-
-Paperlane never ranks papers or scores their authors. Your assistant ranks the day against your own interests. The [About page](https://pragyaangaur.github.io/Paperlane/about.html#agents) lists every file that agents can read, from a one-line-per-paper index to a full JSON feed.
 
 ## What the tags mean
 
 | Tag | Meaning |
 | --- | --- |
-| **Code** | The abstract or comments link to a code host such as GitHub or GitLab |
-| **✓ Lean project** | A linked GitHub repository contains a `lean-toolchain` or `lakefile` file |
-| **Lean** | The paper says it is formalised in Lean, but no Lean repository was found |
-| **v2, v3 …** | The paper is a new version of an older one |
+| `∎ lean` | A linked GitHub repository contains a Lean project (`lean-toolchain` or a `lakefile`) |
+| `□ lean` | The paper says it is formalised in Lean, but no repository was found |
+| `code` | The abstract or comments link to code on GitHub, GitLab or a similar host |
+| `via cs.CC` | A paper from another subject that its authors also listed under mathematics |
+| `v2` | A revised version of an older paper |
 
-Each tag comes from a simple check that anyone can repeat. The Lean project tag shows that a Lean project exists in the repository, and a check that the proof compiles is planned.
+Each tag comes from a simple check that anyone can repeat. A check that Lean proofs actually compile is planned.
+
+## For agents
+
+Press **ask-ai** on the site for a ready prompt, or point an assistant at [`llms.txt`](https://pragyaangaur.github.io/Paperlane/llms.txt). Every issue is published as Markdown, JSON and RSS, and every paper has its own Markdown file.
 
 ## When it updates
 
-A new day appears every Monday to Friday at about 06:00 UTC. Every earlier day stays in the [archive](https://pragyaangaur.github.io/Paperlane/archive.html).
+A new issue appears every Monday to Friday at about 06:00 UTC, and every earlier issue stays in the [archive](https://pragyaangaur.github.io/Paperlane/archive.html).
 
 ## Feedback
 
