@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f5ff"/>
+      <stop offset="1" stop-color="#fbfbfa"/>
+    </linearGradient>
+    <linearGradient id="fade" x1="0" x2="1">
+      <stop offset="0" stop-color="#3346d3" stop-opacity="0"/>
+      <stop offset="1" stop-color="#3346d3" stop-opacity=".35"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="360" rx="24" fill="url(#bg)"/>
+  <rect x=".5" y=".5" width="1279" height="359" rx="23.5" fill="none" stroke="#e3e5f3"/>
+  <path d="M-20 330 C 300 330, 520 250, 760 205 S 1120 130, 1300 70" fill="none" stroke="url(#fade)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 14"/>
+  <path d="M-20 360 C 320 350, 560 290, 800 250 S 1140 180, 1300 130" fill="none" stroke="url(#fade)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 18" opacity=".6"/>
+  <g transform="translate(96 108) scale(3.6)">
+    <rect width="40" height="40" rx="10" fill="#3346d3"/>
+    <path d="M5.5 34.5 Q 9.5 30.5 14 27.5" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-linecap="round" stroke-dasharray="0.1 4.2"/>
+    <path d="M32 8.5 L8.5 18.2 L16.6 21.6 Z" fill="#fff"/>
+    <path d="M32 8.5 L16.6 21.6 L20.4 31.5 Z" fill="#fff" fill-opacity=".78"/>
+  </g>
+  <text x="280" y="178" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="76" font-weight="700" letter-spacing="-3" fill="#16171d">Paperlane</text>
+  <text x="284" y="232" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="30" fill="#5f6270">New maths papers every day, made for you and your AI agent.</text>
+  <g font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600">
+    <rect x="284" y="262" width="118" height="34" rx="17" fill="#eef0fd"/><text x="343" y="284" text-anchor="middle" fill="#3346d3">Pick fields</text>
+    <rect x="412" y="262" width="138" height="34" rx="17" fill="#e4f4ea"/><text x="481" y="284" text-anchor="middle" fill="#1f7a4a">✓ Lean tags</text>
+    <rect x="560" y="262" width="146" height="34" rx="17" fill="#f3f3f1"/><text x="633" y="284" text-anchor="middle" fill="#5f6270">Markdown too</text>
+  </g>
+</svg>
