@@ -134,17 +134,19 @@
     });
   }
 
+  // Light is the default. The switch turns dark on and off and remembers it on this device.
   function theme() {
     var btn = $("[data-theme-toggle]");
     if (!btn) return;
-    var order = ["auto", "light", "dark"];
-    var current = document.documentElement.dataset.theme || "auto";
-    function show() { btn.title = "Theme: " + current + " (click to switch)"; }
+    var root = document.documentElement;
+    function show() {
+      var dark = root.dataset.theme === "dark";
+      btn.title = dark ? "Light mode" : "Dark mode";
+      btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+    }
     btn.addEventListener("click", function () {
-      current = order[(order.indexOf(current) + 1) % order.length];
-      if (current === "auto") delete document.documentElement.dataset.theme;
-      else document.documentElement.dataset.theme = current;
-      store.set("paperlane-theme", current === "auto" ? null : current);
+      if (root.dataset.theme === "dark") { delete root.dataset.theme; store.set("paperlane-theme", null); }
+      else { root.dataset.theme = "dark"; store.set("paperlane-theme", "dark"); }
       show();
     });
     show();
