@@ -918,6 +918,43 @@
     if (parsed) location.replace(body.dataset.prefix + "paper.html?id=" + encodeURIComponent(parsed.id + parsed.v));
   }
 
+  // On the 404 page, "Read today's issue" sends a big accepted sheet flying across the screen before it opens the issue.
+  var BIG_SHEET = '<svg viewBox="0 0 300 360" aria-hidden="true"><path class="s" d="M8 8h220l64 64v280H8z"/><path class="f" d="M228 8v64h64"/>' +
+    '<path class="h" d="M40 98h150"/><path class="l" d="M40 62h110M40 98h170M40 132h210M40 162h190M40 192h220M40 222h150M40 282h200M40 312h110"/>' +
+    '<rect class="q" x="214" y="302" width="14" height="14"/>' +
+    '<g transform="rotate(-12 150 200)"><rect class="st" x="46" y="214" width="208" height="62" rx="8"/><text x="150" y="256" text-anchor="middle">ACCEPTED</text></g></svg>';
+  function flyAway() {
+    var link = $("[data-fly]");
+    if (!link) return;
+    link.addEventListener("click", function (e) {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (!document.body.animate || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+      e.preventDefault();
+      track("easter-egg-404");
+      var layer = document.createElement("div");
+      layer.className = "flight";
+      layer.innerHTML = '<i class="gust"></i><i class="gust"></i><i class="gust"></i><div class="big-sheet">' + BIG_SHEET + "</div>";
+      document.body.appendChild(layer);
+      var sheet = $(".big-sheet", layer);
+      // The last frames fade to plain paper, so the issue page opens on the same colour.
+      var paper = getComputedStyle(document.body).backgroundColor;
+      layer.animate([{ backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: "rgba(0,0,0,0)", offset: 0.78 }, { backgroundColor: paper }],
+        { duration: 1500, fill: "forwards" });
+      var go = function () { location.href = link.href; };
+      $$(".gust", layer).forEach(function (g, i) {
+        g.animate([{ transform: "translateX(-60vw) scaleX(0.4)", opacity: 0 }, { opacity: 1, offset: 0.4 }, { transform: "translateX(120vw) scaleX(1)", opacity: 0 }],
+          { duration: 700, delay: i * 90, easing: "ease-in", fill: "forwards" });
+      });
+      sheet.animate([
+        { transform: "translate(-70vw, 60vh) rotate(-55deg) scale(0.35)", opacity: 0.6 },
+        { transform: "translate(-12vw, 6vh) rotate(-14deg) scale(0.9)", opacity: 1, offset: 0.45 },
+        { transform: "translate(4vw, -4vh) rotate(8deg) scale(1.05)", offset: 0.7 },
+        { transform: "translate(0, 0) rotate(0deg) scale(9)", opacity: 1 },
+      ], { duration: 1500, easing: "cubic-bezier(0.45, 0.05, 0.4, 1)", fill: "forwards" }).onfinish = go;
+      setTimeout(go, 2200);
+    });
+  }
+
   // ---------- Fresh wording ----------
   // "Last night" is right only on the day an issue comes out. After that the page names the day instead.
   function freshWording() {
@@ -1042,6 +1079,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     interestsSync();
     notFound();
+    flyAway();
     freshWording();
     theme();
     lookupForm();

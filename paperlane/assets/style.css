@@ -605,3 +605,18 @@ body > main { flex: 1 0 auto; }
 @keyframes thunk { from { opacity: 0; transform: rotate(-16deg) scale(1.7); } to { opacity: 0.88; transform: rotate(-16deg) scale(1); } }
 @keyframes bob { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-7px) rotate(-0.6deg); } }
 @media (prefers-reduced-motion: reduce) { .la-float, .la-stamp { animation: none; } }
+/* 404 easter egg: the flying accepted sheet */
+.flight { position: fixed; inset: 0; z-index: 100; pointer-events: none; overflow: hidden; }
+.flight .big-sheet { position: absolute; left: 50%; top: 50%; width: min(46vw, 420px); margin: calc(min(46vw, 420px) * -0.6) 0 0 calc(min(46vw, 420px) * -0.5); will-change: transform; filter: drop-shadow(0 30px 50px rgba(17, 18, 16, 0.18)); }
+.flight svg { display: block; width: 100%; height: auto; }
+.flight .s { fill: var(--paper); stroke: var(--ink); stroke-width: 4; stroke-linejoin: round; }
+.flight .f { fill: none; stroke: var(--ink); stroke-width: 3.5; stroke-linejoin: round; }
+.flight .h { stroke: var(--hl); stroke-width: 22; stroke-linecap: round; }
+.flight .l { fill: none; stroke: var(--muted); stroke-width: 5; stroke-linecap: round; }
+.flight .q { fill: var(--ink); }
+.flight .st { fill: var(--lime); stroke: var(--ink); stroke-width: 4; }
+.flight text { font-family: var(--mono); font-weight: 500; font-size: 30px; letter-spacing: 0.14em; fill: #111210; }
+.flight .gust { position: absolute; left: 0; height: 3px; width: 50vw; border-radius: 3px; background: var(--ink); opacity: 0; }
+.flight .gust:nth-child(1) { top: 38%; } .flight .gust:nth-child(2) { top: 52%; width: 36vw; } .flight .gust:nth-child(3) { top: 64%; width: 44vw; }
+.lost { overflow-x: clip; }
+@media (max-width: 800px) { .lost-art { width: 100%; margin: 0 0 -24px; } .lost-side .verdict { margin-left: 0; } }
