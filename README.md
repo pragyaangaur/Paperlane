@@ -1,42 +1,64 @@
 # Paperlane
 
-Paperlane is a free daily feed of new arXiv mathematics papers, built for people and for the AI agents they read with. Every day it publishes the night's announcement as a browsable website, a Markdown page, a JSON file, an RSS feed and an `llms.txt` index. Titles, authors, abstracts and categories come from arXiv and every entry links back to arXiv for the full text.
+**New arXiv maths papers every day, made for you and your AI agent.**
 
-Each paper carries signals that plain code can check. Paperlane lists every code link in the abstract or comments and looks inside each linked GitHub repository for a Lean project (a `lakefile` or `lean-toolchain` file). It also notes when the abstract mentions Lean and when an entry is a new version of an older paper. Paperlane never scores papers or authors, so each reader's own assistant does the ranking against that reader's interests.
+### [Open Paperlane →](https://pragyaangaur.github.io/Paperlane/)
 
-## Running it
+arXiv posts a few hundred new mathematics papers every weekday, and the listing is hard to skim. Paperlane puts each day's papers on one clean page that you can filter by subfield in a second. Every paper is also published as plain Markdown, so your AI assistant can read the whole day and pick out what matters to you. It is free and needs no account.
 
-It needs Python 3.10 or later and nothing else.
+## What you can do
 
-```bash
-python3 -m paperlane fetch
-```
+- **Skim the day.** Each paper shows its title, authors, subfields and the first lines of its abstract. Maths in titles and abstracts is rendered properly.
+- **Filter to your field.** Tick one or more subfields in the sidebar, or type a word, an author or an arXiv id. A filtered view has its own URL, so you can bookmark it or send it to a colleague.
+- **Find papers with code or Lean.** Paperlane marks papers that link to code. When the link is a GitHub repository with a Lean project inside, the paper gets a green **Lean project** tag.
+- **Open any arXiv paper.** Paste an arXiv link or id into the box at the top. Papers from any day on Paperlane open on their own page, and other papers are fetched for you.
+- **Read the Markdown.** The **Markdown** button on every paper shows a clean Markdown version right under it, ready to copy into a chat or your notes.
+- **Read it your way.** Pick a light or a dark theme, and read on your phone if you like.
 
-This fetches the latest announcement from the arXiv RSS feed, looks up comments in the arXiv API, checks linked repositories and stores the day in `data/days/`. On nights with no announcement it stores nothing. To backfill a day, or to test on a weekend, use `--api-date 2026-10-23`, which approximates that day from submission times and has no new versions.
+## Let your AI pick your papers
 
-```bash
-python3 -m paperlane build --base-url http://localhost:8000
-python3 -m http.server 8000 --directory _site
-```
+Click **Ask your AI** on the site and type what you work on. Paperlane gives you a prompt like this one to paste into any assistant that can open web pages:
 
-This renders every stored day into `_site/` and serves it locally. The tests run offline with `python3 -m unittest`.
+> Read https://pragyaangaur.github.io/Paperlane/latest-titles.md, Paperlane's index of today's new arXiv mathematics papers. My interests are extremal graph theory and polyominoes. Pick the candidates that fit, read their abstracts, and tell me which three papers I should read and why.
 
-## What the site publishes
+Paperlane never ranks papers or scores authors. Your own assistant ranks the day against your own interests, which keeps the feed fair to every author.
 
-| Path | What it is |
+If you build agents or tools, these files are made for them:
+
+| File | What it holds |
 | --- | --- |
-| `index.html` | The latest day, with a filter sidebar (subfields, code, Lean, type and a text filter) and a Markdown button on every paper that shows its Markdown in place |
-| `latest-titles.md` | One line per paper with its id, categories, signals, title and authors, which is the place for an agent to start |
-| `latest.md` and `latest.json` | The latest day with abstracts |
-| `latest/<category>.md` | The latest day for one subfield, for example `latest/math.CO.md` |
-| `p/<id>.md` and `p/<id>.html` | One page per paper, which is the link to share. Old ids such as `math/0601001` use a hyphen in place of the slash |
-| `paper.html?id=<arXiv link or id>` | Opens any arXiv paper. A paper in the archive goes to its Paperlane page. Any other paper is fetched in the browser from Semantic Scholar or OpenAlex, because arXiv's own API does not allow requests from web pages |
-| `days/<date>.html`, `.md`, `.json` | Every past day |
-| `feed.xml` | RSS of the latest day's new papers and cross-lists |
-| `llms.txt` | An index for agents |
+| [`llms.txt`](https://pragyaangaur.github.io/Paperlane/llms.txt) | A guide to everything below, written for language models |
+| [`latest-titles.md`](https://pragyaangaur.github.io/Paperlane/latest-titles.md) | One line per paper with its id, subfields, signals, title and authors |
+| [`latest.md`](https://pragyaangaur.github.io/Paperlane/latest.md) | The whole day with abstracts |
+| [`latest.json`](https://pragyaangaur.github.io/Paperlane/latest.json) | The whole day with every field |
+| `latest/<subfield>.md` | One subfield of the day, for example [`latest/math.CO.md`](https://pragyaangaur.github.io/Paperlane/latest/math.CO.md) |
+| `p/<arXiv id>.md` | One paper, for example [`p/2610.30655.md`](https://pragyaangaur.github.io/Paperlane/p/2610.30655.md) |
+| [`feed.xml`](https://pragyaangaur.github.io/Paperlane/feed.xml) | An RSS feed for your feed reader |
 
-## Deployment
+## What the tags mean
 
-`.github/workflows/daily.yml` runs at 06:00 UTC every day. It fetches the day, commits it to `data/days/`, builds the site and deploys it to GitHub Pages. arXiv announces at 20:00 US Eastern time but rebuilds its RSS feed at midnight Eastern, which is 05:00 UTC in winter, so the job waits until after that. The repository needs Pages set to deploy from GitHub Actions.
+Every tag on a paper comes from a simple check that anyone can repeat. No language model is involved in any of them.
+
+| Tag | Meaning |
+| --- | --- |
+| **code** | The abstract or the comments link to GitHub, GitLab, Codeberg, Bitbucket, SourceHut or Hugging Face |
+| **Lean project** | A linked GitHub repository contains a `lean-toolchain` or `lakefile` file |
+| **mentions Lean** | The abstract or the comments say the work is formalised in Lean, but no Lean repository was found |
+| **v2, v3 …** | The entry is a new version of an older paper |
+| **published** | The paper has a journal reference |
+
+The Lean project tag only shows that the repository holds a Lean project. A check that the proof actually compiles is planned.
+
+## When it updates
+
+arXiv announces new papers at 20:00 US Eastern time from Sunday to Thursday. Paperlane picks them up at 06:00 UTC the next morning, so a new day appears from Monday to Friday. Every page shows when it was built, and every past day stays in the [archive](https://pragyaangaur.github.io/Paperlane/archive.html).
+
+## Where the data comes from
+
+Titles, authors, abstracts and categories come from arXiv. Paperlane keeps no copy of the full text, and every entry links to arXiv for the PDF. Papers that Paperlane has not listed yet are looked up through Semantic Scholar or OpenAlex when you open them.
 
 Thank you to arXiv for use of its open access interoperability.
+
+## Feedback
+
+Paperlane is new and still growing. If something is wrong or annoying, or you want a feature, please [open an issue](https://github.com/pragyaangaur/Paperlane/issues).
