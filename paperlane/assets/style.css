@@ -428,3 +428,33 @@ article.paper .title { font-size: 1.24rem; }
 /* A translucent selection never hides the line above it. */
 ::selection { background: rgba(200, 245, 60, 0.5); color: inherit; }
 :root[data-theme="dark"] ::selection { background: rgba(200, 245, 60, 0.3); }
+
+/* Each paper is its own card, so the eye can tell where one ends and the next begins. */
+article.paper { background: var(--leaf); border: 1px solid var(--rule); border-radius: 14px; margin: 0 0 10px; padding: 0 20px; transition: border-color 0.12s, box-shadow 0.12s; }
+article.paper:hover { border-color: color-mix(in srgb, var(--ink) 35%, var(--rule)); }
+article.paper.open { border-color: var(--ink); box-shadow: 0 10px 30px rgba(17, 18, 16, 0.08); }
+article.paper .head { padding: 16px 0 15px; }
+article.paper .body { padding-bottom: 20px; border-top: 1px dashed var(--rule); padding-top: 14px; }
+.num { display: inline-flex; align-items: center; justify-content: center; align-self: start; width: 2rem; height: 1.45rem; margin-top: 0.15em; padding: 0; border-radius: 6px; background: var(--paper); border: 1px solid var(--rule-soft); color: var(--muted); font-size: 0.68rem; }
+article.paper.open .num { background: var(--lime); border-color: var(--lime); color: #111210; }
+article.paper.folded { display: none !important; }
+article.first-page { background: none; border: 0; padding: 56px 0 0; box-shadow: none; }
+.group h2 { margin: 36px 0 12px; }
+.group:first-child h2 { margin-top: 20px; }
+
+/* Jump to a field, and the buttons that unfold a long field */
+.jump { display: flex; flex-wrap: nowrap; gap: 6px; margin: 14px 0 4px; font-size: 0.74rem; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; mask-image: linear-gradient(90deg, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent); }
+.jump a { white-space: nowrap; flex: none; }
+.jump a { text-decoration: none; color: var(--ink-2); border: 1px solid var(--rule); background: var(--leaf); border-radius: 999px; padding: 3px 10px; }
+.jump a:hover { border-color: var(--ink); color: var(--ink); background: var(--leaf); }
+.jump em { font-style: normal; color: var(--faint); margin-left: 2px; }
+.more { display: block; width: 100%; margin: 2px 0 8px; padding: 11px; border: 1px dashed var(--rule); border-radius: 12px; background: transparent; color: var(--ink-2); cursor: pointer; font-size: 0.78rem; }
+.more:hover { border-color: var(--ink); color: var(--ink); background: var(--leaf); }
+#flat-more { margin-top: 4px; }
+:root[data-theme="dark"] article.paper.open { box-shadow: none; }
+@media (max-width: 600px) {
+  article.paper { padding: 0 14px; border-radius: 12px; }
+  .jump { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .jump a { white-space: nowrap; }
+}
+
