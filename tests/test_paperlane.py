@@ -121,6 +121,11 @@ class RenderTest(unittest.TestCase):
             self.assertIn('data-md="p/2610.00001.md"', index)
             self.assertIn('name="cat" value="math.CO"', index)
 
+    def test_pages_of(self):
+        self.assertEqual(render.pages_of({"comments": "42 pages, 2 figures"}), 42)
+        self.assertEqual(render.pages_of({"comments": "12pp"}), 12)
+        self.assertIsNone(render.pages_of({"comments": "Comments welcome"}))
+
     def test_linkify(self):
         html_out = render.linkify("Code at https://github.com/x/y. <b>")
         self.assertIn('<a href="https://github.com/x/y" rel="nofollow">https://github.com/x/y</a>.', html_out)
