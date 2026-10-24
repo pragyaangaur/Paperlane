@@ -128,7 +128,7 @@ class RenderTest(unittest.TestCase):
 
     def test_linkify(self):
         html_out = render.linkify("Code at https://github.com/x/y. <b>")
-        self.assertIn('<a href="https://github.com/x/y" rel="nofollow">https://github.com/x/y</a>.', html_out)
+        self.assertIn('<a href="https://github.com/x/y" target="_blank" rel="nofollow noopener">https://github.com/x/y</a>.', html_out)
         self.assertIn("&lt;b&gt;", html_out)
 
 
