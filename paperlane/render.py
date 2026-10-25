@@ -174,10 +174,10 @@ def titles_md(day, base, built):
 # HTML
 
 REPO = "https://github.com/pragyaangaur/Paperlane"
+# The fonts live in assets/fonts. The two that every page needs first are preloaded.
 FONTS = (
-    '<link rel="preconnect" href="https://fonts.googleapis.com">'
-    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
-    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">'
+    '<link rel="preload" href="{prefix}assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>'
+    '<link rel="preload" href="{prefix}assets/fonts/LM-regular.woff2" as="font" type="font/woff2" crossorigin>'
 )
 
 # The mark: a written sheet caught in a gust, one line highlighted, the last closed with a tombstone.
@@ -270,7 +270,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 {THEME_BOOT}
 <link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="{prefix}assets/icon-180.png">
-{FONTS}
+{FONTS.format(prefix=prefix)}
 <link rel="stylesheet" href="{KATEX}/katex.min.css">
 <link rel="stylesheet" href="{prefix}assets/style.css">
 <link rel="alternate" type="application/rss+xml" title="Paperlane" href="{prefix}feed.xml">
