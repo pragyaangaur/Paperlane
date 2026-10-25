@@ -197,10 +197,19 @@ def _paper(base, extra, kind):
     return p
 
 
-def fetch_rss_day():
-    """The night's announcement, or None when arXiv announced nothing."""
+def read_rss():
+    """(announcement date, entries) straight from the RSS feed, with no API lookups."""
     day, items = parse_rss(http_get(RSS_URL))
     print(f"RSS: {len(items)} entries, announced {day}")
+    return day, items
+
+
+def fetch_rss_day(rss=None):
+    """The night's announcement, or None when arXiv announced nothing.
+
+    Pass the result of read_rss() to skip reading the feed a second time.
+    """
+    day, items = rss or read_rss()
     if not items:
         return None
     details = api_by_ids([i["id"] for i in items])
