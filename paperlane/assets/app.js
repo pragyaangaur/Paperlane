@@ -57,6 +57,22 @@
     });
   }
 
+  // An issue holds hundreds of abstracts, and typesetting them all at load is the slowest
+  // thing on the page. Each card is typeset when it comes near the screen instead. Folded
+  // and filtered cards are hidden, so they are never typeset until a reader shows them.
+  function lazyMath(root) {
+    var cards = $$("article.paper", root);
+    if (cards.length < 12 || !("IntersectionObserver" in window)) { renderMath(root); return; }
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        seen.unobserve(e.target);
+        renderMath(e.target);
+      });
+    }, { rootMargin: "800px 0px" });
+    cards.forEach(function (c) { seen.observe(c); });
+  }
+
   // arXiv ids: new style 2610.30655, old style math/0601001, with or without a version.
   function parseId(raw) {
     var s = (raw || "").trim();
@@ -1090,7 +1106,7 @@
     copyButtons();
     lookupPage();
     externalize();
-    renderMath($("main"));
+    lazyMath($("main"));
     drift();
     bands();
   });
