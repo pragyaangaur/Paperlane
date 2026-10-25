@@ -5,6 +5,11 @@ on:
     # arXiv announces at 20:00 US Eastern, but its RSS feed is rebuilt at midnight
     # Eastern (04:00 UTC in summer, 05:00 UTC in winter). 05:30 UTC is after both.
     - cron: "30 5 * * *"
+    # Two backup runs. Each one reads the feed again and only does work when the night
+    # is not stored yet or the live site is behind. The 07:30 run is the last one, and
+    # it fails (so GitHub emails you) when a weekday still has no issue.
+    - cron: "30 6 * * *"
+    - cron: "30 7 * * *"
   # A push that changes the code or the stored days rebuilds the site without fetching.
   push:
     branches: [main]
@@ -29,6 +34,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.fetch.outputs.changed }}
+      stale: ${{ steps.live.outputs.stale }}
+      site: ${{ steps.pages.outputs.base_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -42,6 +49,9 @@ jobs:
       - name: Fetch tonight's papers
         id: fetch
         if: github.event_name != 'push'
+        # A failed fetch should not fail the run. The next backup run tries again, and
+        # the last run of the day reports a missing issue.
+        continue-on-error: ${{ github.event_name == 'schedule' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           API_DATE: ${{ inputs.api_date }}
@@ -62,26 +72,35 @@ jobs:
           git pull --rebase
           git push
 
+      - name: Note a failed fetch
+        if: steps.fetch.outcome == 'failure'
+        run: echo "::warning title=Fetch failed::The next backup run will try again."
+
       - name: Configure Pages
         id: pages
-        if: steps.fetch.outputs.changed == 'true' || github.event_name != 'schedule'
         uses: actions/configure-pages@v5
 
+      # Catches a deploy that failed after the day was committed, so a backup run deploys it.
+      - name: Compare with the live site
+        id: live
+        if: github.event_name == 'schedule'
+        run: python -m paperlane check --site "${{ steps.pages.outputs.base_url }}"
+
       - name: Build the site
-        if: steps.fetch.outputs.changed == 'true' || github.event_name != 'schedule'
+        if: steps.fetch.outputs.changed == 'true' || steps.live.outputs.stale == 'true' || github.event_name != 'schedule'
         env:
           # Set this repository variable to a GoatCounter site code to turn on visitor counts.
           PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
         run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
 
       - uses: actions/upload-pages-artifact@v3
-        if: steps.fetch.outputs.changed == 'true' || github.event_name != 'schedule'
+        if: steps.fetch.outputs.changed == 'true' || steps.live.outputs.stale == 'true' || github.event_name != 'schedule'
         with:
           path: _site
 
   deploy:
     needs: build
-    if: needs.build.outputs.changed == 'true' || github.event_name != 'schedule'
+    if: needs.build.outputs.changed == 'true' || needs.build.outputs.stale == 'true' || github.event_name != 'schedule'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -89,3 +108,23 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Only the last scheduled run of the day reports, so a failure that a backup run fixed
+  # sends no email. A failed job here makes GitHub email the repository owner.
+  report:
+    needs: [build, deploy]
+    if: always() && github.event.schedule == '30 7 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check that today's issue is live
+        run: |
+          sleep 60
+          python -m paperlane check --final --site "${{ needs.build.outputs.site || 'https://pragyaangaur.github.io/Paperlane' }}"
