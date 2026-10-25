@@ -31,15 +31,15 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       changed: ${{ steps.fetch.outputs.changed }}
       stale: ${{ steps.live.outputs.stale }}
       site: ${{ steps.pages.outputs.base_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -78,7 +78,7 @@ jobs:
 
       - name: Configure Pages
         id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       # Catches a deploy that failed after the day was committed, so a backup run deploys it.
       - name: Compare with the live site
@@ -93,34 +93,36 @@ jobs:
           PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
         run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         if: steps.fetch.outputs.changed == 'true' || steps.live.outputs.stale == 'true' || github.event_name != 'schedule'
         with:
           path: _site
+          # Keeps .nojekyll, which this action drops by default since v4.
+          include-hidden-files: true
 
   deploy:
     needs: build
     if: needs.build.outputs.changed == 'true' || needs.build.outputs.stale == 'true' || github.event_name != 'schedule'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
   # Only the last scheduled run of the day reports, so a failure that a backup run fixed
   # sends no email. A failed job here makes GitHub email the repository owner.
   report:
     needs: [build, deploy]
     if: always() && github.event.schedule == '30 7 * * *'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
