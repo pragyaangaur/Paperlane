@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://pragyaangaur.github.io/Paperlane/"><img alt="Live site" src="https://img.shields.io/badge/live-pragyaangaur.github.io%2FPaperlane-c8f53c?style=flat-square&labelColor=111210"></a>
   <a href="https://github.com/pragyaangaur/Paperlane/actions/workflows/daily.yml"><img alt="Daily issue" src="https://img.shields.io/github/actions/workflow/status/pragyaangaur/Paperlane/daily.yml?style=flat-square&label=daily%20issue&labelColor=111210"></a>
-  <img alt="Updated every weekday at 05:30 UTC" src="https://img.shields.io/badge/updated-weekdays%2005%3A30%20UTC-eceee8?style=flat-square&labelColor=111210">
+  <img alt="Updated every weekday at 06:28 UTC" src="https://img.shields.io/badge/updated-weekdays%2006%3A28%20UTC-eceee8?style=flat-square&labelColor=111210">
   <img alt="No cookies" src="https://img.shields.io/badge/cookies-none-eceee8?style=flat-square&labelColor=111210">
 </p>
 
@@ -87,7 +87,7 @@ curl -s https://pragyaangaur.github.io/Paperlane/latest-titles.md | head
 ## How it works
 
 <p align="center">
-  <img src="docs/how-it-works.svg" alt="Every night arXiv announces new papers, a daily job at 05:30 UTC collects them, checks code and Lean projects, and publishes the issue for you and your AI agent" width="100%">
+  <img src="docs/how-it-works.svg" alt="Every night arXiv announces new papers, a daily job at 06:28 UTC collects them, checks code and Lean projects, and publishes the issue for you and your AI agent" width="100%">
 </p>
 
 A scheduled job collects the night's announcement and looks up the details of each paper. It checks every linked GitHub repository for a Lean project and then publishes the issue in every format at once. Every tag comes from a simple check that anyone can repeat, and no language model decides anything about a paper.
