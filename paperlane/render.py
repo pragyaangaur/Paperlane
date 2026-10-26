@@ -216,6 +216,8 @@ def day_stats(day):
     sig = [p.get("signals") or {} for p in day["papers"]]
     return {
         "papers": len(day["papers"]),
+        # Cross-lists are new to maths too. Replacements are new versions of older papers.
+        "updated": sum(1 for p in day["papers"] if section_of(p) == "replace"),
         "code": sum(1 for s in sig if s.get("code_links")),
         "lean": sum(1 for s in sig if s.get("lean_repo")),
         "fields": len({c for p in day["papers"] for c in p.get("math_categories") or []}),
@@ -543,7 +545,7 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
   <button type="button" class="more mono" id="flat-more" hidden></button>
 </div>"""
     title = f"{d:%A} {d.day} {d:%B %Y} · Paperlane"
-    return page(title, body, prefix, built, f"{st['papers']} new maths papers from {long_date(day['date'])}, with code and Lean tags.", base, "day", "today" if is_latest else "archive", "today.html" if is_latest else f"days/{day['date']}.html")
+    return page(title, body, prefix, built, f"{st['papers'] - st['updated']} new and {st['updated']} updated maths papers from {long_date(day['date'])}, with code and Lean tags.", base, "day", "today" if is_latest else "archive", "today.html" if is_latest else f"days/{day['date']}.html")
 
 
 CURIOUS_PROMPT = (
@@ -575,12 +577,14 @@ def home_html(day, number, base, built, age):
     when = "last night" if age <= 0 else "yesterday" if age == 1 else f"on {d:%A}"
     # The page is built once per issue, so the browser rechecks the wording against the reader's own date.
     when_html = f'<span data-when="{day["date"]}">{when}</span>'
+    fresh = st["papers"] - st["updated"]
+    plus = f", plus {st['updated']} updated" if st["updated"] else ""
     words = try_words(day)
     chips = "".join(f'<button type="button" data-try="{esc(w)}">{esc(w)}</button>' for w in words)
     curious = esc(CURIOUS_PROMPT.format(base=base))
     body = f"""<section class="hero wrap">
   <a class="live" href="today.html"><span class="pulse" aria-hidden="true"></span><span class="mono">issue no. {number} · {d:%a} {d.day} {d:%b}</span></a>
-  <h1>{st['papers']} new maths papers came out {when_html}.<br><em>What are you curious about?</em></h1>
+  <h1>{fresh} new maths papers came out {when_html}{plus}.<br><em>What are you curious about?</em></h1>
   <div class="finder" id="finder">
     <label class="finder-box"><span class="sr">Find papers in this issue</span>
       <input id="finder-q" type="search" placeholder="Type a topic or a word" autocomplete="off" spellcheck="false" enterkeyhint="search"></label>
