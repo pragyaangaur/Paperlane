@@ -5,7 +5,7 @@ import json
 import re
 import urllib.parse
 import shutil
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from email.utils import format_datetime
 from pathlib import Path
 
@@ -617,11 +617,11 @@ def archive_html(days, numbers, built, base):
             f'<span class="mono c">{st["papers"]} papers{f" · {st['lean']} with Lean" if st["lean"] else ""}</span></a></li>'
         )
     body = f"""<div class="wrap">
-  <header class="issue-head"><p class="kicker mono">archive</p><h1>Every issue is <em>kept here</em></h1>
-  <p class="lede small">Every past issue stays online. To open one paper from any day, paste its arXiv link or id into the box at the top.</p></header>
+  <header class="issue-head"><p class="kicker mono">archive</p><h1>Three months of <em>issues</em></h1>
+  <p class="lede small">Each issue stays online for three months. To open any paper, including an older one, paste its arXiv link or id into the box at the top.</p></header>
   <ol class="toc archive-toc">{''.join(rows)}</ol>
 </div>"""
-    return page("Archive · Paperlane", body, "", built, "Every issue of Paperlane, one per weekday.", base, "archive", "archive", "archive.html")
+    return page("Archive · Paperlane", body, "", built, "The last three months of Paperlane, one issue per weekday.", base, "archive", "archive", "archive.html")
 
 
 def lookup_html(built, base):
@@ -709,7 +709,7 @@ def about_html(days, base, built):
   <p>With no search, papers sit under their main field, largest field first, and the fields you picked move to the top. You can also list them newest first or shortest first. Paperlane never ranks a paper by who wrote it.</p>
 
   <h2>What Paperlane does for <em>your AI</em></h2>
-  <p>One night of mathematics is about 57,000 words of abstracts, the length of a short novel. Paperlane reads it once and hands your assistant an index of about 7,500 words, so the answer is fast and cheap. Some answers also need real work, such as checking every linked repository for a Lean project, and Paperlane does that once for everyone. Every issue stays in the archive, so you can look back and see when a paper was revised.</p>
+  <p>One night of mathematics is about 57,000 words of abstracts, the length of a short novel. Paperlane reads it once and hands your assistant an index of about 7,500 words, so the answer is fast and cheap. Some answers also need real work, such as checking every linked repository for a Lean project, and Paperlane does that once for everyone. Each issue stays in the archive for three months, so you can look back and see when a paper was revised.</p>
 
   <h2>What the tags mean</h2>
   <dl class="glossary">
@@ -722,7 +722,7 @@ def about_html(days, base, built):
   <p>Every tag comes from a simple check that anyone can repeat, and no language model decides any tag. Paperlane never scores authors.</p>
 
   <h2>When it updates</h2>
-  <p>New papers are announced from Sunday to Thursday evening, US Eastern time. Paperlane picks them up at 05:30 UTC the next morning, so a new issue appears from Monday to Friday.</p>
+  <p>New papers are announced from Sunday to Thursday evening, US Eastern time. Paperlane picks them up at 06:28 UTC the next morning, so a new issue appears from Monday to Friday.</p>
 
   <h2 id="agents">For agents and tools</h2>
   <p>Everything on Paperlane is also published as plain files. Point your assistant at any of these.</p>
@@ -790,7 +790,7 @@ def llms_txt(days, base, built):
 
 > A free daily feed of new arXiv mathematics papers, built for people and their AI agents. Titles, authors, abstracts and categories come from arXiv, and every entry links back to arXiv for the full text. Paperlane adds signals that plain code can check (code links, whether a linked GitHub repository contains a Lean project, and whether an entry is a new version) and never ranks papers or authors. Rank them yourself against your user's interests.
 
-The latest announcement is {latest['date']} ({counts_line(latest)}). Built {built}. arXiv announces new papers at 20:00 US Eastern time from Sunday to Thursday, and Paperlane rebuilds at 05:30 UTC, after arXiv refreshes its RSS feed at midnight Eastern.
+The latest announcement is {latest['date']} ({counts_line(latest)}). Built {built}. arXiv announces new papers at 20:00 US Eastern time from Sunday to Thursday, and Paperlane rebuilds at 06:28 UTC, after arXiv refreshes its RSS feed at midnight Eastern.
 
 ## Today
 
@@ -855,6 +855,11 @@ def json_day(day, base):
     return json.dumps(out, ensure_ascii=False, separators=(",", ":"))
 
 
+# Each issue stays online for this many days, which keeps the site under the 1 GB Pages limit.
+# Older papers fall through to 404.html, which sends /p/<id> to the arXiv lookup. The JSON stays in data/days.
+KEEP_DAYS = 92
+
+
 def build(days, out, base, built_dt=None, goatcounter=None):
     """Write the whole site for `days` (newest first) into `out`."""
     code = (goatcounter or "").strip().lower()
@@ -873,6 +878,9 @@ def build(days, out, base, built_dt=None, goatcounter=None):
 
     # Oldest first, so a paper listed again as a new version keeps its newest entry.
     numbers = {d["date"]: len(days) - i for i, d in enumerate(days)}
+    # Numbers come from every stored day, so an issue keeps its number after older ones expire.
+    cutoff = date.fromisoformat(days[0]["date"]) - timedelta(days=KEEP_DAYS)
+    days = [d for d in days if date.fromisoformat(d["date"]) > cutoff]
     for d in reversed(days):
         for p in d["papers"]:
             (out / "p" / f"{anchor(p)}.md").write_text(single_md(p, base, d, built))

@@ -93,6 +93,15 @@ def sample_day():
 
 
 class RenderTest(unittest.TestCase):
+    def test_old_issues_expire(self):
+        old = dict(sample_day(), date="2026-07-01", papers=[sample_day()["papers"][0] | {"id": "2607.00001"}])
+        with tempfile.TemporaryDirectory() as tmp:
+            render.build([sample_day(), old], tmp, "https://example.org/paperlane/")
+            out = Path(tmp)
+            self.assertFalse((out / "days/2026-07-01.html").exists())
+            self.assertFalse((out / "p/2607.00001.html").exists())
+            self.assertIn("issue no. 2", (out / "index.html").read_text())
+
     def test_build(self):
         with tempfile.TemporaryDirectory() as tmp:
             render.build([sample_day()], tmp, "https://example.org/paperlane/")
