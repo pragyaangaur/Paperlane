@@ -59,6 +59,18 @@
   "checked_at": "2026-10-27T11:34:52Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
  },
+ "muchenju-math/positivity-lean": {
+  "repo": "muchenju-math/positivity-lean",
+  "path": "",
+  "commit": "6511eea1fa5e40c35ad7fb23df592b99ec874e8a",
+  "toolchain": "leanprover/lean4:v4.34.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 218,
+  "detail": "",
+  "checked_at": "2026-10-27T11:41:41Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40497324435"
+ },
  "nawafbourabee/persistence-pays-lean": {
   "repo": "nawafbourabee/persistence-pays-lean",
   "path": "",
@@ -94,6 +106,18 @@
   "detail": "",
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "tilenmarc/braid-bruhat-mutation-distance": {
+  "repo": "tilenmarc/braid-bruhat-mutation-distance",
+  "path": "lean",
+  "commit": "77ef01c42c3f66c62dbb3e48733b22aac15bb5e4",
+  "toolchain": "leanprover/lean4:v4.34.1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 70,
+  "detail": "",
+  "checked_at": "2026-10-27T11:41:41Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40497324435"
  },
  "willmfeldman/bernoulli-perron-variational": {
   "repo": "willmfeldman/bernoulli-perron-variational",
