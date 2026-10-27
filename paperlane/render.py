@@ -384,7 +384,7 @@ def email_html(day, number, base, built):
     page_body = f"""<div class="wrap">
   <header class="issue-head"><p class="kicker mono">by email</p>
   <h1>Every issue in your inbox, <em>one short email</em>.</h1>
-  <p class="lede small">One email each weekday morning after arXiv's announcement. It has the night's numbers, every paper with a Lean project and whether it builds, papers with code, and every field with a link into the issue. It has no abstracts and no tracking links. You can leave with one click at the bottom of any email.</p></header>
+  <p class="lede small">One email each weekday morning after arXiv's announcement. It has the night's numbers, every paper with a Lean project and whether it builds, papers with code, and every field with a link into the issue. It has no abstracts. You can leave with one click at the bottom of any email.</p></header>
   {form}
   <section class="mail-sample" aria-label="Sample email">
     <p class="kicker mono">today's email</p>
@@ -791,6 +791,7 @@ def about_html(days, base, built):
 
   <h2>Privacy</h2>
   <p>Paperlane counts visits with GoatCounter, which sets no cookies and stores no personal data. It also counts a few anonymous events, such as a prompt being copied or a Markdown file being opened, to learn which features people use. Your fields and interests are kept in your own browser and are never sent anywhere.</p>
+  <p>If you sign up for the email, your address is kept by <a href="https://kit.com" target="_blank" rel="noopener">Kit</a>, which sends it. Kit counts opens and clicks, as most email services do. Paperlane never shares your address.</p>
 
   <h2>Where the data comes from</h2>
   <p>Titles, authors, abstracts and categories come from <a href="https://arxiv.org" target="_blank" rel="noopener">arXiv</a>, and every paper links to arXiv for the full text. Papers that Paperlane has not listed are looked up through Semantic Scholar or OpenAlex. {ARXIV_THANKS}</p>
