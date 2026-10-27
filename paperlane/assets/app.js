@@ -1092,8 +1092,16 @@
     measure();
   }
 
+  // Counts sign-ups by page. The address itself goes only to Kit.
+  function signups() {
+    $$("form[data-signup]").forEach(function (f) {
+      f.addEventListener("submit", function () { track("subscribe-" + f.dataset.signup); });
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     interestsSync();
+    signups();
     notFound();
     flyAway();
     freshWording();

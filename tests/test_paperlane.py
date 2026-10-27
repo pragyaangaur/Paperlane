@@ -6,7 +6,7 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from paperlane import arxiv, leancheck, render, signals
+from paperlane import arxiv, digest, leancheck, render, signals
 from paperlane.categories import math_categories
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -183,7 +183,8 @@ class LeanCheckTest(unittest.TestCase):
             store = Path(tmp) / "lean.json"
             self.assertEqual(leancheck.record(tmp, store, "https://run"), 1)
             self.assertEqual(json.loads(store.read_text())["x/y"]["run"], "https://run")
-            self.assertEqual(leancheck.record(tmp, store, expect={"other/repo"}), 0)
+            self.assertEqual(leancheck.record(tmp, store, expect={"x/y", "died/job"}), 2)
+            self.assertEqual(json.loads(store.read_text())["died/job"]["status"], "error")
 
     def test_labels_on_pages(self):
         for status, sorries, tag, md in [("builds", 0, "∎ lean builds", "build: builds, no sorry"),
@@ -192,3 +193,26 @@ class LeanCheckTest(unittest.TestCase):
             day = leancheck.annotate([sample_day()], {"x/y": build_result(status, sorries)})[0]
             self.assertIn(tag, render.tags(day["papers"][0]))
             self.assertIn(md, "; ".join(render.signal_notes(day["papers"][0])))
+
+
+class DigestTest(unittest.TestCase):
+    def test_plain_tex(self):
+        self.assertEqual(digest.plain(r"Primes in $\mathbb{Z}[i]$ for $n\le 10$ and $\alpha$--$\beta$"), "Primes in ℤ[i] for n≤ 10 and α–β")
+
+    def test_email(self):
+        day = leancheck.annotate([sample_day()], {"x/y": build_result("builds")})[0]
+        subject, body = digest.markdown(day, 4, "https://example.org/paperlane")
+        self.assertEqual(subject, "2 new maths papers, 1 with Lean · Fri 23 Oct")
+        self.assertIn("Lean builds, no sorry", body)
+        self.assertIn("https://example.org/paperlane/days/2026-10-23.html?cat=math.CO", body)
+        html = digest.to_html(body)
+        self.assertIn('<a href="https://example.org/paperlane/p/2610.00001.html">Title 2610.00001 with x^2</a>', html)
+
+    def test_signup_form(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            render.build([sample_day()], tmp, "https://example.org/paperlane/")
+            self.assertNotIn("app.kit.com", (Path(tmp) / "email.html").read_text())
+            self.assertNotIn("email.html", (Path(tmp) / "index.html").read_text())
+            render.build([sample_day()], tmp, "https://example.org/paperlane/", kit_form="1234567")
+            self.assertIn("app.kit.com/forms/1234567/subscriptions", (Path(tmp) / "email.html").read_text())
+            self.assertIn("email.html", (Path(tmp) / "index.html").read_text())

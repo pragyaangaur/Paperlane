@@ -1,8 +1,8 @@
-name: Lean builds
+name: Lean builds and email
 
 # Runs after every Daily feed run. It builds the Lean projects linked from the newest issue,
-# stores the results in data/lean.json and deploys the site again. It does nothing when
-# every linked project already has a result.
+# stores the results in data/lean.json, deploys the site again, and then sends the issue
+# as a Kit broadcast. Each step does nothing when there is nothing new.
 on:
   workflow_run:
     workflows: ["Daily feed"]
@@ -147,6 +147,7 @@ jobs:
         if: steps.record.outputs.changed == 'true'
         env:
           PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
+          PAPERLANE_KIT_FORM: ${{ vars.KIT_FORM_ID }}
         run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
 
       - uses: actions/upload-pages-artifact@v5
@@ -158,3 +159,18 @@ jobs:
       - name: Deploy
         if: steps.record.outputs.changed == 'true'
         uses: actions/deploy-pages@v5
+
+      # Sends once per issue, and only on the day of the issue. Until the repository variable
+      # DIGEST_SEND is set to true, each email waits in Kit as a draft for a look first.
+      - name: Send the email
+        env:
+          KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
+          SEND: ${{ vars.DIGEST_SEND }}
+        run: |
+          if [ "$SEND" = "true" ]; then python -m paperlane digest --send; else python -m paperlane digest; fi
+          git add data/digests.json 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Record the email for $(date -u +%F)"
+            git pull --rebase
+            git push
+          fi

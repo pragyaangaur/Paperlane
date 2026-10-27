@@ -625,3 +625,22 @@ body > main { flex: 1 0 auto; }
 .flight .gust:nth-child(1) { top: 38%; } .flight .gust:nth-child(2) { top: 52%; width: 36vw; } .flight .gust:nth-child(3) { top: 64%; width: 44vw; }
 .lost { overflow-x: clip; }
 @media (max-width: 800px) { .lost-art { width: 100%; margin: 0 0 -24px; } .lost-side .verdict { margin-left: 0; } }
+
+/* Email sign-up and the sample email */
+.signup { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; margin: 8px 0 40px; max-width: 620px; }
+.signup .finder-box { flex: 1 1 260px; margin: 0; }
+.signup input[type="email"] { width: 100%; }
+.browse a + a { margin-left: 18px; }
+.issue-mail { margin: 48px 0 0; text-align: center; }
+.mail-sample { margin: 0 0 24px; }
+.mail { border: 1px solid var(--rule); border-radius: 10px; background: var(--leaf); max-width: 680px; overflow: hidden; }
+.mail-subject { margin: 0; padding: 14px 22px; border-bottom: 1px solid var(--rule); font-weight: 550; }
+.mail-subject .mono { color: var(--muted); font-weight: 400; font-size: 0.8rem; margin-right: 10px; }
+.mail-body { padding: 6px 22px 18px; font-family: var(--serif); font-size: 1rem; line-height: 1.55; color: var(--ink-2); }
+.mail-body h3 { font-family: var(--sans); font-size: 1.05rem; color: var(--ink); margin: 26px 0 6px; }
+.mail-body a { color: var(--ink); }
+.mail-body ul { padding-left: 20px; }
+.mail-body li { margin: 4px 0; }
+.mail-body blockquote { margin: 10px 0; padding: 10px 14px; border-left: 3px solid var(--hl); background: var(--paper); font-size: 0.92rem; }
+.mail-body hr { border: 0; border-top: 1px solid var(--rule); margin: 22px 0 12px; }
+.mail-body hr + p { font-size: 0.85rem; color: var(--muted); }

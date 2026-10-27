@@ -1,4 +1,4 @@
-"""Command line: fetch, build and check, and the Lean build check."""
+"""Command line: fetch, build and check, the Lean build check, and the email digest."""
 
 import argparse
 import json
@@ -10,7 +10,7 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import USER_AGENT, arxiv, leancheck, render, signals
+from . import USER_AGENT, arxiv, digest, leancheck, render, signals
 
 
 def load_days(data):
@@ -66,7 +66,7 @@ def cmd_build(args):
     if not days:
         sys.exit(f"No days in {args.data}. Run `python -m paperlane fetch` first.")
     leancheck.annotate(days, leancheck.load(args.lean))
-    render.build(days, args.out, args.base_url, goatcounter=args.goatcounter)
+    render.build(days, args.out, args.base_url, goatcounter=args.goatcounter, kit_form=args.kit_form)
 
 
 def cmd_lean_plan(args):
@@ -91,6 +91,32 @@ def cmd_lean_record(args):
     n = leancheck.record(args.folder, args.lean, args.run_url, expect)
     print(f"Stored {n} Lean build results in {args.lean}")
     set_output("changed", "true" if n else "false")
+
+
+def cmd_digest(args):
+    days = load_days(args.data)
+    leancheck.annotate(days, leancheck.load(args.lean))
+    day = days[0]
+    sent = Path(args.sent)
+    done = json.loads(sent.read_text()) if sent.exists() else []
+    today = datetime.now(timezone.utc).date().isoformat()
+    if day["date"] in done:
+        print(f"The digest for {day['date']} was already sent.")
+        return
+    if day["date"] != today and not args.any_day:
+        print(f"The newest issue is {day['date']}, not today ({today}), so no digest goes out.")
+        return
+    subject, body = digest.markdown(day, len(days), args.base_url.rstrip("/"))
+    if args.dry_run:
+        print(subject + "\n\n" + body)
+        return
+    key = os.environ.get("KIT_API_KEY")
+    if not key:
+        print("KIT_API_KEY is not set, so no digest goes out.")
+        return
+    digest.send(subject, body, key, day["date"], send_now=args.send)
+    sent.write_text(json.dumps(sorted(done + [day["date"]])[-400:], indent=1) + "\n")
+    set_output("sent", "true")
 
 
 def live_date(site):
@@ -153,6 +179,7 @@ def main():
     b.add_argument("--out", default="_site")
     b.add_argument("--base-url", default=os.environ.get("PAPERLANE_BASE_URL", "http://localhost:8000"))
     b.add_argument("--goatcounter", default=os.environ.get("PAPERLANE_GOATCOUNTER"), help="GoatCounter site code for visitor counts")
+    b.add_argument("--kit-form", default=os.environ.get("PAPERLANE_KIT_FORM"), help="Kit form id for the email sign-up form")
     b.add_argument("--lean", default="data/lean.json", help="stored Lean build results")
     lp = sub.add_parser("lean-plan", help="list the Lean projects that need a build check")
     lp.add_argument("--date", help="only this day")
@@ -169,12 +196,19 @@ def main():
     lc.add_argument("--lean", default="data/lean.json")
     lc.add_argument("--run-url")
     lc.add_argument("--expect", help="the plan's matrix JSON; results for other repositories are dropped")
+    d = sub.add_parser("digest", help="send the newest issue as a Kit broadcast")
+    d.add_argument("--base-url", default=os.environ.get("PAPERLANE_BASE_URL", "https://pragyaangaur.github.io/Paperlane"))
+    d.add_argument("--lean", default="data/lean.json")
+    d.add_argument("--sent", default="data/digests.json", help="dates already sent")
+    d.add_argument("--send", action="store_true", help="send at once (without it the broadcast waits in Kit as a draft)")
+    d.add_argument("--any-day", action="store_true", help="send even when the newest issue is not today's")
+    d.add_argument("--dry-run", action="store_true", help="print the email instead of sending it")
     c = sub.add_parser("check", help="compare the newest stored day with the live site")
     c.add_argument("--site", required=True, help="the live site's base URL")
     c.add_argument("--final", action="store_true", help="fail when today's issue is missing (the last run of the day)")
     args = ap.parse_args()
     {"fetch": cmd_fetch, "build": cmd_build, "check": cmd_check, "lean-plan": cmd_lean_plan, "lean-run": cmd_lean_run,
-     "lean-record": cmd_lean_record}[args.cmd](args)
+     "lean-record": cmd_lean_record, "digest": cmd_digest}[args.cmd](args)
 
 
 if __name__ == "__main__":

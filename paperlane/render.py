@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta, timezone
 from email.utils import format_datetime
 from pathlib import Path
 
-from . import categories, leancheck, signals
+from . import categories, digest, leancheck, signals
 
 ASSETS = Path(__file__).parent / "assets"
 SECTIONS = [
@@ -316,7 +316,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <footer class="site">
   <div class="foot mono">
     <a class="brand small" href="{prefix}index.html">{LOGO}<span>Paperlane</span></a>
-    <nav><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}" target="_blank" rel="noopener">source</a></nav>
+    <nav>{email_link(prefix, "email")}<a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}" target="_blank" rel="noopener">source</a></nav>
     <span class="built">updated {esc(built)}</span>
   </div>
 </footer>
@@ -358,6 +358,43 @@ def ask_html(base, built):
   </section>
 </div>"""
     return page("Ask your AI · Paperlane", body, "", built, "Hand today's new maths papers to your own AI assistant with one prompt.", base, "ask-page", "ask", "ask.html")
+
+
+SIGNUP = {"kit": None}
+
+
+def signup_form(where):
+    """A plain HTML form that subscribes to a Kit form, or nothing when the build has no Kit form id."""
+    form = SIGNUP["kit"]
+    if not form:
+        return ""
+    return f"""<form class="signup" action="https://app.kit.com/forms/{form}/subscriptions" method="post" target="_blank" data-signup="{where}">
+    <label class="finder-box"><span class="sr">Your email address</span><input type="email" name="email_address" required placeholder="you@university.edu" autocomplete="email"></label>
+    <button type="submit" class="btn primary">Get it by email</button>
+  </form>"""
+
+
+def email_link(prefix, text="get it by email"):
+    return f'<a href="{prefix}email.html">{text}</a>' if SIGNUP["kit"] else ""
+
+
+def email_html(day, number, base, built):
+    subject, body = digest.markdown(day, number, base)
+    form = signup_form("email-page") or '<p class="mono hint">Email sign-up opens soon.</p>'
+    page_body = f"""<div class="wrap">
+  <header class="issue-head"><p class="kicker mono">by email</p>
+  <h1>Every issue in your inbox, <em>one short email</em>.</h1>
+  <p class="lede small">One email each weekday morning after arXiv's announcement. It has the night's numbers, every paper with a Lean project and whether it builds, papers with code, and every field with a link into the issue. It has no abstracts and no tracking links. You can leave with one click at the bottom of any email.</p></header>
+  {form}
+  <section class="mail-sample" aria-label="Sample email">
+    <p class="kicker mono">today's email</p>
+    <div class="mail">
+      <p class="mail-subject"><span class="mono">Subject</span> {esc(subject)}</p>
+      <div class="mail-body">{digest.to_html(body)}</div>
+    </div>
+  </section>
+</div>"""
+    return page("Paperlane by email", page_body, "", built, "Get each Paperlane issue as one short email every weekday morning.", base, "email-page", "", "email.html")
 
 
 def linkify(text):
@@ -563,6 +600,7 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
   </div>
   <section class="group flat" id="flat" hidden></section>
   <button type="button" class="more mono" id="flat-more" hidden></button>
+  {f'<p class="issue-mail mono">{email_link(prefix, "Get each issue by email →")}</p>' if SIGNUP["kit"] else ""}
 </div>"""
     title = f"{d:%A} {d.day} {d:%B %Y} · Paperlane"
     return page(title, body, prefix, built, f"{st['papers'] - st['updated']} new and {st['updated']} updated maths papers from {long_date(day['date'])}, with code and Lean tags.", base, "day", "today" if is_latest else "archive", "today.html" if is_latest else f"days/{day['date']}.html")
@@ -612,7 +650,7 @@ def home_html(day, number, base, built, age):
     <ol class="finds" id="finds" aria-live="polite"></ol>
     <p class="finds-foot mono" id="finds-foot" hidden><a id="finds-all" href="today.html"></a><a id="finds-ai" href="ask.html"></a></p>
   </div>
-  <p class="browse mono"><a href="today.html">or browse all {st['papers']} papers →</a></p>
+  <p class="browse mono"><a href="today.html">or browse all {st['papers']} papers →</a>{email_link("", "or get it by email →")}</p>
 </section>
 
 <section class="hook wrap">
@@ -702,7 +740,7 @@ def notfound_html(base, built):
 
 
 def sitemap(days, base):
-    urls = ["", "today.html", "archive.html", "about.html", "ask.html"]
+    urls = ["", "today.html", "archive.html", "about.html", "ask.html"] + (["email.html"] if SIGNUP["kit"] else [])
     urls += [f"days/{d['date']}.html" for d in days]
     urls += sorted({f"p/{anchor(p)}.html" for d in days for p in d["papers"]})
     rows = "".join(f"<url><loc>{esc(base)}/{u}</loc></url>" for u in urls)
@@ -883,10 +921,12 @@ def json_day(day, base):
 KEEP_DAYS = 92
 
 
-def build(days, out, base, built_dt=None, goatcounter=None):
+def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None):
     """Write the whole site for `days` (newest first) into `out`."""
     code = (goatcounter or "").strip().lower()
     ANALYTICS["goatcounter"] = code if re.fullmatch(r"[a-z0-9-]{2,50}", code) else None
+    form = str(kit_form or "").strip()
+    SIGNUP["kit"] = form if re.fullmatch(r"[0-9]{1,15}", form) else None
     built_dt = built_dt or datetime.now(timezone.utc).replace(microsecond=0)
     built = built_dt.strftime("%Y-%m-%d %H:%M UTC")
     base = base.rstrip("/")
@@ -931,6 +971,7 @@ def build(days, out, base, built_dt=None, goatcounter=None):
     (out / "archive.html").write_text(archive_html(days, numbers, built, base))
     (out / "paper.html").write_text(lookup_html(built, base))
     (out / "ask.html").write_text(ask_html(base, built))
+    (out / "email.html").write_text(email_html(latest, numbers[latest["date"]], base, built))
     (out / "feed.xml").write_text(rss(days, base, built_dt))
     (out / "llms.txt").write_text(llms_txt(days, base, built))
     (out / "404.html").write_text(notfound_html(base, built))
