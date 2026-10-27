@@ -1,0 +1,62 @@
+{
+ "LexiaoLai/Nonsmooth-BFGS-Nonstationary": {
+  "repo": "LexiaoLai/Nonsmooth-BFGS-Nonstationary",
+  "path": "",
+  "commit": "47234b3ded0783fb36e5329b9162c0f72fe033e6",
+  "toolchain": "leanprover/lean4:v4.33.1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 522,
+  "detail": "",
+  "checked_at": "2026-10-27T10:51:24Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "nawafbourabee/persistence-pays-lean": {
+  "repo": "nawafbourabee/persistence-pays-lean",
+  "path": "",
+  "commit": "11c7e9ee80417ae7f13f873da921b40cb982d853",
+  "toolchain": "leanprover/lean4:v4.34.0-rc2",
+  "status": "fails",
+  "sorries": 0,
+  "seconds": 55,
+  "detail": "lake build exited with code 1",
+  "checked_at": "2026-10-27T10:51:24Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "nitromannitol/Centrally-Excited-Random-Walk": {
+  "repo": "nitromannitol/Centrally-Excited-Random-Walk",
+  "path": "",
+  "commit": "411431c4b4ed185336c26053262d6220af9c2be0",
+  "toolchain": "leanprover/lean4:v4.32.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 2181,
+  "detail": "",
+  "checked_at": "2026-10-27T10:51:24Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "pedrotradacete/DSTBL3": {
+  "repo": "pedrotradacete/DSTBL3",
+  "path": "",
+  "commit": "47f515ee4b565fc55e91754f348d4e14a43f0de4",
+  "toolchain": "leanprover/lean4:v4.34.1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 198,
+  "detail": "",
+  "checked_at": "2026-10-27T10:51:24Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "willmfeldman/bernoulli-perron-variational": {
+  "repo": "willmfeldman/bernoulli-perron-variational",
+  "path": "",
+  "commit": "2abc33271f023fcb309e6c8cd07e229a352ed911",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 604,
+  "detail": "",
+  "checked_at": "2026-10-27T10:51:24Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ }
+}
