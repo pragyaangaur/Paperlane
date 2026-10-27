@@ -644,3 +644,4 @@ body > main { flex: 1 0 auto; }
 .mail-body blockquote { margin: 10px 0; padding: 10px 14px; border-left: 3px solid var(--hl); background: var(--paper); font-size: 0.92rem; }
 .mail-body hr { border: 0; border-top: 1px solid var(--rule); margin: 22px 0 12px; }
 .mail-body hr + p { font-size: 0.85rem; color: var(--muted); }
+.signup-done { margin: 8px 0 40px; max-width: 620px; padding: 14px 18px; border-radius: 10px; background: var(--hl); color: #111210; font-weight: 550; }

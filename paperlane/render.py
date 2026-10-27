@@ -368,7 +368,7 @@ def signup_form(where):
     form = SIGNUP["kit"]
     if not form:
         return ""
-    return f"""<form class="signup" action="https://app.kit.com/forms/{form}/subscriptions" method="post" target="_blank" data-signup="{where}">
+    return f"""<form class="signup" action="https://app.kit.com/forms/{form}/subscriptions" method="post" data-signup="{where}">
     <label class="finder-box"><span class="sr">Your email address</span><input type="email" name="email_address" required placeholder="you@university.edu" autocomplete="email"></label>
     <button type="submit" class="btn primary">Get it by email</button>
   </form>"""
