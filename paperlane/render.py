@@ -299,6 +299,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
       {nav("today.html", "today", "today")}
       {nav("archive.html", "archive", "archive")}
       {nav("ask.html", "ask AI", "ask")}
+      {nav("email.html", "email", "email") if SIGNUP["kit"] else ""}
       {nav("about.html", "about", "about")}
     </nav>
     <div class="tools">
@@ -316,7 +317,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <footer class="site">
   <div class="foot mono">
     <a class="brand small" href="{prefix}index.html">{LOGO}<span>Paperlane</span></a>
-    <nav>{email_link(prefix, "email")}<a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}" target="_blank" rel="noopener">source</a></nav>
+    <nav><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}" target="_blank" rel="noopener">source</a></nav>
     <span class="built">updated {esc(built)}</span>
   </div>
 </footer>
@@ -384,7 +385,7 @@ def email_html(day, number, base, built):
     page_body = f"""<div class="wrap">
   <header class="issue-head"><p class="kicker mono">by email</p>
   <h1>Every issue in your inbox, <em>one short email</em>.</h1>
-  <p class="lede small">One email each weekday morning after arXiv's announcement. It has the night's numbers, every paper with a Lean project and whether it builds, papers with code, and every field with a link into the issue. It has no abstracts. You can leave with one click at the bottom of any email.</p></header>
+  <p class="lede small">One email each weekday morning after arXiv's announcement. It gives the night's numbers, the papers whose Lean proofs compile and the busiest fields, with a link into the issue. It has no abstracts and takes ten seconds to read. You can leave with one click at the bottom of any email.</p></header>
   {form}
   <section class="mail-sample" aria-label="Sample email">
     <p class="kicker mono">today's email</p>
@@ -394,7 +395,7 @@ def email_html(day, number, base, built):
     </div>
   </section>
 </div>"""
-    return page("Paperlane by email", page_body, "", built, "Get each Paperlane issue as one short email every weekday morning.", base, "email-page", "", "email.html")
+    return page("Paperlane by email", page_body, "", built, "Get each Paperlane issue as one short email every weekday morning.", base, "email-page", "email", "email.html")
 
 
 def linkify(text):

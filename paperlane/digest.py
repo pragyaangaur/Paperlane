@@ -1,8 +1,6 @@
 """The daily email: one short issue sent as a Kit broadcast.
 
-The email carries no abstracts. It opens with the night's numbers, lists every paper whose
-Lean project was built, then papers with code, then every field with its count and a link
-into the issue. It is written in Markdown and sent as HTML. Kit's default template wraps
+The email is short on purpose. It carries no abstracts and sends every reader into the issue. It is written in Markdown and sent as HTML. Kit's default template wraps
 it, adds the unsubscribe link and sends it to every subscriber.
 """
 
@@ -10,13 +8,15 @@ import json
 import re
 from datetime import datetime, timedelta, timezone
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import date
 
 from . import USER_AGENT, categories, leancheck
 
 API = "https://api.kit.com/v4/broadcasts"
-MAX_CODE = 6
+MAX_LEAN = 4
+MAX_FIELDS = 4
 GREEK = {n: c for n, c in zip(
     "alpha beta gamma delta epsilon varepsilon zeta eta theta kappa lambda mu nu xi pi rho sigma tau phi varphi chi psi omega "
     "Gamma Delta Theta Lambda Xi Pi Sigma Phi Psi Omega".split(),
@@ -59,54 +59,48 @@ def paper_link(p, base):
 
 
 def markdown(day, number, base):
-    """(subject, body) for one issue."""
+    """(subject, body) for one issue.
+
+    The email is a teaser. It names the numbers, the papers whose Lean proofs compile and the
+    busiest fields, and every link leads into the issue on Paperlane, where the reading happens.
+    """
     from . import render  # render imports this module, so import late
 
     papers = day["papers"]
     fresh = [p for p in papers if is_new(p)]
-    updated = len(papers) - len(fresh)
     issue = f"{base}/days/{day['date']}.html"
-    d = date.fromisoformat(day["date"])
     lean = [p for p in papers if (p.get("signals") or {}).get("lean_repo")]
-    lean.sort(key=lambda p: (not is_new(p), p["id"]))
-    code = [p for p in fresh if (p.get("signals") or {}).get("code_links") and p not in lean]
+    built = sorted((p for p in lean if (leancheck.build_of(p) or {}).get("status") == "builds"),
+                   key=lambda p: (not is_new(p), p["id"]))
 
-    subject = f"{len(fresh)} new maths papers" + (f", {len(lean)} with Lean" if lean else "") + f" · {d:%a} {d.day} {d:%b}"
+    subject = f"{len(fresh)} new maths papers came out last night"
+    if built:
+        subject += f", {len(built)} with proofs that compile"
     out = [
-        f"**{len(fresh)} new maths papers came out last night**"
-        + (f", plus {updated} updated versions of older papers." if updated else "."),
-        f"{md_link(f'Open issue no. {number}', issue)} to search them or browse by field.",
+        f"**{len(fresh)} new maths papers came out last night.** One of them is probably the paper you would want to read first.",
+        "",
+        f"**{md_link(f'Find yours in issue no. {number} →', issue)}**",
     ]
 
-    if lean:
-        out += ["", "## Proofs you can build", "",
-                "These papers link a Lean project. Paperlane builds each one with `lake build` on a clean machine."]
-        for p in lean:
-            b = leancheck.build_of(p)
-            repo = next(g["repo"] for g in p["signals"]["github"] if g.get("lean"))
-            result = f"Lean {leancheck.label(b)}" if b else "Lean build check pending"
-            tag = "" if is_new(p) else f" (v{p.get('version')})"
-            out += ["", f"**{md_link(plain(p['title']), paper_link(p, base))}**{tag}  ",
-                    f"{authors(p['authors'])}. {result}. {md_link(repo, 'https://github.com/' + repo)}"]
-
-    if code:
-        out += ["", "## With code", ""]
-        for p in code[:MAX_CODE]:
-            out.append(f"- {md_link(plain(p['title']), paper_link(p, base))}. {authors(p['authors'], 2)}")
-        if len(code) > MAX_CODE:
-            out += ["", md_link(f"{len(code) - MAX_CODE} more papers link code", issue + "?code=1")]
+    if built:
+        out += ["", f"**{len(built)} come with Lean proofs that compile.** Paperlane built each one on a clean machine.", ""]
+        out += [f"- {md_link(plain(p['title']), paper_link(p, base))}" for p in built[:MAX_LEAN]]
+        if len(built) > MAX_LEAN:
+            out += ["", md_link(f"See all {len(built)} →", issue + "?lean=1")]
+    elif lean:
+        out += ["", f"**{len(lean)} link a Lean formalisation.** {md_link('See them →', issue + '?lean=1')}"]
 
     fields = render.field_counts(day)
-    out += ["", "## By field", "",
-            " · ".join(f"{md_link(categories.name(c), f'{issue}?cat={c}')} {n}" for c, n in fields)]
+    top = " · ".join(md_link(f"{categories.name(c)} {n}", f"{issue}?cat={c}") for c, n in fields[:MAX_FIELDS])
+    more = f" · {md_link(f'{len(fields) - MAX_FIELDS} more fields', issue)}" if len(fields) > MAX_FIELDS else ""
+    out += ["", f"**Busiest fields:** {top}{more}"]
 
-    out += ["", "## Ask your AI", "",
-            "Paste this into the assistant you already use and it will explain last night's papers in plain words.", "",
-            "> " + render.CURIOUS_PROMPT.format(base=base), "",
-            md_link("More prompts", f"{base}/ask.html")]
+    words = render.try_words(day, 4)
+    if words:
+        out += ["", "**Try searching:** " + " · ".join(md_link(w, f"{issue}?q={urllib.parse.quote(w)}") for w in words)]
 
-    out += ["", "---", "",
-            f"Paperlane is a free daily list of new arXiv mathematics papers. {render.ARXIV_THANKS}"]
+    out += ["", md_link("Not a mathematician? Let your AI explain the two most surprising results →", f"{base}/ask.html?mode=curious")]
+    out += ["", "---", "", f"Paperlane is a free daily list of new arXiv mathematics papers. {render.ARXIV_THANKS}"]
     return subject, "\n".join(out) + "\n"
 
 

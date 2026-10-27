@@ -202,9 +202,10 @@ class DigestTest(unittest.TestCase):
     def test_email(self):
         day = leancheck.annotate([sample_day()], {"x/y": build_result("builds")})[0]
         subject, body = digest.markdown(day, 4, "https://example.org/paperlane")
-        self.assertEqual(subject, "2 new maths papers, 1 with Lean · Fri 23 Oct")
-        self.assertIn("Lean builds, no sorry", body)
+        self.assertEqual(subject, "2 new maths papers came out last night, 1 with proofs that compile")
+        self.assertIn("1 come with Lean proofs that compile", body)
         self.assertIn("https://example.org/paperlane/days/2026-10-23.html?cat=math.CO", body)
+        self.assertNotIn("arxiv.org/abs", body)  # every link leads into Paperlane
         html = digest.to_html(body)
         self.assertIn('<a href="https://example.org/paperlane/p/2610.00001.html">Title 2610.00001 with x^2</a>', html)
 
