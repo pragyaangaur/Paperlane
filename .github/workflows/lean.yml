@@ -1,0 +1,160 @@
+name: Lean builds
+
+# Runs after every Daily feed run. It builds the Lean projects linked from the newest issue,
+# stores the results in data/lean.json and deploys the site again. It does nothing when
+# every linked project already has a result.
+on:
+  workflow_run:
+    workflows: ["Daily feed"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Build the Lean projects of this day (YYYY-MM-DD) instead of the newest"
+        required: false
+      force:
+        description: "Comma-separated repositories to build again, such as owner/repo"
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lean-builds
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      count: ${{ steps.plan.outputs.count }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: List the Lean projects to build
+        id: plan
+        env:
+          DAY: ${{ inputs.date }}
+          FORCE: ${{ inputs.force }}
+        run: python -m paperlane lean-plan ${DAY:+--date "$DAY"} --force "$FORCE"
+
+  # The build runs the authors' code, so this job gets no token and no secrets. It only
+  # writes a result file, which the publish job checks field by field before storing it.
+  build:
+    needs: plan
+    if: needs.plan.outputs.count != '0'
+    runs-on: ubuntu-24.04
+    permissions: {}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      # Mathlib's compiled files take several gigabytes.
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Build ${{ matrix.repo }}
+        env:
+          REPO: ${{ matrix.repo }}
+          PROJECT: ${{ matrix.path }}
+        run: python -m paperlane lean-run --repo "$REPO" --path "$PROJECT" --out result --minutes 45
+
+      - name: Keep the end of the log
+        if: always()
+        run: tail -c 200000 result/build.log > result/build-tail.log || true
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: lean-${{ strategy.job-index }}
+          path: |
+            result/result.json
+            result/build-tail.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+  publish:
+    needs: [plan, build]
+    if: always() && needs.plan.result == 'success'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@v8
+        if: needs.plan.outputs.count != '0'
+        with:
+          pattern: lean-*
+          path: results
+
+      - name: Store the results
+        id: record
+        if: needs.plan.outputs.count != '0'
+        env:
+          PLANNED: ${{ needs.plan.outputs.matrix }}
+        run: |
+          python -m paperlane lean-record --folder results --expect "$PLANNED" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/lean.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Add Lean build results"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Configure Pages
+        id: pages
+        if: steps.record.outputs.changed == 'true'
+        uses: actions/configure-pages@v6
+
+      - name: Build the site
+        if: steps.record.outputs.changed == 'true'
+        env:
+          PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
+        run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
+
+      - uses: actions/upload-pages-artifact@v5
+        if: steps.record.outputs.changed == 'true'
+        with:
+          path: _site
+          include-hidden-files: true
+
+      - name: Deploy
+        if: steps.record.outputs.changed == 'true'
+        uses: actions/deploy-pages@v5

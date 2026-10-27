@@ -1,4 +1,4 @@
-"""Command line: `python -m paperlane fetch` and `python -m paperlane build`."""
+"""Command line: fetch, build and check, and the Lean build check."""
 
 import argparse
 import json
@@ -10,7 +10,7 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import USER_AGENT, arxiv, render, signals
+from . import USER_AGENT, arxiv, leancheck, render, signals
 
 
 def load_days(data):
@@ -65,7 +65,32 @@ def cmd_build(args):
     days = load_days(args.data)
     if not days:
         sys.exit(f"No days in {args.data}. Run `python -m paperlane fetch` first.")
+    leancheck.annotate(days, leancheck.load(args.lean))
     render.build(days, args.out, args.base_url, goatcounter=args.goatcounter)
+
+
+def cmd_lean_plan(args):
+    days = load_days(args.data)
+    if args.date:
+        days = [d for d in days if d["date"] == args.date]
+    else:
+        days = days[:args.days]
+    force = {r for r in (args.force or "").split(",") if r}
+    jobs = leancheck.plan(days, leancheck.load(args.lean), force=force)
+    print(f"{len(jobs)} Lean projects to build: " + ", ".join(j["repo"] for j in jobs))
+    set_output("matrix", json.dumps({"include": jobs}))
+    set_output("count", len(jobs))
+
+
+def cmd_lean_run(args):
+    leancheck.run(args.repo, args.path, args.out, args.minutes)
+
+
+def cmd_lean_record(args):
+    expect = {j["repo"] for j in json.loads(args.expect)["include"]} if args.expect else None
+    n = leancheck.record(args.folder, args.lean, args.run_url, expect)
+    print(f"Stored {n} Lean build results in {args.lean}")
+    set_output("changed", "true" if n else "false")
 
 
 def live_date(site):
@@ -128,11 +153,28 @@ def main():
     b.add_argument("--out", default="_site")
     b.add_argument("--base-url", default=os.environ.get("PAPERLANE_BASE_URL", "http://localhost:8000"))
     b.add_argument("--goatcounter", default=os.environ.get("PAPERLANE_GOATCOUNTER"), help="GoatCounter site code for visitor counts")
+    b.add_argument("--lean", default="data/lean.json", help="stored Lean build results")
+    lp = sub.add_parser("lean-plan", help="list the Lean projects that need a build check")
+    lp.add_argument("--date", help="only this day")
+    lp.add_argument("--days", type=int, default=1, help="the newest N days (default 1)")
+    lp.add_argument("--force", help="comma-separated repositories to check again")
+    lp.add_argument("--lean", default="data/lean.json")
+    lr = sub.add_parser("lean-run", help="clone and build one Lean project (runs the authors' code)")
+    lr.add_argument("--repo", required=True)
+    lr.add_argument("--path", default="")
+    lr.add_argument("--out", required=True)
+    lr.add_argument("--minutes", type=int, default=60)
+    lc = sub.add_parser("lean-record", help="store the results of lean-run")
+    lc.add_argument("--folder", required=True)
+    lc.add_argument("--lean", default="data/lean.json")
+    lc.add_argument("--run-url")
+    lc.add_argument("--expect", help="the plan's matrix JSON; results for other repositories are dropped")
     c = sub.add_parser("check", help="compare the newest stored day with the live site")
     c.add_argument("--site", required=True, help="the live site's base URL")
     c.add_argument("--final", action="store_true", help="fail when today's issue is missing (the last run of the day)")
     args = ap.parse_args()
-    {"fetch": cmd_fetch, "build": cmd_build, "check": cmd_check}[args.cmd](args)
+    {"fetch": cmd_fetch, "build": cmd_build, "check": cmd_check, "lean-plan": cmd_lean_plan, "lean-run": cmd_lean_run,
+     "lean-record": cmd_lean_record}[args.cmd](args)
 
 
 if __name__ == "__main__":

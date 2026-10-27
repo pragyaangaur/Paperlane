@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta, timezone
 from email.utils import format_datetime
 from pathlib import Path
 
-from . import categories, signals
+from . import categories, leancheck, signals
 
 ASSETS = Path(__file__).parent / "assets"
 SECTIONS = [
@@ -89,7 +89,16 @@ def signal_notes(p):
         if repo:
             c = checks[repo]
             if c["lean"]:
-                note += f" (Lean project: {', '.join(c['lean_paths'])})"
+                note += f" (Lean project: {', '.join(c['lean_paths'])}"
+                b = c.get("build")
+                if b:
+                    note += f"; build: {leancheck.label(b)}"
+                    if b.get("commit"):
+                        note += f" at commit {b['commit'][:7]}"
+                    if b.get("toolchain"):
+                        note += f" with {b['toolchain']}"
+                    note += f", checked {b['checked_at'][:10]}"
+                note += ")"
             elif c["status"] == "missing":
                 note += " (repository not found)"
             elif c["lean"] is False:
@@ -130,7 +139,7 @@ def day_md(day, base, built, papers=None, heading=None):
         "",
         "Titles, authors and abstracts come from arXiv. Read the full text on arXiv. Signals are checked by code: "
         "code links found in the abstract or comments, whether a linked GitHub repository contains a Lean project "
-        "(a lakefile or lean-toolchain file), and whether the entry is a new version of an older paper. "
+        "(a lakefile or lean-toolchain file) and whether `lake build` passes on it, and whether the entry is a new version of an older paper. "
         "Paperlane does not rank papers or authors.",
     ]
     if day.get("source") == "api-window":
@@ -382,7 +391,13 @@ def tags(p):
         out.append(f'<span class="t-rev" title="A revised version of an older paper">v{p.get("version")}</span>')
     if s.get("code_links"):
         out.append('<span class="t-code" title="Links to code">code</span>')
-    if s.get("lean_repo"):
+    b = leancheck.build_of(p)
+    if b and b["status"] in ("builds", "sorry"):
+        title = "The linked Lean project builds" + ("" if b["status"] == "builds" else f", with {b['sorries']} sorry warnings")
+        out.append(f'<span class="t-lean" title="{esc(title)}">∎ lean {esc(leancheck.label(b, short=True))}</span>')
+    elif b and b["status"] in ("fails", "timeout"):
+        out.append(f'<span class="t-lean soft" title="A linked repository contains a Lean project, but it {esc(leancheck.label(b))}">∎ lean {esc(leancheck.label(b, short=True))}</span>')
+    elif s.get("lean_repo"):
         out.append('<span class="t-lean" title="A linked repository contains a Lean project">∎ lean</span>')
     elif s.get("mentions_lean"):
         out.append('<span class="t-lean soft" title="Mentions a Lean formalisation, no repository found">□ lean</span>')
@@ -402,6 +417,11 @@ def details_html(p):
             if f"github.com/{repo}" in url.lower():
                 if c["lean"]:
                     note = f' <span class="ok">∎ Lean project ({esc(", ".join(c["lean_paths"][:2]))})</span>'
+                    b = c.get("build")
+                    if b:
+                        at = f" at {b['commit'][:7]}" if b.get("commit") else ""
+                        cls = "ok" if b["status"] in ("builds", "sorry") else "warn"
+                        note += f' <span class="{cls}">{esc(leancheck.label(b))}{esc(at)}, checked {esc(b["checked_at"][:10])}</span>'
                 elif c["status"] == "missing":
                     note = ' <span class="warn">repository not found</span>'
         rows.append(("code", f'<a href="{esc(url)}" target="_blank" rel="nofollow noopener">{esc(short_link(url))}</a>{note}'))
@@ -713,7 +733,10 @@ def about_html(days, base, built):
 
   <h2>What the tags mean</h2>
   <dl class="glossary">
-    <div><dt class="mono t-lean">∎ lean</dt><dd>A linked GitHub repository contains a Lean project file (<code>lean-toolchain</code> or a <code>lakefile</code>). A check that it compiles is planned.</dd></div>
+    <div><dt class="mono t-lean">∎ lean</dt><dd>A linked GitHub repository contains a Lean project file (<code>lean-toolchain</code> or a <code>lakefile</code>). It has not been built yet.</dd></div>
+    <div><dt class="mono t-lean">∎ lean builds</dt><dd>Paperlane cloned the repository, installed the Lean version it asks for and ran <code>lake build</code> on a clean machine, and the build passed with no <code>sorry</code>. The paper's page names the commit and the Lean version. This shows the project compiles. It does not show that the Lean statements match the theorems in the paper.</dd></div>
+    <div><dt class="mono t-lean">∎ lean 3 sorry</dt><dd>The build passed, but Lean reported declarations proved with <code>sorry</code>, which means some proofs are missing.</dd></div>
+    <div><dt class="mono t-lean soft">∎ lean fails</dt><dd>The repository has a Lean project, but <code>lake build</code> failed or ran for more than an hour.</dd></div>
     <div><dt class="mono t-lean soft">□ lean</dt><dd>The paper says it is formalised in Lean, but no Lean repository was found.</dd></div>
     <div><dt class="mono t-code">code</dt><dd>The abstract or comments link to a code host such as GitHub or GitLab.</dd></div>
     <div><dt class="mono t-rev">v2</dt><dd>A revised version of an older paper.</dd></div>
@@ -788,7 +811,7 @@ def llms_txt(days, base, built):
     sub = "\n".join(f"- [{categories.name(c)}]({base}/latest/{c}.md): {c}" for c in cats)
     return f"""# Paperlane
 
-> A free daily feed of new arXiv mathematics papers, built for people and their AI agents. Titles, authors, abstracts and categories come from arXiv, and every entry links back to arXiv for the full text. Paperlane adds signals that plain code can check (code links, whether a linked GitHub repository contains a Lean project, and whether an entry is a new version) and never ranks papers or authors. Rank them yourself against your user's interests.
+> A free daily feed of new arXiv mathematics papers, built for people and their AI agents. Titles, authors, abstracts and categories come from arXiv, and every entry links back to arXiv for the full text. Paperlane adds signals that plain code can check (code links, whether a linked GitHub repository contains a Lean project and whether `lake build` passes on it, and whether an entry is a new version) and never ranks papers or authors. Rank them yourself against your user's interests.
 
 The latest announcement is {latest['date']} ({counts_line(latest)}). Built {built}. arXiv announces new papers at 20:00 US Eastern time from Sunday to Thursday, and Paperlane rebuilds at 06:28 UTC, after arXiv refreshes its RSS feed at midnight Eastern.
 

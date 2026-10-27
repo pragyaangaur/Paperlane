@@ -6,7 +6,7 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from paperlane import arxiv, render, signals
+from paperlane import arxiv, leancheck, render, signals
 from paperlane.categories import math_categories
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -148,3 +148,47 @@ class RenderTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def build_result(status, sorries=0):
+    return {"repo": "x/y", "path": "", "commit": "a" * 40, "toolchain": "leanprover/lean4:v4.35.0", "status": status,
+            "sorries": sorries, "seconds": 90, "detail": "", "checked_at": "2026-10-23T08:00:00Z"}
+
+
+class LeanCheckTest(unittest.TestCase):
+    def test_project_dir(self):
+        self.assertEqual(leancheck.project_dir(["lean-toolchain", "lakefile.toml"]), "")
+        self.assertEqual(leancheck.project_dir(["a/b/lean/lakefile.toml", "a/b/lean/lean-toolchain", "a/lean-toolchain"]), "a")
+        self.assertEqual(leancheck.project_dir(["lean/lakefile.lean"]), "lean")
+
+    def test_plan(self):
+        day = sample_day()
+        self.assertEqual(leancheck.plan([day], {}), [{"repo": "x/y", "path": ""}])
+        self.assertEqual(leancheck.plan([day], {"x/y": build_result("builds")}), [])
+        self.assertEqual(len(leancheck.plan([day], {"x/y": build_result("builds")}, force={"x/y"})), 1)
+
+    def test_clean_rejects_bad_results(self):
+        self.assertIsNone(leancheck.clean({"repo": "x/y", "status": "proved"}))
+        self.assertIsNone(leancheck.clean({"repo": "../etc", "status": "builds"}))
+        r = leancheck.clean(dict(build_result("sorry", 3), commit="nope", detail="<script>x</script>"))
+        self.assertIsNone(r["commit"])
+        self.assertNotIn("<", r["detail"])
+
+    def test_record(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "a").mkdir()
+            (Path(tmp) / "a" / "result.json").write_text(json.dumps(build_result("builds")))
+            (Path(tmp) / "b").mkdir()
+            (Path(tmp) / "b" / "result.json").write_text("not json")
+            store = Path(tmp) / "lean.json"
+            self.assertEqual(leancheck.record(tmp, store, "https://run"), 1)
+            self.assertEqual(json.loads(store.read_text())["x/y"]["run"], "https://run")
+            self.assertEqual(leancheck.record(tmp, store, expect={"other/repo"}), 0)
+
+    def test_labels_on_pages(self):
+        for status, sorries, tag, md in [("builds", 0, "∎ lean builds", "build: builds, no sorry"),
+                                         ("sorry", 2, "∎ lean 2 sorry", "build: builds with 2 sorry warnings"),
+                                         ("fails", 0, "∎ lean fails", "build: does not build")]:
+            day = leancheck.annotate([sample_day()], {"x/y": build_result(status, sorries)})[0]
+            self.assertIn(tag, render.tags(day["papers"][0]))
+            self.assertIn(md, "; ".join(render.signal_notes(day["papers"][0])))
