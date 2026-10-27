@@ -1,4 +1,28 @@
 {
+ "BitMiracle-AI/detailed-balance-gac": {
+  "repo": "BitMiracle-AI/detailed-balance-gac",
+  "path": "lean",
+  "commit": "c0598eb557a17198f5dc84eb8791dc47beca4e27",
+  "toolchain": "leanprover/lean4:v4.34.1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 210,
+  "detail": "",
+  "checked_at": "2026-10-27T11:34:52Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
+ },
+ "FormalCert-AI/llm2cert": {
+  "repo": "FormalCert-AI/llm2cert",
+  "path": "llm2cert/formalization/lean",
+  "commit": "37b6a0484fc8b532bb29588b56f5993193c42fcc",
+  "toolchain": "leanprover/lean4:v4.32.2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 132,
+  "detail": "",
+  "checked_at": "2026-10-27T11:34:52Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
+ },
  "LexiaoLai/Nonsmooth-BFGS-Nonstationary": {
   "repo": "LexiaoLai/Nonsmooth-BFGS-Nonstationary",
   "path": "",
@@ -22,6 +46,18 @@
   "detail": "the build machine stopped before the build finished",
   "checked_at": "2026-10-27T11:00:18Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40492028007"
+ },
+ "mcoiculescu/NonUniqueEuler": {
+  "repo": "mcoiculescu/NonUniqueEuler",
+  "path": "lean",
+  "commit": "1df5e7953d9efab4648d38e3ee4919a2906fb49a",
+  "toolchain": "leanprover/lean4:v4.34.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 1837,
+  "detail": "",
+  "checked_at": "2026-10-27T11:34:52Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
  },
  "nawafbourabee/persistence-pays-lean": {
   "repo": "nawafbourabee/persistence-pays-lean",
