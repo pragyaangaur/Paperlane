@@ -150,7 +150,7 @@ def record(folder, store, run_url=None, expect=None):
     so a result naming any other repository is dropped.
     """
     results = load(store)
-    n = 0
+    n, seen = 0, set()
     for f in sorted(Path(folder).glob("**/result.json")):
         try:
             r = clean(json.loads(f.read_text()))
@@ -162,6 +162,14 @@ def record(folder, store, run_url=None, expect=None):
         if run_url:
             r["run"] = run_url
         results[r["repo"]] = r
+        seen.add(r["repo"])
+        n += 1
+    # A build job that died (out of memory or disk) leaves no result. Record that, so the
+    # repository is not planned again and the page keeps the plain Lean tag.
+    for repo in sorted((expect or set()) - seen):
+        results[repo] = {"repo": repo, "path": "", "commit": None, "toolchain": None, "status": "error", "sorries": 0,
+                         "seconds": 0, "detail": "the build machine stopped before the build finished",
+                         "checked_at": iso(now()), **({"run": run_url} if run_url else {})}
         n += 1
     Path(store).write_text(json.dumps(dict(sorted(results.items())), indent=1) + "\n")
     return n
