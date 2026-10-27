@@ -54,6 +54,9 @@ jobs:
     runs-on: ubuntu-24.04
     permissions: {}
     timeout-minutes: 120
+    # A repository whose build crashes the machine is stored as an error by the publish job,
+    # so it should not mark the whole run as failed and send GitHub's failure email.
+    continue-on-error: true
     strategy:
       fail-fast: false
       max-parallel: 4
