@@ -35,6 +35,18 @@
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
  },
+ "TokyoProbabilityGroup/SYK_CLT": {
+  "repo": "TokyoProbabilityGroup/SYK_CLT",
+  "path": "",
+  "commit": "89f791ed4546496f0ad606d9b68807024f7c2924",
+  "toolchain": "leanprover/lean4:v4.32.2",
+  "status": "error",
+  "sorries": 0,
+  "seconds": 2,
+  "detail": "the Lean toolchain could not be installed",
+  "checked_at": "2026-10-28T06:21:22Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40638591070"
+ },
  "apemm/Kagey-Problems": {
   "repo": "apemm/Kagey-Problems",
   "path": "",
@@ -46,6 +58,18 @@
   "detail": "the build machine stopped before the build finished",
   "checked_at": "2026-10-27T11:00:18Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40492028007"
+ },
+ "hirokifukui/residue-apn": {
+  "repo": "hirokifukui/residue-apn",
+  "path": "supplement/lean",
+  "commit": "470284232bdbdb8926a9ae940e0d86bd3ff3e01d",
+  "toolchain": "leanprover/lean4:v4.31.0-rc1",
+  "status": "error",
+  "sorries": 0,
+  "seconds": 1,
+  "detail": "the Lean toolchain could not be installed",
+  "checked_at": "2026-10-28T06:21:22Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40638591070"
  },
  "mcoiculescu/NonUniqueEuler": {
   "repo": "mcoiculescu/NonUniqueEuler",
@@ -107,6 +131,18 @@
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
  },
+ "qiangwu2/approximate-counting-spin-glasses": {
+  "repo": "qiangwu2/approximate-counting-spin-glasses",
+  "path": "",
+  "commit": "9ba7d11ede3059bb95407b3a57be492e476dde49",
+  "toolchain": "leanprover/lean4:v4.32.1",
+  "status": "error",
+  "sorries": 0,
+  "seconds": 2,
+  "detail": "the Lean toolchain could not be installed",
+  "checked_at": "2026-10-28T06:21:22Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40638591070"
+ },
  "tilenmarc/braid-bruhat-mutation-distance": {
   "repo": "tilenmarc/braid-bruhat-mutation-distance",
   "path": "lean",
@@ -130,5 +166,17 @@
   "detail": "",
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "ywatanabex/bp-degree-syzygies-lean": {
+  "repo": "ywatanabex/bp-degree-syzygies-lean",
+  "path": "",
+  "commit": "2c097b160b5fc7c69e0d9867b6502d85af52e531",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "timeout",
+  "sorries": 0,
+  "seconds": 2793,
+  "detail": "lake build ran for more than 45 minutes",
+  "checked_at": "2026-10-28T06:21:22Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40638591070"
  }
 }
