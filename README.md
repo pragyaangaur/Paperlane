@@ -3,20 +3,20 @@
 </p>
 
 <p align="center">
-  <a href="https://pragyaangaur.github.io/Paperlane/"><img alt="Live site" src="https://img.shields.io/badge/live-pragyaangaur.github.io%2FPaperlane-c8f53c?style=flat-square&labelColor=111210"></a>
+  <a href="https://pragyaangaur.dev/Paperlane/"><img alt="Live site" src="https://img.shields.io/badge/live-pragyaangaur.dev%2FPaperlane-c8f53c?style=flat-square&labelColor=111210"></a>
   <a href="https://github.com/pragyaangaur/Paperlane/actions/workflows/daily.yml"><img alt="Daily issue" src="https://img.shields.io/github/actions/workflow/status/pragyaangaur/Paperlane/daily.yml?style=flat-square&label=daily%20issue&labelColor=111210"></a>
   <img alt="Updated every weekday at 06:28 UTC" src="https://img.shields.io/badge/updated-weekdays%2006%3A28%20UTC-eceee8?style=flat-square&labelColor=111210">
   <img alt="No cookies" src="https://img.shields.io/badge/cookies-none-eceee8?style=flat-square&labelColor=111210">
 </p>
 
 <p align="center">
-  <a href="https://pragyaangaur.github.io/Paperlane/"><b>Read today's issue</b></a>
+  <a href="https://pragyaangaur.dev/Paperlane/"><b>Read today's issue</b></a>
   &nbsp;·&nbsp;
-  <a href="https://pragyaangaur.github.io/Paperlane/ask.html">Ask your AI</a>
+  <a href="https://pragyaangaur.dev/Paperlane/ask.html">Ask your AI</a>
   &nbsp;·&nbsp;
-  <a href="https://pragyaangaur.github.io/Paperlane/llms.txt">llms.txt</a>
+  <a href="https://pragyaangaur.dev/Paperlane/llms.txt">llms.txt</a>
   &nbsp;·&nbsp;
-  <a href="https://pragyaangaur.github.io/Paperlane/about.html">About</a>
+  <a href="https://pragyaangaur.dev/Paperlane/about.html">About</a>
 </p>
 
 Every weekday a few hundred new mathematics papers come out. One night of them is about 57,000 words of abstracts, the length of a short novel, and almost nobody sees it happen. Paperlane turns each night into one short issue that you can skim in a minute and your AI assistant can read in seconds.
@@ -29,7 +29,7 @@ Type anything you are curious about and the matching papers from last night appe
 
 ## Start in ten seconds
 
-1. Open [Paperlane](https://pragyaangaur.github.io/Paperlane/).
+1. Open [Paperlane](https://pragyaangaur.dev/Paperlane/).
 2. Type a topic, such as `random walks`, or press one of the suggestions under the box.
 3. Open any paper that catches your eye, or press **see all** to get the whole issue ranked for what you typed.
 
@@ -49,11 +49,11 @@ Type anything you are curious about and the matching papers from last night appe
 
 Paste this into ChatGPT, Claude, Gemini or any assistant that can open web pages:
 
-> Read https://pragyaangaur.github.io/Paperlane/latest-titles.md, the list of new maths papers from the latest Paperlane issue. Pick the two results a curious person with no maths degree would find most surprising, read their abstracts in https://pragyaangaur.github.io/Paperlane/latest.md, and explain each one in plain words with an everyday example.
+> Read https://pragyaangaur.dev/Paperlane/latest-titles.md, the list of new maths papers from the latest Paperlane issue. Pick the two results a curious person with no maths degree would find most surprising, read their abstracts in https://pragyaangaur.dev/Paperlane/latest.md, and explain each one in plain words with an everyday example.
 
 ## Get a briefing every morning
 
-Many assistants can now run scheduled routines. Open [ask AI in routine mode](https://pragyaangaur.github.io/Paperlane/ask.html?mode=routine), pick a time and your timezone, type what you work on, and Paperlane writes a prompt that sets up a routine for every weekday. Each run reads the new issue and sends you the three papers worth your time. On days with no new issue it says so in one line. The page shows when the new issue arrives in your own timezone, so you can pick a time after it.
+Many assistants can now run scheduled routines. Open [ask AI in routine mode](https://pragyaangaur.dev/Paperlane/ask.html?mode=routine), pick a time and your timezone, type what you work on, and Paperlane writes a prompt that sets up a routine for every weekday. Each run reads the new issue and sends you the three papers worth your time. On days with no new issue it says so in one line. The page shows when the new issue arrives in your own timezone, so you can pick a time after it.
 
 ## What Paperlane does for your AI
 
@@ -64,25 +64,25 @@ Many assistants can now run scheduled routines. Open [ask AI in routine mode](ht
 
 ## For your AI agent
 
-Open [**ask AI**](https://pragyaangaur.github.io/Paperlane/ask.html) to build a prompt and copy it, or write your own:
+Open [**ask AI**](https://pragyaangaur.dev/Paperlane/ask.html) to build a prompt and copy it, or write your own:
 
-> Read https://pragyaangaur.github.io/Paperlane/latest-titles.md, Paperlane's index of today's new maths papers. My interests are extremal graph theory and polyominoes. Pick the candidates that fit, read their abstracts in https://pragyaangaur.github.io/Paperlane/latest.md, and tell me which three papers I should read and why.
+> Read https://pragyaangaur.dev/Paperlane/latest-titles.md, Paperlane's index of today's new maths papers. My interests are extremal graph theory and polyominoes. Pick the candidates that fit, read their abstracts in https://pragyaangaur.dev/Paperlane/latest.md, and tell me which three papers I should read and why.
 
 Tools can fetch the same files directly:
 
 ```bash
-curl -s https://pragyaangaur.github.io/Paperlane/latest-titles.md | head
+curl -s https://pragyaangaur.dev/Paperlane/latest-titles.md | head
 ```
 
 | File | What it holds |
 | --- | --- |
-| [`llms.txt`](https://pragyaangaur.github.io/Paperlane/llms.txt) | A guide to every file below, written for language models |
-| [`latest-titles.md`](https://pragyaangaur.github.io/Paperlane/latest-titles.md) | One line per paper with its id, fields, tags, title and authors |
-| [`latest.md`](https://pragyaangaur.github.io/Paperlane/latest.md) | The whole issue with abstracts |
-| [`latest.json`](https://pragyaangaur.github.io/Paperlane/latest.json) | The whole issue with every field |
-| `latest/<field>.md` | One field of the issue, for example [`latest/math.CO.md`](https://pragyaangaur.github.io/Paperlane/latest/math.CO.md) |
-| `p/<arXiv id>.md` | One paper, for example [`p/2610.30655.md`](https://pragyaangaur.github.io/Paperlane/p/2610.30655.md) |
-| [`feed.xml`](https://pragyaangaur.github.io/Paperlane/feed.xml) | RSS for your feed reader |
+| [`llms.txt`](https://pragyaangaur.dev/Paperlane/llms.txt) | A guide to every file below, written for language models |
+| [`latest-titles.md`](https://pragyaangaur.dev/Paperlane/latest-titles.md) | One line per paper with its id, fields, tags, title and authors |
+| [`latest.md`](https://pragyaangaur.dev/Paperlane/latest.md) | The whole issue with abstracts |
+| [`latest.json`](https://pragyaangaur.dev/Paperlane/latest.json) | The whole issue with every field |
+| `latest/<field>.md` | One field of the issue, for example [`latest/math.CO.md`](https://pragyaangaur.dev/Paperlane/latest/math.CO.md) |
+| `p/<arXiv id>.md` | One paper, for example [`p/2610.30655.md`](https://pragyaangaur.dev/Paperlane/p/2610.30655.md) |
+| [`feed.xml`](https://pragyaangaur.dev/Paperlane/feed.xml) | RSS for your feed reader |
 
 ## How it works
 
