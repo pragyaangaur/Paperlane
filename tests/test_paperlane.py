@@ -166,6 +166,9 @@ class LeanCheckTest(unittest.TestCase):
         self.assertEqual(leancheck.plan([day], {}), [{"repo": "x/y", "path": ""}])
         self.assertEqual(leancheck.plan([day], {"x/y": build_result("builds")}), [])
         self.assertEqual(len(leancheck.plan([day], {"x/y": build_result("builds")}, force={"x/y"})), 1)
+        # A check that could not run is tried again, up to MAX_TRIES times in all.
+        self.assertEqual(len(leancheck.plan([day], {"x/y": dict(build_result("error"), tries=1)})), 1)
+        self.assertEqual(leancheck.plan([day], {"x/y": dict(build_result("error"), tries=3)}), [])
 
     def test_clean_rejects_bad_results(self):
         self.assertIsNone(leancheck.clean({"repo": "x/y", "status": "proved"}))
@@ -185,6 +188,8 @@ class LeanCheckTest(unittest.TestCase):
             self.assertEqual(json.loads(store.read_text())["x/y"]["run"], "https://run")
             self.assertEqual(leancheck.record(tmp, store, expect={"x/y", "died/job"}), 2)
             self.assertEqual(json.loads(store.read_text())["died/job"]["status"], "error")
+            leancheck.record(tmp, store, expect={"x/y", "died/job"})
+            self.assertEqual(json.loads(store.read_text())["died/job"]["tries"], 2)
 
     def test_labels_on_pages(self):
         for status, sorries, tag, md in [("builds", 0, "∎ lean builds", "build: builds, no sorry"),

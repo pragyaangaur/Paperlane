@@ -23,6 +23,8 @@ SORRY_RE = re.compile(r"declaration uses ['`]sorry['`]")
 # A repository that was checked once is checked again only when a new version of a paper links it.
 RECHECK_AFTER = timedelta(days=7)
 MAX_PER_RUN = 20
+# A check that could not run (a download failed, or the machine crashed) is tried this many times in all.
+MAX_TRIES = 3
 
 
 def now():
@@ -59,12 +61,21 @@ def plan(days, results, when=None, force=()):
                 if not g.get("lean") or repo in jobs:
                     continue
                 old = results.get(repo)
-                due = old is None or repo in force
+                due = old is None or repo in force or (old["status"] == "error" and old.get("tries", 1) < MAX_TRIES)
                 if old and not due and (p.get("signals") or {}).get("new_version"):
                     due = when - datetime.fromisoformat(old["checked_at"].replace("Z", "+00:00")) > RECHECK_AFTER
                 if due:
                     jobs[repo] = {"repo": repo, "path": project_dir(g.get("lean_paths") or [])}
     return list(jobs.values())[:MAX_PER_RUN]
+
+
+def sh_retry(cmd, tries=3, wait=30, **kw):
+    """sh() again after a pause when a download fails, since Lean's servers sometimes refuse a connection."""
+    for i in range(tries):
+        code = sh(cmd, **kw)
+        if code == 0 or i == tries - 1:
+            return code
+        time.sleep(wait * (i + 1))
 
 
 def sh(cmd, cwd=None, timeout=None, log=None):
@@ -97,7 +108,7 @@ def run(repo, path, out, build_minutes=60, url=None):
         print(f"{repo}: {status} {detail}")
         return result
 
-    if sh(["git", "clone", "--depth", "1", "--quiet", url or f"https://github.com/{repo}.git", str(src)], timeout=600, log=log) != 0:
+    if sh_retry(["git", "clone", "--depth", "1", "--quiet", url or f"https://github.com/{repo}.git", str(src)], timeout=600, log=log) != 0:
         return finish("error", "the repository could not be cloned")
     result["commit"] = subprocess.run(["git", "rev-parse", "HEAD"], cwd=src, capture_output=True, text=True).stdout.strip()
     proj = src / path if path else src
@@ -106,7 +117,7 @@ def run(repo, path, out, build_minutes=60, url=None):
         return finish("error", f"no lean-toolchain in {path or 'the root'}")
     result["toolchain"] = tc.read_text().strip()[:100]
     # Fetching Lean itself counts as setup, so a slow download is not blamed on the paper.
-    if sh(["elan", "toolchain", "install", result["toolchain"]], timeout=1200, log=log) != 0:
+    if sh_retry(["elan", "toolchain", "install", result["toolchain"]], timeout=1200, log=log) != 0:
         return finish("error", "the Lean toolchain could not be installed")
     manifest = proj / "lake-manifest.json"
     if manifest.is_file() and '"mathlib"' in manifest.read_text():
@@ -161,6 +172,8 @@ def record(folder, store, run_url=None, expect=None):
             continue
         if run_url:
             r["run"] = run_url
+        if r["status"] == "error":
+            r["tries"] = previous_tries(results, r["repo"]) + 1
         results[r["repo"]] = r
         seen.add(r["repo"])
         n += 1
@@ -169,10 +182,16 @@ def record(folder, store, run_url=None, expect=None):
     for repo in sorted((expect or set()) - seen):
         results[repo] = {"repo": repo, "path": "", "commit": None, "toolchain": None, "status": "error", "sorries": 0,
                          "seconds": 0, "detail": "the build machine stopped before the build finished",
-                         "checked_at": iso(now()), **({"run": run_url} if run_url else {})}
+                         "checked_at": iso(now()), "tries": previous_tries(results, repo) + 1,
+                         **({"run": run_url} if run_url else {})}
         n += 1
     Path(store).write_text(json.dumps(dict(sorted(results.items())), indent=1) + "\n")
     return n
+
+
+def previous_tries(results, repo):
+    old = results.get(repo)
+    return old.get("tries", 1) if old and old["status"] == "error" else 0
 
 
 def annotate(days, results):
