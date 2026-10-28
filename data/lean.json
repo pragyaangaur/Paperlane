@@ -40,12 +40,12 @@
   "path": "",
   "commit": "89f791ed4546496f0ad606d9b68807024f7c2924",
   "toolchain": "leanprover/lean4:v4.32.2",
-  "status": "error",
+  "status": "builds",
   "sorries": 0,
-  "seconds": 2,
-  "detail": "the Lean toolchain could not be installed",
-  "checked_at": "2026-10-28T06:21:22Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40638591070"
+  "seconds": 217,
+  "detail": "",
+  "checked_at": "2026-10-28T07:33:12Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
  },
  "apemm/Kagey-Problems": {
   "repo": "apemm/Kagey-Problems",
@@ -64,12 +64,12 @@
   "path": "supplement/lean",
   "commit": "470284232bdbdb8926a9ae940e0d86bd3ff3e01d",
   "toolchain": "leanprover/lean4:v4.31.0-rc1",
-  "status": "error",
+  "status": "builds",
   "sorries": 0,
-  "seconds": 1,
-  "detail": "the Lean toolchain could not be installed",
-  "checked_at": "2026-10-28T06:21:22Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40638591070"
+  "seconds": 298,
+  "detail": "",
+  "checked_at": "2026-10-28T07:33:12Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
  },
  "mcoiculescu/NonUniqueEuler": {
   "repo": "mcoiculescu/NonUniqueEuler",
@@ -136,12 +136,12 @@
   "path": "",
   "commit": "9ba7d11ede3059bb95407b3a57be492e476dde49",
   "toolchain": "leanprover/lean4:v4.32.1",
-  "status": "error",
+  "status": "builds",
   "sorries": 0,
-  "seconds": 2,
-  "detail": "the Lean toolchain could not be installed",
-  "checked_at": "2026-10-28T06:21:22Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40638591070"
+  "seconds": 630,
+  "detail": "",
+  "checked_at": "2026-10-28T07:33:12Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
  },
  "tilenmarc/braid-bruhat-mutation-distance": {
   "repo": "tilenmarc/braid-bruhat-mutation-distance",
