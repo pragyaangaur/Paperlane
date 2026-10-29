@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -66,7 +67,9 @@ def cmd_build(args):
     if not days:
         sys.exit(f"No days in {args.data}. Run `python -m paperlane fetch` first.")
     leancheck.annotate(days, leancheck.load(args.lean))
-    render.build(days, args.out, args.base_url, goatcounter=args.goatcounter, kit_form=args.kit_form)
+    # GitHub reports a custom domain as http:// until HTTPS is enforced for the project, but the site is served over HTTPS.
+    base = re.sub(r"^http://(?!localhost\b|127\.0\.0\.1\b)", "https://", args.base_url)
+    render.build(days, args.out, base, goatcounter=args.goatcounter, kit_form=args.kit_form)
 
 
 def cmd_lean_plan(args):
@@ -197,7 +200,7 @@ def main():
     lc.add_argument("--run-url")
     lc.add_argument("--expect", help="the plan's matrix JSON; results for other repositories are dropped")
     d = sub.add_parser("digest", help="send the newest issue as a Kit broadcast")
-    d.add_argument("--base-url", default=os.environ.get("PAPERLANE_BASE_URL", "https://pragyaangaur.github.io/Paperlane"))
+    d.add_argument("--base-url", default=os.environ.get("PAPERLANE_BASE_URL", "https://pragyaangaur.dev/Paperlane"))
     d.add_argument("--lean", default="data/lean.json")
     d.add_argument("--sent", default="data/digests.json", help="dates already sent")
     d.add_argument("--send", action="store_true", help="send at once (without it the broadcast waits in Kit as a draft)")

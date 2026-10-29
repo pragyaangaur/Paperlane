@@ -131,4 +131,4 @@ jobs:
       - name: Check that today's issue is live
         run: |
           sleep 60
-          python -m paperlane check --final --site "${{ needs.build.outputs.site || 'https://pragyaangaur.github.io/Paperlane' }}"
+          python -m paperlane check --final --site "${{ needs.build.outputs.site || 'https://pragyaangaur.dev/Paperlane' }}"
