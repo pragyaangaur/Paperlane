@@ -59,6 +59,18 @@
   "checked_at": "2026-10-27T11:00:18Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40492028007"
  },
+ "drjanosch42/rational_quivers": {
+  "repo": "drjanosch42/rational_quivers",
+  "path": "lean",
+  "commit": "449bbc3b350f4cb299e391faa26f87a966afe6fb",
+  "toolchain": "leanprover/lean4:v4.31.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 988,
+  "detail": "",
+  "checked_at": "2026-10-30T13:51:27Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+ },
  "hirokifukui/residue-apn": {
   "repo": "hirokifukui/residue-apn",
   "path": "supplement/lean",
@@ -70,6 +82,18 @@
   "detail": "",
   "checked_at": "2026-10-28T07:33:12Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
+ },
+ "lacey-gatech/CantorSzemeredi": {
+  "repo": "lacey-gatech/CantorSzemeredi",
+  "path": "",
+  "commit": "d29e8f9f8c4073ee4e62a3fa2370fdaacaf1eb95",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "sorry",
+  "sorries": 2,
+  "seconds": 238,
+  "detail": "",
+  "checked_at": "2026-10-30T13:51:27Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
  },
  "mcoiculescu/NonUniqueEuler": {
   "repo": "mcoiculescu/NonUniqueEuler",
@@ -119,6 +143,18 @@
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
  },
+ "oasisss6666/pure-semisimplicity-lean": {
+  "repo": "oasisss6666/pure-semisimplicity-lean",
+  "path": "",
+  "commit": "e4905ead7f94aafd33b6820a0daaad59e1175b3f",
+  "toolchain": "leanprover/lean4:v4.34.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 328,
+  "detail": "",
+  "checked_at": "2026-10-30T13:51:27Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+ },
  "pedrotradacete/DSTBL3": {
   "repo": "pedrotradacete/DSTBL3",
   "path": "",
@@ -131,6 +167,18 @@
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
  },
+ "pxwu24/additivity-of-classical-communication": {
+  "repo": "pxwu24/additivity-of-classical-communication",
+  "path": "Lean",
+  "commit": "8a8cc1146b56be27b76788ab10334b958508976d",
+  "toolchain": "leanprover/lean4:v4.34.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 762,
+  "detail": "",
+  "checked_at": "2026-10-30T13:51:27Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+ },
  "qiangwu2/approximate-counting-spin-glasses": {
   "repo": "qiangwu2/approximate-counting-spin-glasses",
   "path": "",
@@ -142,6 +190,18 @@
   "detail": "",
   "checked_at": "2026-10-28T07:33:12Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
+ },
+ "sashakolpakov/CoxeterPolytopes": {
+  "repo": "sashakolpakov/CoxeterPolytopes",
+  "path": "formal",
+  "commit": "36eeaddf646eff25d4990c9ab730a20ada21f80f",
+  "toolchain": "leanprover/lean4:v4.32.2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 1907,
+  "detail": "",
+  "checked_at": "2026-10-30T13:51:27Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
  },
  "tilenmarc/braid-bruhat-mutation-distance": {
   "repo": "tilenmarc/braid-bruhat-mutation-distance",
