@@ -23,6 +23,18 @@
   "checked_at": "2026-10-27T11:34:52Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
  },
+ "LeGenAI/llm_guided_EAQECC_search": {
+  "repo": "LeGenAI/llm_guided_EAQECC_search",
+  "path": "formal/eaqecc",
+  "commit": "23904e56a3ad6c2eac42c2ae3d7ecf9dc5958cca",
+  "toolchain": "leanprover/lean4:v4.29.0-rc6",
+  "status": "fails",
+  "sorries": 0,
+  "seconds": 112,
+  "detail": "lake build exited with code 1",
+  "checked_at": "2026-11-02T06:31:11Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
+ },
  "LexiaoLai/Nonsmooth-BFGS-Nonstationary": {
   "repo": "LexiaoLai/Nonsmooth-BFGS-Nonstationary",
   "path": "",
@@ -34,6 +46,18 @@
   "detail": "",
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "MColbrook/Kung-Traub_conjecture": {
+  "repo": "MColbrook/Kung-Traub_conjecture",
+  "path": "",
+  "commit": "218c3459987250ff3eaef0840d6b364d25c5010f",
+  "toolchain": "leanprover/lean4:v4.33.1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 278,
+  "detail": "",
+  "checked_at": "2026-11-02T06:31:11Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
  },
  "TokyoProbabilityGroup/SYK_CLT": {
   "repo": "TokyoProbabilityGroup/SYK_CLT",
@@ -47,6 +71,18 @@
   "checked_at": "2026-10-28T07:33:12Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
  },
+ "adamtilepe/RootedTrailTrapHeterogeneousBouquets": {
+  "repo": "adamtilepe/RootedTrailTrapHeterogeneousBouquets",
+  "path": "",
+  "commit": "f95b7ffb47e117540c4534cfe67c45570bb2a592",
+  "toolchain": "leanprover/lean4:v4.35.0-rc4",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 180,
+  "detail": "",
+  "checked_at": "2026-11-02T06:31:11Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
+ },
  "apemm/Kagey-Problems": {
   "repo": "apemm/Kagey-Problems",
   "path": "",
@@ -58,6 +94,18 @@
   "detail": "the build machine stopped before the build finished",
   "checked_at": "2026-10-27T11:00:18Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40492028007"
+ },
+ "david44hello/papers_supporting_materials": {
+  "repo": "david44hello/papers_supporting_materials",
+  "path": "cranston-li-su-wang-xu-2026-conjecture/lean",
+  "commit": "3c0790201fd44ad69020fa865ba5e57cabb50651",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 179,
+  "detail": "",
+  "checked_at": "2026-11-02T06:31:11Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
  },
  "drjanosch42/rational_quivers": {
   "repo": "drjanosch42/rational_quivers",
@@ -142,6 +190,18 @@
   "detail": "",
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "nitromannitol/FPP-variance": {
+  "repo": "nitromannitol/FPP-variance",
+  "path": "",
+  "commit": "cfe58d1d241d86bd831c2e1b3c61273200fb780b",
+  "toolchain": "leanprover/lean4:v4.35.0-rc2",
+  "status": "sorry",
+  "sorries": 20,
+  "seconds": 1109,
+  "detail": "",
+  "checked_at": "2026-11-02T06:31:11Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
  },
  "oasisss6666/pure-semisimplicity-lean": {
   "repo": "oasisss6666/pure-semisimplicity-lean",
