@@ -23,6 +23,18 @@
   "checked_at": "2026-10-27T11:34:52Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
  },
+ "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization": {
+  "repo": "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization",
+  "path": "",
+  "commit": "b67166d1d6b9bdff80290f29ab2c3e5b0a0e21ea",
+  "toolchain": "leanprover/lean4:v4.34.1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 2042,
+  "detail": "",
+  "checked_at": "2026-11-03T14:20:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+ },
  "LeGenAI/llm_guided_EAQECC_search": {
   "repo": "LeGenAI/llm_guided_EAQECC_search",
   "path": "formal/eaqecc",
@@ -83,6 +95,18 @@
   "checked_at": "2026-11-02T06:31:11Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
  },
+ "anastasiosfragkosmath/Pointwise-Ergodic-Theorems-Along-floor-p-c-Palomar-Submission": {
+  "repo": "anastasiosfragkosmath/Pointwise-Ergodic-Theorems-Along-floor-p-c-Palomar-Submission",
+  "path": "",
+  "commit": "87f3fd829cde98edbc5eaa3deee462c598b920b0",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "timeout",
+  "sorries": 0,
+  "seconds": 2784,
+  "detail": "lake build ran for more than 45 minutes",
+  "checked_at": "2026-11-03T14:20:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+ },
  "apemm/Kagey-Problems": {
   "repo": "apemm/Kagey-Problems",
   "path": "",
@@ -131,6 +155,18 @@
   "checked_at": "2026-10-28T07:33:12Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
  },
+ "joaquimortega/MR1949832": {
+  "repo": "joaquimortega/MR1949832",
+  "path": "",
+  "commit": "7e465afc6b99e609967655be8805c42f30e93512",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 562,
+  "detail": "",
+  "checked_at": "2026-11-03T14:20:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+ },
  "lacey-gatech/CantorSzemeredi": {
   "repo": "lacey-gatech/CantorSzemeredi",
   "path": "",
@@ -142,6 +178,18 @@
   "detail": "",
   "checked_at": "2026-10-30T13:51:27Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+ },
+ "lacey-gatech/restricted-polynomials-lean": {
+  "repo": "lacey-gatech/restricted-polynomials-lean",
+  "path": "",
+  "commit": "b31e436034c6efe2daa1b4f3a6f3557ff706808d",
+  "toolchain": "leanprover/lean4:v4.34.1",
+  "status": "sorry",
+  "sorries": 2,
+  "seconds": 132,
+  "detail": "",
+  "checked_at": "2026-11-03T14:20:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
  },
  "mcoiculescu/NonUniqueEuler": {
   "repo": "mcoiculescu/NonUniqueEuler",
@@ -166,6 +214,18 @@
   "detail": "",
   "checked_at": "2026-10-27T11:41:41Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40497324435"
+ },
+ "na0b/gaussianriesz-lean": {
+  "repo": "na0b/gaussianriesz-lean",
+  "path": "",
+  "commit": "dc16c5de824a20c0164947c3a3e157887d9844c0",
+  "toolchain": "leanprover/lean4:v4.35.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 343,
+  "detail": "",
+  "checked_at": "2026-11-03T14:20:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
  },
  "nawafbourabee/persistence-pays-lean": {
   "repo": "nawafbourabee/persistence-pays-lean",
@@ -227,6 +287,18 @@
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
  },
+ "pedrotradacete/FBLOrderContinuousLH": {
+  "repo": "pedrotradacete/FBLOrderContinuousLH",
+  "path": "",
+  "commit": "ee3cde5070125ff2356b7144ff7a940a8dff2a54",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 350,
+  "detail": "",
+  "checked_at": "2026-11-03T14:20:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+ },
  "pxwu24/additivity-of-classical-communication": {
   "repo": "pxwu24/additivity-of-classical-communication",
   "path": "Lean",
@@ -251,6 +323,18 @@
   "checked_at": "2026-10-28T07:33:12Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
  },
+ "rtyu-1/coded-sorting-lean": {
+  "repo": "rtyu-1/coded-sorting-lean",
+  "path": "lean",
+  "commit": "b6028c386af83ed545ddbb65a8814db846f87112",
+  "toolchain": "leanprover/lean4:v4.19.0",
+  "status": "timeout",
+  "sorries": 0,
+  "seconds": 2786,
+  "detail": "lake build ran for more than 45 minutes",
+  "checked_at": "2026-11-03T14:20:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+ },
  "sashakolpakov/CoxeterPolytopes": {
   "repo": "sashakolpakov/CoxeterPolytopes",
   "path": "formal",
@@ -262,6 +346,18 @@
   "detail": "",
   "checked_at": "2026-10-30T13:51:27Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+ },
+ "skypher/szkraw": {
+  "repo": "skypher/szkraw",
+  "path": "lean",
+  "commit": "fbffa24449ec25f22d78a99a574d70b82eaaeb7e",
+  "toolchain": "leanprover/lean4:v4.33.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 924,
+  "detail": "",
+  "checked_at": "2026-11-03T14:20:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
  },
  "tilenmarc/braid-bruhat-mutation-distance": {
   "repo": "tilenmarc/braid-bruhat-mutation-distance",
@@ -286,6 +382,18 @@
   "detail": "",
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "xyzw/qedft_pf_pub": {
+  "repo": "xyzw/qedft_pf_pub",
+  "path": "gpt_lean",
+  "commit": "03fa937577e6261423240dad97af47d568f62daa",
+  "toolchain": "leanprover/lean4:v4.34.0-rc2",
+  "status": "timeout",
+  "sorries": 0,
+  "seconds": 2795,
+  "detail": "lake build ran for more than 45 minutes",
+  "checked_at": "2026-11-03T14:20:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
  },
  "ywatanabex/bp-degree-syzygies-lean": {
   "repo": "ywatanabex/bp-degree-syzygies-lean",
