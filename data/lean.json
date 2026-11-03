@@ -101,11 +101,11 @@
   "commit": "87f3fd829cde98edbc5eaa3deee462c598b920b0",
   "toolchain": "leanprover/lean4:v4.35.0",
   "status": "timeout",
-  "sorries": 0,
-  "seconds": 2784,
-  "detail": "lake build ran for more than 45 minutes",
-  "checked_at": "2026-11-03T14:20:46Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+  "sorries": 3,
+  "seconds": 5492,
+  "detail": "lake build ran for more than 90 minutes",
+  "checked_at": "2026-11-03T16:11:04Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41655593897"
  },
  "apemm/Kagey-Problems": {
   "repo": "apemm/Kagey-Problems",
@@ -328,12 +328,12 @@
   "path": "lean",
   "commit": "b6028c386af83ed545ddbb65a8814db846f87112",
   "toolchain": "leanprover/lean4:v4.19.0",
-  "status": "timeout",
+  "status": "builds",
   "sorries": 0,
-  "seconds": 2786,
-  "detail": "lake build ran for more than 45 minutes",
-  "checked_at": "2026-11-03T14:20:46Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+  "seconds": 2201,
+  "detail": "",
+  "checked_at": "2026-11-03T16:11:04Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41655593897"
  },
  "sashakolpakov/CoxeterPolytopes": {
   "repo": "sashakolpakov/CoxeterPolytopes",
@@ -390,10 +390,10 @@
   "toolchain": "leanprover/lean4:v4.34.0-rc2",
   "status": "timeout",
   "sorries": 0,
-  "seconds": 2795,
-  "detail": "lake build ran for more than 45 minutes",
-  "checked_at": "2026-11-03T14:20:46Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+  "seconds": 5499,
+  "detail": "lake build ran for more than 90 minutes",
+  "checked_at": "2026-11-03T16:11:04Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41655593897"
  },
  "ywatanabex/bp-degree-syzygies-lean": {
   "repo": "ywatanabex/bp-degree-syzygies-lean",
