@@ -124,3 +124,9 @@ Paperlane counts visits with [GoatCounter](https://www.goatcounter.com), which s
 Paperlane is new and changes quickly. If something feels wrong or you want a feature, please [open an issue](https://github.com/pragyaangaur/Paperlane/issues).
 
 Paper details come from arXiv. Thank you to arXiv for use of its open access interoperability.
+
+## License
+
+Paperlane's code is free to use, copy and change for any noncommercial purpose under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). Personal projects, research, teaching, universities, charities and public bodies are all covered, but any commercial use needs written permission from the author. Copies must keep the license and its notice, and a copy that you run yourself should go by a different name, because the name Paperlane is not part of the license.
+
+The license covers only the code and the site's design. Paper titles, abstracts and other paper details belong to their authors and come from arXiv under arXiv's own terms. The Geist fonts are under the SIL Open Font License and Latin Modern is under the GUST Font License.
