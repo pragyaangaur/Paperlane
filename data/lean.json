@@ -1,4 +1,28 @@
 {
+ "Apsiape/kaplansky-conjectures-hyperbolic-groups": {
+  "repo": "Apsiape/kaplansky-conjectures-hyperbolic-groups",
+  "path": "lean/KaplanskyLean",
+  "commit": "00ed62004dcf08ad5b6fab059c1399b206a1c586",
+  "toolchain": "leanprover/lean4:v4.34.1",
+  "status": "sorry",
+  "sorries": 3,
+  "seconds": 794,
+  "detail": "",
+  "checked_at": "2026-11-04T05:54:36Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
+ },
+ "Arthur742Ramos/TopologicalComputationalPaths": {
+  "repo": "Arthur742Ramos/TopologicalComputationalPaths",
+  "path": "",
+  "commit": "ea1367d99c7d2f3794f1299cce5b18379e9093a7",
+  "toolchain": "leanprover/lean4:v4.32.0",
+  "status": "sorry",
+  "sorries": 8,
+  "seconds": 209,
+  "detail": "",
+  "checked_at": "2026-11-04T05:54:36Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
+ },
  "BitMiracle-AI/detailed-balance-gac": {
   "repo": "BitMiracle-AI/detailed-balance-gac",
   "path": "lean",
@@ -22,6 +46,18 @@
   "detail": "",
   "checked_at": "2026-10-27T11:34:52Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
+ },
+ "HamedMousaviMath/Lean-Formalization-Polynomial-Configurations-and-Pointwise-Averages-Along-Piatetski--Shapiro-Primes": {
+  "repo": "HamedMousaviMath/Lean-Formalization-Polynomial-Configurations-and-Pointwise-Averages-Along-Piatetski--Shapiro-Primes",
+  "path": "",
+  "commit": "ab2c7e6e82a1a8c0d0454cb3832dc8aaa63c4316",
+  "toolchain": "leanprover/lean4:v4.19.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 143,
+  "detail": "",
+  "checked_at": "2026-11-04T05:54:36Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
  },
  "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization": {
   "repo": "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization",
@@ -142,6 +178,18 @@
   "detail": "",
   "checked_at": "2026-10-30T13:51:27Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+ },
+ "hanyi162013-Yihan/Poisson_Statistic_1dAndersonBernoulli": {
+  "repo": "hanyi162013-Yihan/Poisson_Statistic_1dAndersonBernoulli",
+  "path": "",
+  "commit": "2c241307055645b2919ceefc7eec23e76d69ff25",
+  "toolchain": "leanprover/lean4:v4.33.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 324,
+  "detail": "",
+  "checked_at": "2026-11-04T05:54:36Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
  },
  "hirokifukui/residue-apn": {
   "repo": "hirokifukui/residue-apn",
@@ -358,6 +406,18 @@
   "detail": "",
   "checked_at": "2026-11-03T14:20:46Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+ },
+ "so-okada/kronecker-euler-sources": {
+  "repo": "so-okada/kronecker-euler-sources",
+  "path": "",
+  "commit": "16bc3d52d484fbb83e1b0e3506169630c88d46a9",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 963,
+  "detail": "",
+  "checked_at": "2026-11-04T05:54:36Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
  },
  "tilenmarc/braid-bruhat-mutation-distance": {
   "repo": "tilenmarc/braid-bruhat-mutation-distance",
