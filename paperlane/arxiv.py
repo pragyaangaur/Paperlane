@@ -37,7 +37,7 @@ NS = {
 ID_RE = re.compile(r"(\d{4}\.\d{4,5}|[a-z][a-z\-]*(?:\.[A-Z]{2})?/\d{7})(?:v(\d+))?")
 
 
-def http_get(url, tries=4, pause=5.0):
+def http_get(url, tries=6, pause=5.0):
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     for attempt in range(tries):
         try:
@@ -47,6 +47,10 @@ def http_get(url, tries=4, pause=5.0):
             if attempt == tries - 1:
                 raise
             wait = pause * (attempt + 1)
+            # arXiv answers 429 or 503 when it is busy, and a few seconds is not enough to wait it out.
+            if isinstance(e, urllib.error.HTTPError) and e.code in (429, 503):
+                after = (e.headers or {}).get("Retry-After", "")
+                wait = min(int(after), 600) if after.isdigit() else 60 * (attempt + 1)
             print(f"  fetch failed ({e}), retrying in {wait:.0f}s")
             time.sleep(wait)
 
