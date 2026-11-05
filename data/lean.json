@@ -38,15 +38,14 @@
  "Fedor-Popov/Lean_VOA": {
   "repo": "Fedor-Popov/Lean_VOA",
   "path": "",
-  "commit": null,
-  "toolchain": null,
-  "status": "error",
+  "commit": "60304626558f9846e0284bc42bf244323cbf8407",
+  "toolchain": "leanprover/lean4:v4.30.0",
+  "status": "timeout",
   "sorries": 0,
-  "seconds": 0,
-  "detail": "the build machine stopped before the build finished",
-  "checked_at": "2026-11-05T07:06:21Z",
-  "tries": 1,
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41975052109"
+  "seconds": 5490,
+  "detail": "lake build ran for more than 90 minutes",
+  "checked_at": "2026-11-05T08:41:48Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41984991419"
  },
  "FormalCert-AI/llm2cert": {
   "repo": "FormalCert-AI/llm2cert",
