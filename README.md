@@ -14,6 +14,10 @@
   &nbsp;·&nbsp;
   <a href="https://pragyaangaur.dev/Paperlane/ask.html">Ask your AI</a>
   &nbsp;·&nbsp;
+  <a href="https://pragyaangaur.dev/Paperlane/email.html">Get it by email</a>
+  &nbsp;·&nbsp;
+  <a href="https://pragyaangaur.dev/Paperlane/lean.html">Lean builds</a>
+  &nbsp;·&nbsp;
   <a href="https://pragyaangaur.dev/Paperlane/llms.txt">llms.txt</a>
   &nbsp;·&nbsp;
   <a href="https://pragyaangaur.dev/Paperlane/about.html">About</a>
@@ -44,6 +48,7 @@ Type anything you are curious about and the matching papers from last night appe
 - **Keep code and proofs.** The **Code** and **Lean** buttons keep only papers that link to code or to a Lean formalisation.
 - **Open any paper.** Paste an arXiv link or id into the box in the header. Papers from any issue open on their own page, and older papers are looked up for you.
 - **Take the Markdown.** Every paper has a Markdown version one click away, ready for a chat window or your notes.
+- **Get it by email.** A short email each weekday morning gives the night's numbers, the papers whose Lean proofs compile and the busiest fields, with links into the issue. [Sign up here](https://pragyaangaur.dev/Paperlane/email.html).
 
 ## If you are not a mathematician
 
@@ -58,7 +63,7 @@ Many assistants can now run scheduled routines. Open [ask AI in routine mode](ht
 ## What Paperlane does for your AI
 
 - **A night of maths is a short novel.** Paperlane reads it once and hands your assistant an index of about 7,500 words, so the answer is fast and cheap.
-- **Some answers need real work.** Checking every linked repository for a Lean project takes real requests, and compiling the proofs (coming next) takes real computing time. Paperlane does this once, for everyone.
+- **Some answers need real work.** Checking every linked repository for a Lean project takes real requests, and compiling the proofs takes real computing time. Paperlane does this once, for everyone.
 - **Nothing is made up.** Every tag is a plain check that anyone can repeat, so an assistant reading Paperlane cannot be fooled into claiming a proof that does not exist.
 - **It remembers.** Every issue stays in the archive, so you can look back across weeks and see when a paper was revised.
 
@@ -92,11 +97,32 @@ curl -s https://pragyaangaur.dev/Paperlane/latest-titles.md | head
 
 A scheduled job collects the night's announcement and looks up the details of each paper. It checks every linked GitHub repository for a Lean project and then publishes the issue in every format at once. Every tag comes from a simple check that anyone can repeat, and no language model decides anything about a paper.
 
+## Lean builds
+
+Every Lean project linked from a paper is cloned and built on a clean machine. Paperlane installs the Lean version named in `lean-toolchain`, downloads Mathlib's cache when the project uses Mathlib, runs `lake build` and counts the `declaration uses sorry` warnings. The build runs with no secrets and no write access, because it runs the authors' code. A passing build shows that the project compiles at that commit. It does not show that the Lean statements match the theorems in the paper.
+
+[Lean builds](https://pragyaangaur.dev/Paperlane/lean.html) lists every checked project. Each one has a page with the commit, the Lean version and the papers that link it.
+
+<p align="center">
+  <img src="docs/lean.png" alt="The Lean builds page, listing every checked Lean project with a badge that says whether it builds" width="92%">
+</p>
+
+### A badge for your README
+
+If your paper links a Lean project, its page on Paperlane has a badge that shows the newest result and links back to that page. Copy the Markdown from the page, or build it from your repository's name:
+
+```markdown
+[![Paperlane Lean](https://pragyaangaur.dev/Paperlane/lean/OWNER/REPO.svg)](https://pragyaangaur.dev/Paperlane/lean/OWNER/REPO.html)
+```
+
 ## What the tags mean
 
 | Tag | Meaning |
 | --- | --- |
-| `∎ lean` | A linked GitHub repository contains a Lean project (`lean-toolchain` or a `lakefile`) |
+| `∎ lean` | A linked GitHub repository contains a Lean project (`lean-toolchain` or a `lakefile`), not built yet |
+| `∎ lean builds` | The Lean project built on a clean machine with no `sorry` |
+| `∎ lean 3 sorry` | The Lean project built, but Lean reported proofs left as `sorry` |
+| `∎ lean fails` | The Lean project did not build, or ran past the time limit |
 | `□ lean` | The paper says it is formalised in Lean, but no repository was found |
 | `code` | The abstract or comments link to code on GitHub, GitLab or a similar host |
 | `via cs.CC` | A paper from another subject that its authors also listed under mathematics |
@@ -111,12 +137,11 @@ A scheduled job collects the night's announcement and looks up the details of ea
 
 ## Privacy
 
-Paperlane counts visits with [GoatCounter](https://www.goatcounter.com), which sets no cookies and stores no personal data. It also counts a few anonymous events, such as a prompt being copied, to learn which features people use. Your fields and interests stay in your browser.
+Paperlane counts visits with [GoatCounter](https://www.goatcounter.com), which sets no cookies and stores no personal data. It also counts a few anonymous events, such as a prompt being copied, to learn which features people use. Your fields and interests stay in your browser. If you sign up for the email, your address is kept by Kit, which sends it, and Paperlane never shares it.
 
 ## What comes next
 
-- A check that linked Lean projects actually compile, so the Lean tag can mean a verified proof.
-- An optional email digest of the papers on your topics.
+- An email that can be limited to the fields you follow.
 - A direct connection for AI assistants, so an agent can ask Paperlane for today's papers in your fields.
 
 ## Feedback
