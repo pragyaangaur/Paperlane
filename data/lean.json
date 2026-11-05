@@ -35,6 +35,19 @@
   "checked_at": "2026-10-27T11:34:52Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
  },
+ "Fedor-Popov/Lean_VOA": {
+  "repo": "Fedor-Popov/Lean_VOA",
+  "path": "",
+  "commit": null,
+  "toolchain": null,
+  "status": "error",
+  "sorries": 0,
+  "seconds": 0,
+  "detail": "the build machine stopped before the build finished",
+  "checked_at": "2026-11-05T07:06:21Z",
+  "tries": 1,
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41975052109"
+ },
  "FormalCert-AI/llm2cert": {
   "repo": "FormalCert-AI/llm2cert",
   "path": "llm2cert/formalization/lean",
@@ -86,14 +99,14 @@
  "LexiaoLai/Nonsmooth-BFGS-Nonstationary": {
   "repo": "LexiaoLai/Nonsmooth-BFGS-Nonstationary",
   "path": "",
-  "commit": "47234b3ded0783fb36e5329b9162c0f72fe033e6",
+  "commit": "73f52823759ff03069737f18a19abab84bed3d52",
   "toolchain": "leanprover/lean4:v4.33.1",
   "status": "builds",
   "sorries": 0,
-  "seconds": 522,
+  "seconds": 711,
   "detail": "",
-  "checked_at": "2026-10-27T10:51:24Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+  "checked_at": "2026-11-05T07:06:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41975052109"
  },
  "MColbrook/Kung-Traub_conjecture": {
   "repo": "MColbrook/Kung-Traub_conjecture",
@@ -179,6 +192,18 @@
   "checked_at": "2026-10-30T13:51:27Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
  },
+ "ewaingwynne/complex-sle": {
+  "repo": "ewaingwynne/complex-sle",
+  "path": "",
+  "commit": "ef459fe20572659cd286bc9fe97a51488a987464",
+  "toolchain": "leanprover/lean4:v4.36.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 321,
+  "detail": "",
+  "checked_at": "2026-11-05T07:06:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41975052109"
+ },
  "hanyi162013-Yihan/Poisson_Statistic_1dAndersonBernoulli": {
   "repo": "hanyi162013-Yihan/Poisson_Statistic_1dAndersonBernoulli",
   "path": "",
@@ -190,6 +215,18 @@
   "detail": "",
   "checked_at": "2026-11-04T05:54:36Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
+ },
+ "haruhisa-enomoto/third-brauer-thrall-conjecture": {
+  "repo": "haruhisa-enomoto/third-brauer-thrall-conjecture",
+  "path": "",
+  "commit": "465fa8e97b8a9e0a29ec26b7fd22d766ffb115bf",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 4737,
+  "detail": "",
+  "checked_at": "2026-11-05T07:06:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41975052109"
  },
  "hirokifukui/residue-apn": {
   "repo": "hirokifukui/residue-apn",
@@ -394,6 +431,18 @@
   "detail": "",
   "checked_at": "2026-10-30T13:51:27Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+ },
+ "sashakolpakov/PseudoArithmetic": {
+  "repo": "sashakolpakov/PseudoArithmetic",
+  "path": "formal",
+  "commit": "9d5ce11e705ba4527f10ed11717ff957facf81fc",
+  "toolchain": "leanprover/lean4:v4.32.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 236,
+  "detail": "",
+  "checked_at": "2026-11-05T07:06:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41975052109"
  },
  "skypher/szkraw": {
   "repo": "skypher/szkraw",
