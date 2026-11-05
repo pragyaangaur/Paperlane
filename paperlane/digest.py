@@ -83,7 +83,9 @@ def markdown(day, number, base):
     ]
 
     if built:
-        out += ["", f"**{len(built)} come with Lean proofs that compile.** Paperlane built each one on a clean machine.", ""]
+        one = len(built) == 1
+        out += ["", f"**{len(built)} {'comes with a Lean proof that compiles' if one else 'come with Lean proofs that compile'}.** "
+                    f"Paperlane built {'it' if one else 'each one'} on a clean machine.", ""]
         out += [f"- {md_link(plain(p['title']), paper_link(p, base))}" for p in built[:MAX_LEAN]]
         if len(built) > MAX_LEAN:
             out += ["", md_link(f"See all {len(built)} →", issue + "?lean=1")]
@@ -100,8 +102,21 @@ def markdown(day, number, base):
         out += ["", "**Try searching:** " + " · ".join(md_link(w, f"{issue}?q={urllib.parse.quote(w)}") for w in words)]
 
     out += ["", md_link("Not a mathematician? Let your AI explain the two most surprising results →", f"{base}/ask.html?mode=curious")]
-    out += ["", "---", "", f"Paperlane is a free daily list of new arXiv mathematics papers. {render.ARXIV_THANKS}"]
-    return subject, "\n".join(out) + "\n"
+    if lean:
+        out += ["", md_link("Every Lean project Paperlane has built →", f"{base}/lean.html")]
+    out += ["", "---", "",
+            "Reply to this email to tell me what would make it more useful. I read every reply.  ",
+            "Pragyaan, who builds Paperlane",
+            "", f"Paperlane is a free daily list of new arXiv mathematics papers. {render.ARXIV_THANKS}"]
+    return subject, tagged("\n".join(out) + "\n", base)
+
+
+def tagged(body, base):
+    """Mark every Paperlane link as coming from the email, which GoatCounter reads as the referrer."""
+    def add(m):
+        url = m.group(1)
+        return f"]({url}{'&' if '?' in url else '?'}utm_source=email)"
+    return re.sub(r"\]\((" + re.escape(base) + r"[^)\s]*)\)", add, body)
 
 
 def send(subject, body, key, day, send_now=False):
@@ -133,7 +148,7 @@ def to_html(body):
 
     def link(m):
         text = re.sub(r"\\(.)", r"\1", m.group(1))
-        return f'<a href="{html.escape(m.group(2))}">{text}</a>'
+        return f'<a href="{html.escape(html.unescape(m.group(2)))}">{text}</a>'
 
     def inline(t):
         t = html.escape(t, quote=False)
