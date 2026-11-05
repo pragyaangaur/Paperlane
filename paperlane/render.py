@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta, timezone
 from email.utils import format_datetime
 from pathlib import Path
 
-from . import categories, digest, leancheck, signals
+from . import badge, categories, digest, leancheck, signals
 
 ASSETS = Path(__file__).parent / "assets"
 SECTIONS = [
@@ -317,7 +317,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <footer class="site">
   <div class="foot mono">
     <a class="brand small" href="{prefix}index.html">{LOGO}<span>Paperlane</span></a>
-    <nav><a href="{prefix}archive.html">archive</a><a href="{prefix}about.html">about</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}" target="_blank" rel="noopener">source</a></nav>
+    <nav><a href="{prefix}archive.html">archive</a><a href="{prefix}lean.html">lean builds</a><a href="{prefix}about.html">about</a><a href="{prefix}feed.xml">rss</a><a href="{REPO}" target="_blank" rel="noopener">source</a></nav>
     <span class="built">updated {esc(built)}</span>
   </div>
 </footer>
@@ -445,7 +445,7 @@ def tags(p):
     return '<span class="sep"> · </span>'.join(out)
 
 
-def details_html(p):
+def details_html(p, prefix=""):
     s = p.get("signals") or {}
     rows = []
     checks = {c["repo"].lower(): c for c in s.get("github", [])}
@@ -460,6 +460,7 @@ def details_html(p):
                         at = f" at {b['commit'][:7]}" if b.get("commit") else ""
                         cls = "ok" if b["status"] in ("builds", "sorry") else "warn"
                         note += f' <span class="{cls}">{esc(leancheck.label(b))}{esc(at)}, checked {esc(b["checked_at"][:10])}</span>'
+                        note += f' <a class="mono build-link" href="{prefix}lean/{esc(c["repo"])}.html">build details</a>'
                 elif c["status"] == "missing":
                     note = ' <span class="warn">repository not found</span>'
         rows.append(("code", f'<a href="{esc(url)}" target="_blank" rel="nofollow noopener">{esc(short_link(url))}</a>{note}'))
@@ -510,7 +511,7 @@ def paper_html(p, day, prefix="", order=0):
   </button>
   <div class="body">
     <p class="abstract">{tex_text(p['abstract'])}</p>
-    <dl class="facts">{details_html(p)}</dl>
+    <dl class="facts">{details_html(p, prefix)}</dl>
     {actions_html(p, prefix, pid)}
   </div>
 </article>"""
@@ -740,8 +741,8 @@ def notfound_html(base, built):
     return page("Under review · Paperlane", body, base + "/", built, "This page is still under review. Every new maths paper is on Paperlane the morning after it appears.", base, "notfound", "", "404.html")
 
 
-def sitemap(days, base):
-    urls = ["", "today.html", "archive.html", "about.html", "ask.html"] + (["email.html"] if SIGNUP["kit"] else [])
+def sitemap(days, base, extra=()):
+    urls = ["", "today.html", "archive.html", "about.html", "ask.html"] + (["email.html"] if SIGNUP["kit"] else []) + list(extra)
     urls += [f"days/{d['date']}.html" for d in days]
     urls += sorted({f"p/{anchor(p)}.html" for d in days for p in d["papers"]})
     rows = "".join(f"<url><loc>{esc(base)}/{u}</loc></url>" for u in urls)
@@ -770,7 +771,7 @@ def about_html(days, base, built):
   <h2>What Paperlane does for <em>your AI</em></h2>
   <p>One night of mathematics is about 57,000 words of abstracts, the length of a short novel. Paperlane reads it once and hands your assistant an index of about 7,500 words, so the answer is fast and cheap. Some answers also need real work, such as checking every linked repository for a Lean project, and Paperlane does that once for everyone. Each issue stays in the archive for three months, so you can look back and see when a paper was revised.</p>
 
-  <h2>What the tags mean</h2>
+  <h2 id="tags">What the tags mean</h2>
   <dl class="glossary">
     <div><dt class="mono t-lean">∎ lean</dt><dd>A linked GitHub repository contains a Lean project file (<code>lean-toolchain</code> or a <code>lakefile</code>). It has not been built yet.</dd></div>
     <div><dt class="mono t-lean">∎ lean builds</dt><dd>Paperlane cloned the repository, installed the Lean version it asks for and ran <code>lake build</code> on a clean machine, and the build passed with no <code>sorry</code>. The paper's page names the commit and the Lean version. This shows the project compiles. It does not show that the Lean statements match the theorems in the paper.</dd></div>
@@ -782,6 +783,7 @@ def about_html(days, base, built):
     <div><dt class="mono">via cs.CC</dt><dd>A paper from another subject that its authors also listed under mathematics.</dd></div>
   </dl>
   <p>Every tag comes from a simple check that anyone can repeat, and no language model decides any tag. Paperlane never scores authors.</p>
+  <p>Every checked Lean project has its own page with the commit, the Lean version and the papers that link it, and <a href="lean.html">lean builds</a> lists them all. Each page also has a badge that authors can put in their README.</p>
 
   <h2>When it updates</h2>
   <p>New papers are announced from Sunday to Thursday evening, US Eastern time. Paperlane picks them up at 06:28 UTC the next morning, so a new issue appears from Monday to Friday.</p>
@@ -799,6 +801,99 @@ def about_html(days, base, built):
   <p>Paperlane is open source on <a href="{REPO}" target="_blank" rel="noopener">GitHub</a>, where you can report a problem or ask for a feature.</p>
 </div>"""
     return page("About · Paperlane", body, "", built, "How Paperlane search works, what its tags mean and the files it publishes for agents.", base, "about", "about", "about.html")
+
+
+# Lean build pages and badges
+
+LEAN_ORDER = {s: i for i, s in enumerate(leancheck.STATUSES)}
+
+
+def lean_papers(repo, days):
+    """Every listed paper that links this repository, newest first, one entry per arXiv id."""
+    seen, out = set(), []
+    for d in days:
+        for p in d["papers"]:
+            if p["id"] in seen:
+                continue
+            if any(g["repo"] == repo for g in (p.get("signals") or {}).get("github", [])):
+                seen.add(p["id"])
+                out.append((p, d))
+    return out
+
+
+def lean_repo_html(r, papers, kept, base, built):
+    repo = r["repo"]
+    prefix = "../../"
+    img = f"{base}/lean/{repo}.svg"
+    page_url = f"{base}/lean/{repo}.html"
+    md = f"[![{badge.LEFT}: {badge.value(r)}]({img})]({page_url})"
+    html_snip = f'<a href="{page_url}"><img src="{img}" alt="{badge.LEFT}: {badge.value(r)}"></a>'
+    rows = [("result", esc(leancheck.label(r)) + (f' <span class="mono faint">({esc(r["detail"])})</span>' if r.get("detail") and r["status"] not in ("builds", "sorry") else ""))]
+    if r.get("commit"):
+        rows.append(("commit", f'<a class="mono" href="https://github.com/{esc(repo)}/tree/{esc(r["commit"])}" target="_blank" rel="noopener">{esc(r["commit"][:12])}</a>'))
+    if r.get("toolchain"):
+        rows.append(("lean", f'<span class="mono">{esc(r["toolchain"])}</span>'))
+    if r.get("path"):
+        rows.append(("folder", f'<span class="mono">{esc(r["path"])}</span>'))
+    rows.append(("checked", esc(r["checked_at"][:10])))
+    if r.get("run"):
+        rows.append(("log", f'<a href="{esc(r["run"])}" target="_blank" rel="noopener">the build run on GitHub</a>'))
+    facts = "".join(f'<div><dt class="mono">{k}</dt><dd>{v}</dd></div>' for k, v in rows)
+    items = []
+    for p, d in papers:
+        href = f"{prefix}p/{anchor(p)}.html" if anchor(p) in kept else p["links"]["abs"]
+        items.append(f'<li><a href="{esc(href)}">{tex_text(p["title"])}</a> <span class="mono faint">arXiv:{esc(p["id"])} · {esc(d["date"])}</span></li>')
+    body = f"""<div class="wrap prose lean-page">
+  <header class="issue-head"><p class="kicker mono"><a href="{prefix}lean.html">lean builds</a></p>
+  <h1 class="mono repo"><a href="https://github.com/{esc(repo)}" target="_blank" rel="noopener">{esc(repo)}</a></h1>
+  <p class="badge-img"><img src="{prefix}lean/{esc(repo)}.svg" alt="{esc(badge.LEFT)}: {esc(badge.value(r))}"></p></header>
+  <dl class="facts">{facts}</dl>
+  <h2>Papers that link it</h2>
+  <ul class="lean-papers">{''.join(items) or '<li>None in the stored issues.</li>'}</ul>
+  <h2>What this checks</h2>
+  <p>Paperlane cloned the repository, installed the Lean version named in <code>lean-toolchain</code>, downloaded Mathlib's cache when the project uses Mathlib and ran <code>lake build</code> on a clean machine. It counted the <code>declaration uses sorry</code> warnings. A passing build shows the project compiles at that commit. It does not show that the Lean statements match the theorems in the paper.</p>
+  <p>The check runs again when a new version of a paper links the repository. To ask for a check sooner or to report a wrong result, <a href="{REPO}/issues" target="_blank" rel="noopener">open an issue</a>.</p>
+  <h2>Add the badge to your README</h2>
+  <p>The badge shows the newest result and links back to this page.</p>
+  <div class="snippet"><div class="md-bar"><span class="mono">markdown</span><button type="button" class="link mono" data-copy-from="#snip-md" data-track="copy-badge-md">copy</button></div><pre id="snip-md">{esc(md)}</pre></div>
+  <div class="snippet"><div class="md-bar"><span class="mono">html</span><button type="button" class="link mono" data-copy-from="#snip-html" data-track="copy-badge-html">copy</button></div><pre id="snip-html">{esc(html_snip)}</pre></div>
+</div>"""
+    desc = f"Paperlane's Lean build check for {repo}: {leancheck.label(r)}."
+    return page(f"{repo} · Lean build · Paperlane", body, prefix, built, desc, base, "lean-repo", "", f"lean/{repo}.html")
+
+
+def lean_index_html(results, papers_of, kept, base, built):
+    order = sorted(results.values(), key=lambda r: (LEAN_ORDER[r["status"]], r["repo"].lower()))
+    counts = {s: sum(1 for r in order if r["status"] == s) for s in leancheck.STATUSES}
+    rows = []
+    for r in order:
+        first = papers_of[r["repo"]][0][0] if papers_of[r["repo"]] else None
+        title = f'<span class="t">{tex_text(first["title"])}</span>' if first else ""
+        rows.append(f'<li><a href="lean/{esc(r["repo"])}.html"><img src="lean/{esc(r["repo"])}.svg" alt="{esc(badge.value(r))}" loading="lazy">'
+                    f'<span class="mono repo">{esc(r["repo"])}</span>{title}</a></li>')
+    summary = (f'{len(order)} repositories checked: {counts["builds"]} build with no sorry, {counts["sorry"]} build with sorry, '
+               f'{counts["fails"]} fail, {counts["timeout"]} time out and {counts["error"]} could not be checked.')
+    body = f"""<div class="wrap">
+  <header class="issue-head"><p class="kicker mono">lean builds</p><h1>Lean projects from <em>new papers</em></h1>
+  <p class="lede small">Every Lean project linked from a paper in Paperlane is cloned and built on a clean machine with <code>lake build</code>. {esc(summary)} <a href="about.html#tags">What the results mean</a>.</p></header>
+  <ul class="lean-list">{''.join(rows)}</ul>
+</div>"""
+    return page("Lean builds · Paperlane", body, "", built, summary, base, "lean-index", "", "lean.html")
+
+
+def lean_site(out, results, days, kept, base, built):
+    """lean.html, plus a page and a badge for every checked repository. Returns the page paths."""
+    papers_of = {repo: lean_papers(repo, days) for repo in results}
+    paths = []
+    for repo, r in results.items():
+        folder = out / "lean" / repo.split("/")[0]
+        folder.mkdir(parents=True, exist_ok=True)
+        name = repo.split("/")[1]
+        (folder / f"{name}.svg").write_text(badge.svg(r))
+        (folder / f"{name}.html").write_text(lean_repo_html(r, papers_of[repo], kept, base, built))
+        paths.append(f"lean/{repo}.html")
+    (out / "lean.html").write_text(lean_index_html(results, papers_of, kept, base, built))
+    return ["lean.html"] + sorted(paths)
 
 
 # Feeds and indexes
@@ -905,7 +1000,7 @@ def single_html(p, day, base, built, number):
     <p class="tags mono">{tags(p)}</p>
     <h2 class="abs-h">Abstract</h2>
     <p class="abstract">{tex_text(p['abstract'])}</p>
-    <dl class="facts">{details_html(p)}</dl>
+    <dl class="facts">{details_html(p, "../")}</dl>
     {actions_html(p, "../", pid)}
   </article>
 </div>"""
@@ -923,7 +1018,7 @@ def json_day(day, base):
 KEEP_DAYS = 92
 
 
-def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None):
+def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None, lean=None):
     """Write the whole site for `days` (newest first) into `out`."""
     code = (goatcounter or "").strip().lower()
     ANALYTICS["goatcounter"] = code if re.fullmatch(r"[a-z0-9-]{2,50}", code) else None
@@ -945,6 +1040,7 @@ def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None):
     numbers = {d["date"]: len(days) - i for i, d in enumerate(days)}
     # Numbers come from every stored day, so an issue keeps its number after older ones expire.
     cutoff = date.fromisoformat(days[0]["date"]) - timedelta(days=KEEP_DAYS)
+    all_days = days
     days = [d for d in days if date.fromisoformat(d["date"]) > cutoff]
     for d in reversed(days):
         for p in d["papers"]:
@@ -977,5 +1073,7 @@ def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None):
     (out / "feed.xml").write_text(rss(days, base, built_dt))
     (out / "llms.txt").write_text(llms_txt(days, base, built))
     (out / "404.html").write_text(notfound_html(base, built))
-    (out / "sitemap.xml").write_text(sitemap(days, base))
+    kept = {anchor(p) for d in days for p in d["papers"]}
+    lean_paths = lean_site(out, lean or {}, all_days, kept, base, built) if lean else []
+    (out / "sitemap.xml").write_text(sitemap(days, base, lean_paths))
     print(f"Built {len(days)} days into {out}")

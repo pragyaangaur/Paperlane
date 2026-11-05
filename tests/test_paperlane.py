@@ -6,7 +6,7 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from paperlane import arxiv, digest, leancheck, render, signals
+from paperlane import arxiv, badge, digest, leancheck, render, signals
 from paperlane.categories import math_categories
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -208,11 +208,13 @@ class DigestTest(unittest.TestCase):
         day = leancheck.annotate([sample_day()], {"x/y": build_result("builds")})[0]
         subject, body = digest.markdown(day, 4, "https://example.org/paperlane")
         self.assertEqual(subject, "2 new maths papers came out last night, 1 with proofs that compile")
-        self.assertIn("1 come with Lean proofs that compile", body)
+        self.assertIn("1 comes with a Lean proof that compiles", body)
         self.assertIn("https://example.org/paperlane/days/2026-10-23.html?cat=math.CO", body)
         self.assertNotIn("arxiv.org/abs", body)  # every link leads into Paperlane
         html = digest.to_html(body)
-        self.assertIn('<a href="https://example.org/paperlane/p/2610.00001.html">Title 2610.00001 with x^2</a>', html)
+        self.assertIn('<a href="https://example.org/paperlane/p/2610.00001.html?utm_source=email">Title 2610.00001 with x^2</a>', html)
+        self.assertIn('?cat=math.CO&amp;utm_source=email"', html)
+        self.assertNotIn("&amp;amp;", html)
 
     def test_signup_form(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -222,3 +224,14 @@ class DigestTest(unittest.TestCase):
             render.build([sample_day()], tmp, "https://example.org/paperlane/", kit_form="1234567")
             self.assertIn("app.kit.com/forms/1234567/subscriptions", (Path(tmp) / "email.html").read_text())
             self.assertIn("email.html", (Path(tmp) / "index.html").read_text())
+
+
+class BadgeTest(unittest.TestCase):
+    def test_badge_says_the_result(self):
+        r = {"repo": "a/b", "status": "sorry", "sorries": 3}
+        svg = badge.svg(r)
+        self.assertIn("builds, 3 sorry", svg)
+        self.assertTrue(svg.startswith("<svg"))
+        self.assertEqual(badge.value({"status": "error"}), "not checked")
+        self.assertGreater(badge.text_width("builds, 20 sorry"), badge.text_width("builds"))
+

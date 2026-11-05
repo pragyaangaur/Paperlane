@@ -66,10 +66,11 @@ def cmd_build(args):
     days = load_days(args.data)
     if not days:
         sys.exit(f"No days in {args.data}. Run `python -m paperlane fetch` first.")
-    leancheck.annotate(days, leancheck.load(args.lean))
+    lean = leancheck.load(args.lean)
+    leancheck.annotate(days, lean)
     # GitHub reports a custom domain as http:// until HTTPS is enforced for the project, but the site is served over HTTPS.
     base = re.sub(r"^http://(?!localhost\b|127\.0\.0\.1\b)", "https://", args.base_url)
-    render.build(days, args.out, base, goatcounter=args.goatcounter, kit_form=args.kit_form)
+    render.build(days, args.out, base, goatcounter=args.goatcounter, kit_form=args.kit_form, lean=lean)
 
 
 def cmd_lean_plan(args):

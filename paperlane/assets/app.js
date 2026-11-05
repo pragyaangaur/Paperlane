@@ -785,7 +785,7 @@
       b.addEventListener("click", function () {
         var src = $(b.dataset.copyFrom);
         if (!src) return;
-        track("copy-curious-prompt");
+        track(b.dataset.track || "copy-curious-prompt");
         copy(src.textContent, b);
       });
     });
