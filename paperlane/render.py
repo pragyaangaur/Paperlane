@@ -391,7 +391,7 @@ def email_html(day, number, base, built):
     <p class="kicker mono">today's email</p>
     <div class="mail">
       <p class="mail-subject"><span class="mono">Subject</span> {esc(subject)}</p>
-      <div class="mail-body">{digest.to_html(body)}</div>
+      <div class="mail-body mail-html">{digest.html_email(day, number, base)}</div>
     </div>
   </section>
 </div>"""

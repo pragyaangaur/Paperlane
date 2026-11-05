@@ -216,6 +216,16 @@ class DigestTest(unittest.TestCase):
         self.assertIn('?cat=math.CO&amp;utm_source=email"', html)
         self.assertNotIn("&amp;amp;", html)
 
+    def test_html_email(self):
+        day = leancheck.annotate([sample_day()], {"x/y": build_result("builds")})[0]
+        html = digest.html_email(day, 4, "https://example.org/paperlane")
+        self.assertIn('src="https://example.org/paperlane/assets/email-header.png"', html)
+        self.assertIn("Find yours in issue no. 4", html)
+        self.assertIn("lean builds", html)
+        self.assertIn("?cat=math.CO&amp;utm_source=email", html)
+        self.assertNotIn("<style", html)  # email clients drop stylesheets, so every style is inline
+        self.assertNotIn("arxiv.org/abs", html)
+
     def test_signup_form(self):
         with tempfile.TemporaryDirectory() as tmp:
             render.build([sample_day()], tmp, "https://example.org/paperlane/")

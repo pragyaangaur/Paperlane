@@ -1,0 +1,22 @@
+name: Email preview
+
+# Saves the newest issue's email as a draft in Kit, so the design can be checked before it reaches readers.
+# It never sends and never records the issue as emailed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Save a draft in Kit
+        env:
+          KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
+        run: python -m paperlane digest --preview

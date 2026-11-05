@@ -104,6 +104,15 @@ def cmd_digest(args):
     sent = Path(args.sent)
     done = json.loads(sent.read_text()) if sent.exists() else []
     today = datetime.now(timezone.utc).date().isoformat()
+    if args.preview:
+        # A draft of the newest issue for checking the design. It never sends and is not recorded.
+        subject, body = digest.markdown(day, len(days), args.base_url.rstrip("/"))
+        key = os.environ.get("KIT_API_KEY")
+        if not key:
+            sys.exit("KIT_API_KEY is not set.")
+        digest.send("[Preview] " + subject, body, key, day["date"], send_now=False,
+                    html_body=digest.html_email(day, len(days), args.base_url.rstrip("/")))
+        return
     if day["date"] in done:
         print(f"The digest for {day['date']} was already sent.")
         return
@@ -111,6 +120,7 @@ def cmd_digest(args):
         print(f"The newest issue is {day['date']}, not today ({today}), so no digest goes out.")
         return
     subject, body = digest.markdown(day, len(days), args.base_url.rstrip("/"))
+    html_body = digest.html_email(day, len(days), args.base_url.rstrip("/"))
     if args.dry_run:
         print(subject + "\n\n" + body)
         return
@@ -118,7 +128,7 @@ def cmd_digest(args):
     if not key:
         print("KIT_API_KEY is not set, so no digest goes out.")
         return
-    digest.send(subject, body, key, day["date"], send_now=args.send)
+    digest.send(subject, body, key, day["date"], send_now=args.send, html_body=html_body)
     sent.write_text(json.dumps(sorted(done + [day["date"]])[-400:], indent=1) + "\n")
     set_output("sent", "true")
 
@@ -207,6 +217,7 @@ def main():
     d.add_argument("--send", action="store_true", help="send at once (without it the broadcast waits in Kit as a draft)")
     d.add_argument("--any-day", action="store_true", help="send even when the newest issue is not today's")
     d.add_argument("--dry-run", action="store_true", help="print the email instead of sending it")
+    d.add_argument("--preview", action="store_true", help="save a draft of the newest issue in Kit to check the design, never sent or recorded")
     c = sub.add_parser("check", help="compare the newest stored day with the live site")
     c.add_argument("--site", required=True, help="the live site's base URL")
     c.add_argument("--final", action="store_true", help="fail when today's issue is missing (the last run of the day)")

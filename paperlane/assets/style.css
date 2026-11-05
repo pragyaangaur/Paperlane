@@ -667,3 +667,4 @@ body > main { flex: 1 0 auto; }
 .lean-page .kicker a { font-family: var(--mono); color: var(--muted); }
 header nav a { white-space: nowrap; }
 @media (max-width: 420px) { header nav { gap: 0; } header nav a, header nav button { padding: 4px 7px; } }
+.mail-body.mail-html { padding: 0; }

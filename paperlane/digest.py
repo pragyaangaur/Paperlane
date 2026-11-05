@@ -119,12 +119,122 @@ def tagged(body, base):
     return re.sub(r"\]\((" + re.escape(base) + r"[^)\s]*)\)", add, body)
 
 
-def send(subject, body, key, day, send_now=False):
+INK, INK2, MUTED, RULE, PAPER, LIME, HL = "#111210", "#3a3b36", "#7a7d73", "#e3e5dd", "#fdfdfc", "#c8f53c", "#d9f763"
+SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif"
+SERIF = "Georgia,'Times New Roman',serif"
+MONO = "'SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace"
+
+
+def html_email(day, number, base):
+    """The same issue as markdown(), laid out as an HTML email with a header image and simple graphics.
+
+    Email clients ignore stylesheets, so every style is inline and the layout uses tables.
+    """
+    import html as h
+    from . import render
+
+    def esc(t):
+        return h.escape(t, quote=True)
+
+    def url(u):
+        return u + ("&" if "?" in u else "?") + "utm_source=email"
+
+    def a(text, href, style=""):
+        return f'<a href="{esc(url(href))}" style="color:{INK};{style}">{text}</a>'
+
+    papers = day["papers"]
+    fresh = [p for p in papers if is_new(p)]
+    updated = len(papers) - len(fresh)
+    issue = f"{base}/days/{day['date']}.html"
+    lean = [p for p in papers if (p.get("signals") or {}).get("lean_repo")]
+    built = sorted((p for p in lean if (leancheck.build_of(p) or {}).get("status") == "builds"),
+                   key=lambda p: (not is_new(p), p["id"]))
+    d = date.fromisoformat(day["date"])
+    when = f"{d:%A} {d.day} {d:%B %Y}"
+
+    def tile(n, label):
+        return (f'<td width="33%" style="padding:0 5px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" '
+                f'style="border:1px solid {RULE};border-radius:10px;background:#ffffff;"><tr><td style="padding:14px 14px 12px;">'
+                f'<div style="font-family:{SANS};font-size:28px;font-weight:700;letter-spacing:-0.02em;color:{INK};line-height:1;">{n}</div>'
+                f'<div style="font-family:{MONO};font-size:11px;color:{MUTED};margin-top:6px;">{label}</div></td></tr></table></td>')
+
+    out = []
+    out.append(f'<a href="{esc(url(base + "/"))}"><img src="{base}/assets/email-header.png" width="600" alt="Paperlane: new maths papers, every weekday morning" '
+               f'style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>')
+    out.append(f'<p style="font-family:{MONO};font-size:12px;color:{MUTED};margin:26px 0 8px;letter-spacing:0.02em;">ISSUE NO. {number} · {esc(when.upper())}</p>')
+    out.append(f'<h1 style="font-family:{SANS};font-size:30px;line-height:1.15;font-weight:700;letter-spacing:-0.025em;color:{INK};margin:0 0 6px;">'
+               f'{len(fresh)} new maths papers came out last night.</h1>')
+    out.append(f'<p style="font-family:{SERIF};font-style:italic;font-size:22px;color:{INK};margin:0 0 22px;">'
+               f'<span style="background:{HL};padding:0 4px;">One of them is probably yours.</span></p>')
+    out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 -5px 24px;"><tr>'
+               f'{tile(len(fresh), "new papers")}{tile(updated, "updated papers")}{tile(len(built), "Lean proofs build")}</tr></table>')
+    out.append(f'<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 30px;"><tr><td style="background:{LIME};border-radius:999px;border:2px solid {INK};">'
+               f'<a href="{esc(url(issue))}" style="display:inline-block;padding:13px 26px;font-family:{SANS};font-size:16px;font-weight:700;color:{INK};text-decoration:none;">'
+               f'Find yours in issue no. {number} &rarr;</a></td></tr></table>')
+
+    def heading(t):
+        return (f'<p style="font-family:{MONO};font-size:12px;color:{MUTED};margin:0 0 10px;padding-top:18px;border-top:1px solid {RULE};'
+                f'letter-spacing:0.02em;">{t}</p>')
+
+    if built:
+        out.append(heading(f"∎ {len(built)} LEAN PROOF{'S' if len(built) != 1 else ''} THAT COMPILE"))
+        out.append(f'<p style="font-family:{SANS};font-size:14px;color:{INK2};margin:0 0 12px;">Paperlane cloned each project and ran <code>lake build</code> on a clean machine.</p>')
+        for p in built[:MAX_LEAN]:
+            out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 10px;border-left:4px solid {LIME};background:#ffffff;">'
+                       f'<tr><td style="padding:10px 14px;">'
+                       f'{a(esc(plain(p["title"])), paper_link(p, base), f"font-family:{SERIF};font-size:17px;line-height:1.35;text-decoration:none;")}'
+                       f'<div style="font-family:{MONO};font-size:11px;color:{MUTED};margin-top:5px;">{esc(authors(p.get("authors")))} · '
+                       f'<span style="background:{HL};color:{INK};padding:1px 5px;">∎ lean builds</span></div></td></tr></table>')
+        if len(built) > MAX_LEAN:
+            out.append(f'<p style="font-family:{SANS};font-size:14px;margin:4px 0 0;">{a(f"See all {len(built)} &rarr;", issue + "?lean=1")}</p>')
+        out.append('<div style="height:18px;"></div>')
+    elif lean:
+        out.append(heading(f"∎ {len(lean)} LINK A LEAN FORMALISATION"))
+        out.append(f'<p style="font-family:{SANS};font-size:14px;margin:0 0 24px;">{a("See them &rarr;", issue + "?lean=1")}</p>')
+
+    fields = render.field_counts(day)
+    if fields:
+        out.append(heading("BUSIEST FIELDS"))
+        top = max(n for _, n in fields[:5])
+        for c, n in fields[:5]:
+            w = max(4, round(100 * n / top))
+            out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 7px;"><tr>'
+                       f'<td width="42%" style="font-family:{SANS};font-size:14px;padding-right:10px;">{a(esc(categories.name(c)), f"{issue}?cat={c}", "text-decoration:none;")}</td>'
+                       f'<td><table role="presentation" width="{w}%" cellpadding="0" cellspacing="0"><tr><td style="background:{HL};height:14px;border-radius:3px;font-size:0;line-height:0;">&nbsp;</td></tr></table></td>'
+                       f'<td width="40" align="right" style="font-family:{MONO};font-size:12px;color:{MUTED};">{n}</td></tr></table>')
+        if len(fields) > 5:
+            out.append(f'<p style="font-family:{SANS};font-size:13px;margin:8px 0 0;">{a(f"{len(fields) - 5} more fields &rarr;", issue, f"color:{MUTED};")}</p>')
+        out.append('<div style="height:18px;"></div>')
+
+    words = render.try_words(day, 5)
+    if words:
+        out.append(heading("TRY SEARCHING"))
+        chips = "".join(f'<a href="{esc(url(f"{issue}?q={urllib.parse.quote(w)}"))}" style="display:inline-block;margin:0 6px 8px 0;padding:6px 12px;'
+                        f'border:1px solid {RULE};border-radius:999px;font-family:{MONO};font-size:13px;color:{INK};text-decoration:none;background:#ffffff;">{esc(w)}</a>'
+                        for w in words)
+        out.append(f'<p style="margin:0 0 22px;">{chips}</p>')
+
+    out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:6px 0 26px;background:{INK};border-radius:12px;"><tr><td style="padding:18px 20px;">'
+               f'<p style="font-family:{SANS};font-size:16px;font-weight:700;color:{PAPER};margin:0 0 4px;">Not a mathematician?</p>'
+               f'<p style="font-family:{SANS};font-size:14px;color:#c4c7bd;margin:0 0 12px;">Copy one prompt and let your AI explain the two most surprising results in plain words.</p>'
+               f'<a href="{esc(url(base + "/ask.html?mode=curious"))}" style="font-family:{SANS};font-size:14px;font-weight:700;color:{LIME};">Get the prompt &rarr;</a>'
+               f'</td></tr></table>')
+    if lean:
+        out.append(f'<p style="font-family:{SANS};font-size:13px;margin:0 0 22px;">{a("Every Lean project Paperlane has built &rarr;", base + "/lean.html", f"color:{MUTED};")}</p>')
+    out.append(f'<p style="font-family:{SANS};font-size:14px;color:{INK2};margin:0 0 4px;padding-top:16px;border-top:1px solid {RULE};">'
+               f'Reply to this email to tell me what would make it more useful. I read every reply.</p>')
+    out.append(f'<p style="font-family:{SERIF};font-style:italic;font-size:15px;color:{INK};margin:0 0 16px;">Pragyaan, who builds Paperlane</p>')
+    out.append(f'<p style="font-family:{SANS};font-size:12px;color:{MUTED};margin:0;">Paperlane is a free daily list of new arXiv mathematics papers. {esc(render.ARXIV_THANKS)}</p>')
+    return (f'<div style="max-width:600px;margin:0 auto;background:{PAPER};color:{INK};">' + out[0]
+            + '<div style="padding:0 24px 28px;">' + "\n".join(out[1:]) + "</div></div>")
+
+
+def send(subject, body, key, day, send_now=False, html_body=None):
     """Create a Kit broadcast for every subscriber. Without send_now it stays a draft in Kit."""
     now = datetime.now(timezone.utc).replace(microsecond=0)
     payload = {
         "subject": subject,
-        "content": to_html(body),
+        "content": html_body or to_html(body),
         "description": f"Paperlane {day}",
         "preview_text": body.split("\n", 1)[0].replace("**", ""),
         "public": False,
