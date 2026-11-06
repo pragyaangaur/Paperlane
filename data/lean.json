@@ -203,6 +203,18 @@
   "checked_at": "2026-11-05T07:06:21Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41975052109"
  },
+ "ewaingwynne/conjugate-branching-lean": {
+  "repo": "ewaingwynne/conjugate-branching-lean",
+  "path": "",
+  "commit": "878bd03452dd3c2ceeececaabffa4b4c6e60cd8d",
+  "toolchain": "leanprover/lean4:v4.36.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 138,
+  "detail": "",
+  "checked_at": "2026-11-06T08:56:56Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42180603557"
+ },
  "hanyi162013-Yihan/Poisson_Statistic_1dAndersonBernoulli": {
   "repo": "hanyi162013-Yihan/Poisson_Statistic_1dAndersonBernoulli",
   "path": "",
@@ -214,6 +226,18 @@
   "detail": "",
   "checked_at": "2026-11-04T05:54:36Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
+ },
+ "hanyi162013-Yihan/scalar-she-lean": {
+  "repo": "hanyi162013-Yihan/scalar-she-lean",
+  "path": "",
+  "commit": "60a63972f07986442801838fa78e758e2ccc6303",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "timeout",
+  "sorries": 0,
+  "seconds": 5485,
+  "detail": "lake build ran for more than 90 minutes",
+  "checked_at": "2026-11-06T08:56:56Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42180603557"
  },
  "haruhisa-enomoto/third-brauer-thrall-conjecture": {
   "repo": "haruhisa-enomoto/third-brauer-thrall-conjecture",
@@ -274,6 +298,18 @@
   "detail": "",
   "checked_at": "2026-11-03T14:20:46Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+ },
+ "leobon12/lean-formalizations": {
+  "repo": "leobon12/lean-formalizations",
+  "path": "",
+  "commit": "31e748330ee154d5f41537c4b01f71b8a5510c2d",
+  "toolchain": "leanprover/lean4:v4.34.0-rc2",
+  "status": "timeout",
+  "sorries": 0,
+  "seconds": 5499,
+  "detail": "lake build ran for more than 90 minutes",
+  "checked_at": "2026-11-06T08:56:56Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42180603557"
  },
  "mcoiculescu/NonUniqueEuler": {
   "repo": "mcoiculescu/NonUniqueEuler",
@@ -466,6 +502,18 @@
   "detail": "",
   "checked_at": "2026-11-04T05:54:36Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
+ },
+ "sun123zxy/ninegates-lean4": {
+  "repo": "sun123zxy/ninegates-lean4",
+  "path": "",
+  "commit": "9ae14717bb5f591e187f4d6eeb440c69e0ff2680",
+  "toolchain": "leanprover/lean4:v4.33.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 200,
+  "detail": "",
+  "checked_at": "2026-11-06T08:56:56Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42180603557"
  },
  "tilenmarc/braid-bruhat-mutation-distance": {
   "repo": "tilenmarc/braid-bruhat-mutation-distance",
