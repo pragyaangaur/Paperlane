@@ -83,6 +83,19 @@
   "checked_at": "2026-11-03T14:20:46Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
  },
+ "JYin80/Lean-LSBA1d": {
+  "repo": "JYin80/Lean-LSBA1d",
+  "path": "",
+  "commit": null,
+  "toolchain": null,
+  "status": "error",
+  "sorries": 0,
+  "seconds": 0,
+  "detail": "the build machine stopped before the build finished",
+  "checked_at": "2026-11-09T05:45:50Z",
+  "tries": 1,
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42567827436"
+ },
  "LeGenAI/llm_guided_EAQECC_search": {
   "repo": "LeGenAI/llm_guided_EAQECC_search",
   "path": "formal/eaqecc",
@@ -502,6 +515,18 @@
   "detail": "",
   "checked_at": "2026-11-04T05:54:36Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
+ },
+ "stacks-ai/papers": {
+  "repo": "stacks-ai/papers",
+  "path": "conley-index-dynamical-systems",
+  "commit": "6af6d3d0b9acfe38dad5c1fd823a6dc0d89aefd8",
+  "toolchain": "leanprover/lean4:v4.35.0-rc4",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 765,
+  "detail": "",
+  "checked_at": "2026-11-09T05:45:50Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42567827436"
  },
  "sun123zxy/ninegates-lean4": {
   "repo": "sun123zxy/ninegates-lean4",
