@@ -220,5 +220,5 @@ def label(b, short=False):
     if b["status"] == "fails":
         return "fails" if short else "does not build"
     if b["status"] == "timeout":
-        return "timed out" if short else "did not finish building within the time limit"
+        return "too large" if short else "is too large to build within the check's time limit"
     return "unchecked" if short else "could not be checked"

@@ -36,7 +36,7 @@ def value(result):
     if s == "fails":
         return "fails"
     if s == "timeout":
-        return "timed out"
+        return "too large"
     return "not checked"
 
 

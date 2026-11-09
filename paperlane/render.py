@@ -872,7 +872,7 @@ def lean_index_html(results, papers_of, kept, base, built):
         rows.append(f'<li><a href="lean/{esc(r["repo"])}.html"><img src="lean/{esc(r["repo"])}.svg" alt="{esc(badge.value(r))}" loading="lazy">'
                     f'<span class="mono repo">{esc(r["repo"])}</span>{title}</a></li>')
     summary = (f'{len(order)} repositories checked: {counts["builds"]} build with no sorry, {counts["sorry"]} build with sorry, '
-               f'{counts["fails"]} fail, {counts["timeout"]} time out and {counts["error"]} could not be checked.')
+               f'{counts["fails"]} fail, {counts["timeout"]} too large to build within the time limit and {counts["error"]} could not be checked.')
     body = f"""<div class="wrap">
   <header class="issue-head"><p class="kicker mono">lean builds</p><h1>Lean projects from <em>new papers</em></h1>
   <p class="lede small">Every Lean project linked from a paper in Paperlane is cloned and built on a clean machine with <code>lake build</code>. {esc(summary)} <a href="about.html#tags">What the results mean</a>.</p></header>
