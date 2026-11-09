@@ -86,15 +86,14 @@
  "JYin80/Lean-LSBA1d": {
   "repo": "JYin80/Lean-LSBA1d",
   "path": "",
-  "commit": null,
-  "toolchain": null,
-  "status": "error",
+  "commit": "6faccdc2d8dd1fae2c622ec697c1c2e747e389ac",
+  "toolchain": "leanprover/lean4:v4.36.0-rc1",
+  "status": "builds",
   "sorries": 0,
-  "seconds": 0,
-  "detail": "the build machine stopped before the build finished",
-  "checked_at": "2026-11-09T05:45:50Z",
-  "tries": 1,
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42567827436"
+  "seconds": 4367,
+  "detail": "",
+  "checked_at": "2026-11-09T16:14:35Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42640215903"
  },
  "LeGenAI/llm_guided_EAQECC_search": {
   "repo": "LeGenAI/llm_guided_EAQECC_search",
