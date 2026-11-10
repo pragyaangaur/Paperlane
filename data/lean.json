@@ -152,9 +152,9 @@
   "sorries": 0,
   "seconds": 0,
   "detail": "the build machine stopped before the build finished",
-  "checked_at": "2026-11-10T13:24:22Z",
-  "tries": 1,
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
+  "checked_at": "2026-11-10T13:50:58Z",
+  "tries": 2,
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42827461358"
  },
  "TokyoProbabilityGroup/SYK_CLT": {
   "repo": "TokyoProbabilityGroup/SYK_CLT",
