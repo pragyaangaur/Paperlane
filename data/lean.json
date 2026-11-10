@@ -78,10 +78,17 @@
   "toolchain": "leanprover/lean4:v4.19.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 143,
+  "seconds": 144,
   "detail": "",
-  "checked_at": "2026-11-04T05:54:36Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
+  "minutes": 300,
+  "assumptions": [
+   "PSPrimes/ExternalInputs.lean",
+   "docs/ASSUMPTIONS.md",
+   "history/blueprint-before-orbit/docs/ASSUMPTIONS.md",
+   "history/pre-revision-2026-11-02/docs/ASSUMPTIONS.md"
+  ],
+  "checked_at": "2026-11-10T15:47:17Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42827334643"
  },
  "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization": {
   "repo": "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization",
@@ -90,10 +97,15 @@
   "toolchain": "leanprover/lean4:v4.34.1",
   "status": "builds",
   "sorries": 0,
-  "seconds": 2042,
+  "seconds": 1626,
   "detail": "",
-  "checked_at": "2026-11-03T14:20:46Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
+  "minutes": 300,
+  "assumptions": [
+   "docs/ASSUMPTIONS.md",
+   "docs/EXTERNAL_INPUTS.json"
+  ],
+  "checked_at": "2026-11-10T15:47:17Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42827334643"
  },
  "JYin80/Lean-LSBA1d": {
   "repo": "JYin80/Lean-LSBA1d",
@@ -185,12 +197,14 @@
   "path": "",
   "commit": "87f3fd829cde98edbc5eaa3deee462c598b920b0",
   "toolchain": "leanprover/lean4:v4.35.0",
-  "status": "timeout",
+  "status": "sorry",
   "sorries": 3,
-  "seconds": 5492,
-  "detail": "lake build ran for more than 90 minutes",
-  "checked_at": "2026-11-03T16:11:04Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41655593897"
+  "seconds": 7261,
+  "detail": "",
+  "minutes": 300,
+  "assumptions": [],
+  "checked_at": "2026-11-10T15:47:17Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42827334643"
  },
  "apemm/Kagey-Problems": {
   "repo": "apemm/Kagey-Problems",
