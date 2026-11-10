@@ -11,6 +11,18 @@
   "checked_at": "2026-11-04T05:54:36Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
  },
+ "Apsiape/perfect-play-arithmetical-hierarchy": {
+  "repo": "Apsiape/perfect-play-arithmetical-hierarchy",
+  "path": "lean",
+  "commit": "42f60356cc9d6a8094f962c200e4e9ef62f85429",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "fails",
+  "sorries": 0,
+  "seconds": 14,
+  "detail": "lake build exited with code 1",
+  "checked_at": "2026-11-10T13:24:22Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
+ },
  "Arthur742Ramos/TopologicalComputationalPaths": {
   "repo": "Arthur742Ramos/TopologicalComputationalPaths",
   "path": "",
@@ -130,6 +142,19 @@
   "detail": "",
   "checked_at": "2026-11-02T06:31:11Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
+ },
+ "MikhailLevit1987/icosahedron-rational-faces": {
+  "repo": "MikhailLevit1987/icosahedron-rational-faces",
+  "path": "",
+  "commit": null,
+  "toolchain": null,
+  "status": "error",
+  "sorries": 0,
+  "seconds": 0,
+  "detail": "the build machine stopped before the build finished",
+  "checked_at": "2026-11-10T13:24:22Z",
+  "tries": 1,
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
  },
  "TokyoProbabilityGroup/SYK_CLT": {
   "repo": "TokyoProbabilityGroup/SYK_CLT",
@@ -274,6 +299,18 @@
   "detail": "",
   "checked_at": "2026-10-28T07:33:12Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
+ },
+ "jaideepsaipadhi/erdos-sums-almost-primes": {
+  "repo": "jaideepsaipadhi/erdos-sums-almost-primes",
+  "path": "",
+  "commit": "18654533cb27da5173edc59fe8dc39f6b3f72277",
+  "toolchain": "leanprover/lean4:v4.33.0-rc1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 2574,
+  "detail": "",
+  "checked_at": "2026-11-10T13:24:22Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
  },
  "joaquimortega/MR1949832": {
   "repo": "joaquimortega/MR1949832",
@@ -455,6 +492,18 @@
   "checked_at": "2026-10-28T07:33:12Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
  },
+ "ritsumei-aoi/osp-odd-deformations": {
+  "repo": "ritsumei-aoi/osp-odd-deformations",
+  "path": "",
+  "commit": "28066941a13978e6a4a9e9348d36bbd5ef5dd7ba",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 285,
+  "detail": "",
+  "checked_at": "2026-11-10T13:24:22Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
+ },
  "rtyu-1/coded-sorting-lean": {
   "repo": "rtyu-1/coded-sorting-lean",
   "path": "lean",
@@ -527,6 +576,18 @@
   "checked_at": "2026-11-09T05:45:50Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42567827436"
  },
+ "stemma-math/stemma-exedra": {
+  "repo": "stemma-math/stemma-exedra",
+  "path": "lean/fixture",
+  "commit": "937cbbab05176c364e8312428c5b8a549fc27d05",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "sorry",
+  "sorries": 3,
+  "seconds": 12,
+  "detail": "",
+  "checked_at": "2026-11-10T13:24:22Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
+ },
  "sun123zxy/ninegates-lean4": {
   "repo": "sun123zxy/ninegates-lean4",
   "path": "",
@@ -586,5 +647,17 @@
   "detail": "lake build ran for more than 45 minutes",
   "checked_at": "2026-10-28T06:21:22Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40638591070"
+ },
+ "ywatanabex/bp-response-geometry-lean": {
+  "repo": "ywatanabex/bp-response-geometry-lean",
+  "path": "",
+  "commit": "4d0ae2b26c5eb42026052835f8b9f3423dfc5477",
+  "toolchain": "leanprover/lean4:v4.36.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 1368,
+  "detail": "",
+  "checked_at": "2026-11-10T13:24:22Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
  }
 }
