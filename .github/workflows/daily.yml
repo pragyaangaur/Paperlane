@@ -59,7 +59,9 @@ jobs:
           if [ -n "$API_DATE" ]; then
             python -m paperlane fetch --api-date "$API_DATE"
           else
-            python -m paperlane fetch
+            # arXiv sometimes publishes the feed hours late, so an empty weekday feed is read
+            # again every 15 minutes for up to three hours.
+            python -m paperlane fetch --wait 180
           fi
 
       - name: Commit the stored day

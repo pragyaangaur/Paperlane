@@ -191,6 +191,41 @@ class LeanCheckTest(unittest.TestCase):
             leancheck.record(tmp, store, expect={"x/y", "died/job"})
             self.assertEqual(json.loads(store.read_text())["died/job"]["tries"], 2)
 
+    def test_plan_long(self):
+        day = sample_day()
+        when = leancheck.datetime(2026, 10, 24, tzinfo=leancheck.timezone.utc)
+        slow = dict(build_result("timeout"), minutes=90)
+        self.assertEqual(leancheck.plan_long([day], {"x/y": slow}, when=when), [{"repo": "x/y", "path": ""}])
+        # Old results, results from the long run itself and tried ones are not planned again.
+        later = when + leancheck.timedelta(days=5)
+        self.assertEqual(leancheck.plan_long([day], {"x/y": slow}, when=later), [])
+        self.assertEqual(leancheck.plan_long([day], {"x/y": dict(slow, minutes=300)}, when=when), [])
+        self.assertEqual(leancheck.plan_long([day], {"x/y": dict(slow, long_tried=True)}, when=when), [])
+        self.assertEqual(leancheck.plan_long([day], {"x/y": build_result("builds")}, when=when), [])
+        self.assertEqual(len(leancheck.plan_long([day], {"x/y": slow}, when=later, force={"x/y"})), 1)
+
+    def test_long_run_keeps_the_first_result(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = Path(tmp) / "lean.json"
+            store.write_text(json.dumps({"x/y": dict(build_result("timeout"), minutes=90)}))
+            (Path(tmp) / "a").mkdir()
+            self.assertEqual(leancheck.record(Path(tmp) / "a", store, expect={"x/y"}, keep_missing=True), 0)
+            kept = json.loads(store.read_text())["x/y"]
+            self.assertEqual(kept["status"], "timeout")
+            self.assertTrue(kept["long_tried"])
+
+    def test_assumption_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for f in ["docs/ASSUMPTIONS.md", "docs/EXTERNAL_INPUTS.json", "Main.lean", ".lake/x/axioms.md", "src/assumptions_old.md"]:
+                (Path(tmp) / f).parent.mkdir(parents=True, exist_ok=True)
+                (Path(tmp) / f).write_text("x")
+            self.assertEqual(leancheck.assumption_files(tmp), ["docs/ASSUMPTIONS.md", "docs/EXTERNAL_INPUTS.json"])
+        r = leancheck.clean(dict(build_result("builds"), assumptions=["docs/ASSUMPTIONS.md", "../x", 5]))
+        self.assertEqual(r["assumptions"], ["docs/ASSUMPTIONS.md"])
+        page = render.lean_repo_html(dict(r), [], set(), "https://x", "2026-10-24")
+        self.assertIn("Assumed inputs", page)
+        self.assertIn("https://github.com/x/y/blob/" + "a" * 40 + "/docs/ASSUMPTIONS.md", page)
+
     def test_labels_on_pages(self):
         for status, sorries, tag, md in [("builds", 0, "∎ lean builds", "build: builds, no sorry"),
                                          ("sorry", 2, "∎ lean 2 sorry", "build: builds with 2 sorry warnings"),

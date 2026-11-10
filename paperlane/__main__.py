@@ -26,6 +26,9 @@ def set_output(name, value):
             f.write(f"{name}={value}\n")
 
 
+WAIT_STEP = 15 * 60
+
+
 def stored_ids(path):
     return [p["id"] for p in json.loads(path.read_text())["papers"]] if path.exists() else None
 
@@ -38,6 +41,13 @@ def cmd_fetch(args):
         # The backup runs read the feed again. When the night is already stored there is
         # no need to ask the arXiv API about every paper a second time.
         when, items = arxiv.read_rss()
+        # arXiv sometimes publishes the feed hours late. On a weekday, keep checking until
+        # --wait minutes have passed instead of giving up on the day.
+        deadline = time.time() + args.wait * 60
+        while not items and datetime.now(timezone.utc).weekday() < 5 and time.time() + WAIT_STEP <= deadline:
+            print(f"The feed is empty. Checking again in {WAIT_STEP // 60} minutes.", flush=True)
+            time.sleep(WAIT_STEP)
+            when, items = arxiv.read_rss()
         if items and not args.force and stored_ids(data / f"{when}.json") == [i["id"] for i in items]:
             print(f"{when} is already stored with the same papers.")
             set_output("changed", "false")
@@ -80,7 +90,10 @@ def cmd_lean_plan(args):
     else:
         days = days[:args.days]
     force = {r for r in (args.force or "").split(",") if r}
-    jobs = leancheck.plan(days, leancheck.load(args.lean), force=force)
+    if args.long:
+        jobs = leancheck.plan_long(load_days(args.data), leancheck.load(args.lean), force=force)
+    else:
+        jobs = leancheck.plan(days, leancheck.load(args.lean), force=force)
     print(f"{len(jobs)} Lean projects to build: " + ", ".join(j["repo"] for j in jobs))
     set_output("matrix", json.dumps({"include": jobs}))
     set_output("count", len(jobs))
@@ -92,7 +105,7 @@ def cmd_lean_run(args):
 
 def cmd_lean_record(args):
     expect = {j["repo"] for j in json.loads(args.expect)["include"]} if args.expect else None
-    n = leancheck.record(args.folder, args.lean, args.run_url, expect)
+    n = leancheck.record(args.folder, args.lean, args.run_url, expect, keep_missing=args.keep_missing)
     print(f"Stored {n} Lean build results in {args.lean}")
     set_output("changed", "true" if n else "false")
 
@@ -189,6 +202,7 @@ def main():
     f.add_argument("--api-date", help="backfill YYYY-MM-DD from the API by submission time instead of RSS")
     f.add_argument("--no-github", action="store_true", help="skip the Lean checks on GitHub repositories")
     f.add_argument("--force", action="store_true", help="rewrite the day even if it is already stored")
+    f.add_argument("--wait", type=int, default=0, help="on a weekday, keep checking an empty feed for up to this many minutes")
     b = sub.add_parser("build", help="render the site from stored days")
     b.add_argument("--out", default="_site")
     b.add_argument("--base-url", default=os.environ.get("PAPERLANE_BASE_URL", "http://localhost:8000"))
@@ -200,6 +214,7 @@ def main():
     lp.add_argument("--days", type=int, default=1, help="the newest N days (default 1)")
     lp.add_argument("--force", help="comma-separated repositories to check again")
     lp.add_argument("--lean", default="data/lean.json")
+    lp.add_argument("--long", action="store_true", help="list the new builds that ran out of time, for the longer second run")
     lr = sub.add_parser("lean-run", help="clone and build one Lean project (runs the authors' code)")
     lr.add_argument("--repo", required=True)
     lr.add_argument("--path", default="")
@@ -209,6 +224,7 @@ def main():
     lc.add_argument("--folder", required=True)
     lc.add_argument("--lean", default="data/lean.json")
     lc.add_argument("--run-url")
+    lc.add_argument("--keep-missing", action="store_true", help="keep the stored result when a build left none (the longer second run)")
     lc.add_argument("--expect", help="the plan's matrix JSON; results for other repositories are dropped")
     d = sub.add_parser("digest", help="send the newest issue as a Kit broadcast")
     d.add_argument("--base-url", default=os.environ.get("PAPERLANE_BASE_URL", "https://pragyaangaur.dev/Paperlane"))

@@ -1,0 +1,155 @@
+name: Long Lean builds
+
+# The daily Lean check stops each build at 90 minutes so the email is not held up. This
+# workflow runs after it and gives each new project that ran out of time one longer build,
+# of up to 300 minutes, then stores the result and deploys the site. It sends no email.
+on:
+  workflow_run:
+    workflows: ["Lean builds and email"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Comma-separated repositories to give a long build, such as owner/repo"
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lean-long
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      count: ${{ steps.plan.outputs.count }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: List the projects that ran out of time
+        id: plan
+        env:
+          FORCE: ${{ inputs.force }}
+        run: python -m paperlane lean-plan --long --force "$FORCE"
+
+  # Runs the authors' code, so it gets no token and no secrets, as in the daily check.
+  build:
+    needs: plan
+    if: needs.plan.outputs.count != '0'
+    runs-on: ubuntu-24.04
+    permissions: {}
+    timeout-minutes: 355
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Build ${{ matrix.repo }}
+        env:
+          REPO: ${{ matrix.repo }}
+          PROJECT: ${{ matrix.path }}
+        run: python -m paperlane lean-run --repo "$REPO" --path "$PROJECT" --out result --minutes 300
+
+      - name: Keep the end of the log
+        if: always()
+        run: tail -c 200000 result/build.log > result/build-tail.log || true
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: lean-long-${{ strategy.job-index }}
+          path: |
+            result/result.json
+            result/build-tail.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+  publish:
+    needs: [plan, build]
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.count != '0'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: lean-long-*
+          path: results
+
+      - name: Store the results
+        id: record
+        env:
+          PLANNED: ${{ needs.plan.outputs.matrix }}
+        run: |
+          git pull --rebase
+          python -m paperlane lean-record --keep-missing --folder results --expect "$PLANNED" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/lean.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Add long Lean build results"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Configure Pages
+        id: pages
+        if: steps.record.outputs.changed == 'true'
+        uses: actions/configure-pages@v6
+
+      - name: Build the site
+        if: steps.record.outputs.changed == 'true'
+        env:
+          PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
+          PAPERLANE_KIT_FORM: ${{ vars.KIT_FORM_ID }}
+        run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
+
+      - uses: actions/upload-pages-artifact@v5
+        if: steps.record.outputs.changed == 'true'
+        with:
+          path: _site
+          include-hidden-files: true
+
+      - name: Deploy
+        if: steps.record.outputs.changed == 'true'
+        uses: actions/deploy-pages@v5

@@ -23,6 +23,14 @@ SORRY_RE = re.compile(r"declaration uses ['`]sorry['`]")
 # A repository that was checked once is checked again only when a new version of a paper links it.
 RECHECK_AFTER = timedelta(days=7)
 MAX_PER_RUN = 20
+# The first build of each project stops at FIRST_MINUTES so the daily email is not held up.
+# A project that runs out of time gets one longer build in a separate run, if it is new.
+FIRST_MINUTES = 90
+LONG_MINUTES = 300
+LONG_WITHIN = timedelta(days=2)
+# Files in which authors list the results their formalisation assumes without proving them.
+ASSUMPTION_RE = re.compile(r"(?i)^(assumptions?|external[_-]?inputs?|axioms?|hypotheses)(\.(md|json|txt|lean|toml|ya?ml))?$")
+MAX_ASSUMPTION_FILES = 5
 # A check that could not run (a download failed, or the machine crashed) is tried this many times in all.
 MAX_TRIES = 3
 
@@ -69,6 +77,36 @@ def plan(days, results, when=None, force=()):
     return list(jobs.values())[:MAX_PER_RUN]
 
 
+def plan_long(days, results, when=None, force=()):
+    """New results that ran out of time at the first limit, plus any forced repositories."""
+    when = when or now()
+    paths = {}
+    for day in days:
+        for p in day["papers"]:
+            for g in (p.get("signals") or {}).get("github", []):
+                if g.get("lean"):
+                    paths.setdefault(g["repo"], project_dir(g.get("lean_paths") or []))
+    jobs = []
+    for repo, r in sorted(results.items()):
+        recent = when - datetime.fromisoformat(r["checked_at"].replace("Z", "+00:00")) <= LONG_WITHIN
+        first = r["status"] == "timeout" and (r.get("minutes") or FIRST_MINUTES) < LONG_MINUTES
+        if repo in force or (first and recent and not r.get("long_tried")):
+            jobs.append({"repo": repo, "path": r.get("path") or paths.get(repo, "")})
+    return jobs[:MAX_PER_RUN]
+
+
+def assumption_files(src):
+    """Paths, relative to the repository, of files that list a project's assumed inputs."""
+    found = []
+    for root, dirs, files in os.walk(src):
+        dirs[:] = sorted(d for d in dirs if not d.startswith(".") and d not in ("build", "node_modules"))
+        for name in sorted(files):
+            if ASSUMPTION_RE.match(name):
+                found.append(os.path.relpath(os.path.join(root, name), src).replace(os.sep, "/"))
+    found.sort(key=lambda f: (f.count("/"), f))
+    return found[:MAX_ASSUMPTION_FILES]
+
+
 def sh_retry(cmd, tries=3, wait=30, **kw):
     """sh() again after a pause when a download fails, since Lean's servers sometimes refuse a connection."""
     for i in range(tries):
@@ -99,7 +137,7 @@ def run(repo, path, out, build_minutes=60, url=None):
     src = out / "src"
     shutil.rmtree(src, ignore_errors=True)
     result = {"repo": repo, "path": path, "commit": None, "toolchain": None, "status": "error",
-              "sorries": 0, "seconds": 0, "detail": "", "checked_at": iso(now())}
+              "sorries": 0, "seconds": 0, "detail": "", "minutes": build_minutes, "assumptions": [], "checked_at": iso(now())}
     start = time.time()
 
     def finish(status, detail=""):
@@ -111,6 +149,7 @@ def run(repo, path, out, build_minutes=60, url=None):
     if sh_retry(["git", "clone", "--depth", "1", "--quiet", url or f"https://github.com/{repo}.git", str(src)], timeout=600, log=log) != 0:
         return finish("error", "the repository could not be cloned")
     result["commit"] = subprocess.run(["git", "rev-parse", "HEAD"], cwd=src, capture_output=True, text=True).stdout.strip()
+    result["assumptions"] = assumption_files(src)
     proj = src / path if path else src
     tc = proj / "lean-toolchain"
     if not tc.is_file():
@@ -150,11 +189,13 @@ def clean(r):
         "sorries": max(0, min(int(r.get("sorries") or 0), 100000)),
         "seconds": max(0, min(int(r.get("seconds") or 0), 100000)),
         "detail": re.sub(r"[^\w .,:'()-]", "", str(r.get("detail") or ""))[:200],
+        "minutes": max(0, min(int(r.get("minutes") or FIRST_MINUTES), 360)),
+        "assumptions": [a for a in (r.get("assumptions") or []) if isinstance(a, str) and a and PATH_RE.match(a) and ".." not in a][:MAX_ASSUMPTION_FILES],
         "checked_at": iso(now()),
     }
 
 
-def record(folder, store, run_url=None, expect=None):
+def record(folder, store, run_url=None, expect=None, keep_missing=False):
     """Merge every result.json under `folder` into the store file. Returns how many changed.
 
     `expect` is the set of repositories that were planned. A build job runs untrusted code,
@@ -172,6 +213,8 @@ def record(folder, store, run_url=None, expect=None):
             continue
         if run_url:
             r["run"] = run_url
+        if keep_missing and r["status"] == "error" and results.get(r["repo"], {}).get("status") == "timeout":
+            continue
         if r["status"] == "error":
             r["tries"] = previous_tries(results, r["repo"]) + 1
         results[r["repo"]] = r
@@ -179,7 +222,13 @@ def record(folder, store, run_url=None, expect=None):
         n += 1
     # A build job that died (out of memory or disk) leaves no result. Record that, so the
     # repository is not planned again and the page keeps the plain Lean tag.
-    for repo in sorted((expect or set()) - seen):
+    # The longer second run keeps the first result when its own machine stopped, and marks
+    # it as tried so it is not planned again.
+    if keep_missing:
+        for repo in (expect or set()) - seen:
+            if repo in results:
+                results[repo]["long_tried"] = True
+    for repo in [] if keep_missing else sorted((expect or set()) - seen):
         results[repo] = {"repo": repo, "path": "", "commit": None, "toolchain": None, "status": "error", "sorries": 0,
                          "seconds": 0, "detail": "the build machine stopped before the build finished",
                          "checked_at": iso(now()), "tries": previous_tries(results, repo) + 1,
