@@ -840,9 +840,9 @@ def lean_repo_html(r, papers, kept, base, built):
         rows.append(("log", f'<a href="{esc(r["run"])}" target="_blank" rel="noopener">the build run on GitHub</a>'))
     facts = "".join(f'<div><dt class="mono">{k}</dt><dd>{v}</dd></div>' for k, v in rows)
     assumed = ""
-    if r.get("assumptions"):
+    if leancheck.current_assumptions(r.get("assumptions") or []):
         ref = r.get("commit") or "HEAD"
-        links = ", ".join(f'<a class="mono" href="https://github.com/{esc(repo)}/blob/{esc(ref)}/{esc(a)}" target="_blank" rel="noopener">{esc(a)}</a>' for a in r["assumptions"])
+        links = ", ".join(f'<a class="mono" href="https://github.com/{esc(repo)}/blob/{esc(ref)}/{esc(a)}" target="_blank" rel="noopener">{esc(a)}</a>' for a in leancheck.current_assumptions(r["assumptions"]))
         assumed = (f'<h2>Assumed inputs</h2><p class="assumed">The project lists results it uses without proving them in Lean, in {links}. '
                    f'The build checks the Lean code around those inputs. It does not check the inputs themselves, so the result holds on the condition that they are true.</p>')
     items = []
@@ -878,7 +878,7 @@ def lean_index_html(results, papers_of, kept, base, built):
         title = f'<span class="t">{tex_text(first["title"])}</span>' if first else ""
         rows.append(f'<li><a href="lean/{esc(r["repo"])}.html"><img src="lean/{esc(r["repo"])}.svg" alt="{esc(badge.value(r))}" loading="lazy">'
                     f'<span class="mono repo">{esc(r["repo"])}</span>{title}'
-                    + ('<span class="mono faint assumed-tag">lists its assumed inputs</span>' if r.get("assumptions") else "") + '</a></li>')
+                    + ('<span class="mono faint assumed-tag">lists its assumed inputs</span>' if leancheck.current_assumptions(r.get("assumptions") or []) else "") + '</a></li>')
     summary = (f'{len(order)} repositories checked: {counts["builds"]} build with no sorry, {counts["sorry"]} build with sorry, '
                f'{counts["fails"]} fail, {counts["timeout"]} too large to build within the time limit and {counts["error"]} could not be checked.')
     body = f"""<div class="wrap">

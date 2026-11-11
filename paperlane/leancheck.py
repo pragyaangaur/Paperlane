@@ -31,6 +31,13 @@ LONG_WITHIN = timedelta(days=2)
 # Files in which authors list the results their formalisation assumes without proving them.
 ASSUMPTION_RE = re.compile(r"(?i)^(assumptions?|external[_-]?inputs?|axioms?|hypotheses)(\.(md|json|txt|lean|toml|ya?ml))?$")
 MAX_ASSUMPTION_FILES = 5
+# Folders that keep old copies of a project, whose assumption files are no longer current.
+OLD_DIRS = {"history", "archive", "archived", "old", "deprecated", "legacy"}
+
+
+def current_assumptions(paths):
+    """Assumption files outside folders of old copies."""
+    return [p for p in paths if not any(part.lower() in OLD_DIRS for part in p.split("/")[:-1])]
 # A check that could not run (a download failed, or the machine crashed) is tried this many times in all.
 MAX_TRIES = 3
 
@@ -99,7 +106,7 @@ def assumption_files(src):
     """Paths, relative to the repository, of files that list a project's assumed inputs."""
     found = []
     for root, dirs, files in os.walk(src):
-        dirs[:] = sorted(d for d in dirs if not d.startswith(".") and d not in ("build", "node_modules"))
+        dirs[:] = sorted(d for d in dirs if not d.startswith(".") and d not in ("build", "node_modules") and d.lower() not in OLD_DIRS)
         for name in sorted(files):
             if ASSUMPTION_RE.match(name):
                 found.append(os.path.relpath(os.path.join(root, name), src).replace(os.sep, "/"))

@@ -280,3 +280,9 @@ class BadgeTest(unittest.TestCase):
         self.assertEqual(badge.value({"status": "error"}), "not checked")
         self.assertGreater(badge.text_width("builds, 20 sorry"), badge.text_width("builds"))
 
+
+
+def test_old_copies_of_assumptions_are_skipped():
+    from paperlane import leancheck
+    paths = ["docs/ASSUMPTIONS.md", "history/pre-revision/docs/ASSUMPTIONS.md", "Archive/AXIOMS.md", "PSPrimes/ExternalInputs.lean"]
+    assert leancheck.current_assumptions(paths) == ["docs/ASSUMPTIONS.md", "PSPrimes/ExternalInputs.lean"]
