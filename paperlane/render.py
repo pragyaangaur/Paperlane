@@ -79,6 +79,12 @@ def counts_line(day):
 # Markdown, for agents first
 
 
+def lean_notes():
+    import json, os
+    path = os.path.join("data", "lean_notes.json")
+    return json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
+
+
 def signal_notes(p):
     s = p.get("signals") or {}
     notes = []
@@ -845,6 +851,11 @@ def lean_repo_html(r, papers, kept, base, built):
         links = ", ".join(f'<a class="mono" href="https://github.com/{esc(repo)}/blob/{esc(ref)}/{esc(a)}" target="_blank" rel="noopener">{esc(a)}</a>' for a in leancheck.current_assumptions(r["assumptions"]))
         assumed = (f'<h2>Assumed inputs</h2><p class="assumed">The project lists results it uses without proving them in Lean, in {links}. '
                    f'The build checks the Lean code around those inputs. It does not check the inputs themselves, so the result holds on the condition that they are true.</p>')
+    note = ""
+    n = lean_notes().get(repo)
+    if n:
+        extra = " ".join(f'<a href="{esc(u)}" target="_blank" rel="noopener">{esc(t)}</a>.' for t, u in n.get("links", []))
+        note = f'<h2>Note from the author</h2><p class="assumed">{esc(n["text"])} {extra}</p>'
     items = []
     for p, d in papers:
         href = f"{prefix}p/{anchor(p)}.html" if anchor(p) in kept else p["links"]["abs"]
@@ -854,6 +865,7 @@ def lean_repo_html(r, papers, kept, base, built):
   <h1 class="mono repo"><a href="https://github.com/{esc(repo)}" target="_blank" rel="noopener">{esc(repo)}</a></h1>
   <p class="badge-img"><img src="{prefix}lean/{esc(repo)}.svg" alt="{esc(badge.LEFT)}: {esc(badge.value(r))}"></p></header>
   <dl class="facts">{facts}</dl>
+  {note}
   {assumed}
   <h2>Papers that link it</h2>
   <ul class="lean-papers">{''.join(items) or '<li>None in the stored issues.</li>'}</ul>
