@@ -211,6 +211,20 @@
   "checked_at": "2026-11-11T05:47:23Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42967656425"
  },
+ "adamtilepe/Annular_Obstructions_and_Skew-Shape_Block_Identities": {
+  "repo": "adamtilepe/Annular_Obstructions_and_Skew-Shape_Block_Identities",
+  "path": "",
+  "commit": "e4727e42bb5b0298c578a92ee9c8c0d115a5f1df",
+  "toolchain": "leanprover/lean4:v4.35.0-rc4",
+  "status": "fails",
+  "sorries": 0,
+  "seconds": 72,
+  "detail": "lake build exited with code 1",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-13T08:09:51Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
+ },
  "adamtilepe/RootedTrailTrapHeterogeneousBouquets": {
   "repo": "adamtilepe/RootedTrailTrapHeterogeneousBouquets",
   "path": "",
@@ -222,6 +236,22 @@
   "detail": "",
   "checked_at": "2026-11-02T06:31:11Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
+ },
+ "aguevara22/gluon-knot-lean": {
+  "repo": "aguevara22/gluon-knot-lean",
+  "path": "CORNER_LAWS_FOCUSED_20260912/lean",
+  "commit": "a6a5705cb2c3e2aeeb5175f9fa72b682af9179e7",
+  "toolchain": "leanprover/lean4:v4.34.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 98,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [
+   "CORNER_LAWS_FOCUSED_20260912/work/lean/CV/Axioms.lean"
+  ],
+  "checked_at": "2026-11-13T08:09:51Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
  },
  "anastasiosfragkosmath/Pointwise-Ergodic-Theorems-Along-floor-p-c-Palomar-Submission": {
   "repo": "anastasiosfragkosmath/Pointwise-Ergodic-Theorems-Along-floor-p-c-Palomar-Submission",
@@ -249,17 +279,47 @@
   "checked_at": "2026-10-27T11:00:18Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40492028007"
  },
+ "apemm/elephant-bias-interval": {
+  "repo": "apemm/elephant-bias-interval",
+  "path": "lean",
+  "commit": "f8b3050896cac8ac387c05f6c6dd168133f19eb5",
+  "toolchain": "leanprover/lean4:v4.33.1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 328,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-13T08:09:51Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
+ },
+ "bishara74/lowhalf-mul3": {
+  "repo": "bishara74/lowhalf-mul3",
+  "path": "",
+  "commit": "62f8bde7033adb94b9b5283f222a0b25c78c978e",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 555,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-13T08:09:51Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
+ },
  "david44hello/papers_supporting_materials": {
   "repo": "david44hello/papers_supporting_materials",
   "path": "cranston-li-su-wang-xu-2026-conjecture/lean",
-  "commit": "3c0790201fd44ad69020fa865ba5e57cabb50651",
+  "commit": "15495bd804b7569555fc65febbe9bd3abd34ba6e",
   "toolchain": "leanprover/lean4:v4.35.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 179,
+  "seconds": 224,
   "detail": "",
-  "checked_at": "2026-11-02T06:31:11Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-13T08:09:51Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
  },
  "drjanosch42/rational_quivers": {
   "repo": "drjanosch42/rational_quivers",
@@ -357,6 +417,20 @@
   "checked_at": "2026-11-10T13:24:22Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
  },
+ "joaquimortega/MR1923965": {
+  "repo": "joaquimortega/MR1923965",
+  "path": "",
+  "commit": "c95e3ebc4e6de14a161da95c45fb218270e4fe10",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 678,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-13T08:09:51Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
+ },
  "joaquimortega/MR1949832": {
   "repo": "joaquimortega/MR1949832",
   "path": "",
@@ -404,6 +478,22 @@
   "detail": "lake build ran for more than 90 minutes",
   "checked_at": "2026-11-06T08:56:56Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42180603557"
+ },
+ "magbenji/discrete-modified-gradient-lean": {
+  "repo": "magbenji/discrete-modified-gradient-lean",
+  "path": "",
+  "commit": "c3e4688e6f32de6904ce696890a372ae4cba6ad3",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 94,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [
+   "Axioms.lean"
+  ],
+  "checked_at": "2026-11-13T08:09:51Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
  },
  "mcoiculescu/NonUniqueEuler": {
   "repo": "mcoiculescu/NonUniqueEuler",
@@ -560,6 +650,20 @@
   "detail": "",
   "checked_at": "2026-11-03T16:11:04Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41655593897"
+ },
+ "samyama-ai/gw-speed-certificate": {
+  "repo": "samyama-ai/gw-speed-certificate",
+  "path": "lean",
+  "commit": "7723b63334e8211e82e9eca586c9d4c235dcdccc",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 407,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-13T08:09:51Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
  },
  "sashakolpakov/CoxeterPolytopes": {
   "repo": "sashakolpakov/CoxeterPolytopes",
