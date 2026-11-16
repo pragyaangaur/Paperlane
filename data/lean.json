@@ -1,4 +1,18 @@
 {
+ "ANRGUSC/TINA": {
+  "repo": "ANRGUSC/TINA",
+  "path": "papers/arxiv-v2/lean",
+  "commit": "c1516c4d7b9ba7ee1013f8ddc587ae82cad0558a",
+  "toolchain": "leanprover/lean4:v4.33.1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 151,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-16T17:09:00Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43905238668"
+ },
  "Apsiape/kaplansky-conjectures-hyperbolic-groups": {
   "repo": "Apsiape/kaplansky-conjectures-hyperbolic-groups",
   "path": "lean/KaplanskyLean",
@@ -307,6 +321,20 @@
   "checked_at": "2026-11-13T08:09:51Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
  },
+ "david44hello/paper_smale-mean-value-constant-equals-4": {
+  "repo": "david44hello/paper_smale-mean-value-constant-equals-4",
+  "path": "lean",
+  "commit": "72511404d60696455d07604a6f6cb2e97aad44b4",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 197,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-16T17:09:00Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43905238668"
+ },
  "david44hello/papers_supporting_materials": {
   "repo": "david44hello/papers_supporting_materials",
   "path": "cranston-li-su-wang-xu-2026-conjecture/lean",
@@ -404,6 +432,23 @@
   "detail": "",
   "checked_at": "2026-10-28T07:33:12Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
+ },
+ "jacopoborga/DLQG1-bipolar-triangulations-Lean": {
+  "repo": "jacopoborga/DLQG1-bipolar-triangulations-Lean",
+  "path": "",
+  "commit": "5c4602bfd296e4e095fa3ea0e489c235ca1654e1",
+  "toolchain": "leanprover/lean4:v4.36.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 3188,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [
+   "verification/AXIOMS.json",
+   "verification/Axioms.lean"
+  ],
+  "checked_at": "2026-11-16T17:09:00Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43905238668"
  },
  "jaideepsaipadhi/erdos-sums-almost-primes": {
   "repo": "jaideepsaipadhi/erdos-sums-almost-primes",
