@@ -175,16 +175,16 @@
  "ManuelManas/btp-pbf-verification": {
   "repo": "ManuelManas/btp-pbf-verification",
   "path": "lean/general_stability",
-  "commit": "c065a8d7ad7238bca3ca167eaa08377b3247839f",
+  "commit": "8a8cfc973458d682cf871fd978858f9aef9ee1a0",
   "toolchain": "leanprover/lean4:v4.34.0-rc2",
-  "status": "fails",
+  "status": "builds",
   "sorries": 0,
-  "seconds": 15,
-  "detail": "lake build exited with code 1",
+  "seconds": 389,
+  "detail": "",
   "minutes": 90,
   "assumptions": [],
-  "checked_at": "2026-11-11T05:47:23Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42967656425"
+  "checked_at": "2026-11-16T17:18:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43913905932"
  },
  "MikhailLevit1987/icosahedron-rational-faces": {
   "repo": "MikhailLevit1987/icosahedron-rational-faces",
