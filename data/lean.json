@@ -49,6 +49,20 @@
   "checked_at": "2026-11-04T05:54:36Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41780328296"
  },
+ "BehroozMoosavi/tugofwar_formalization": {
+  "repo": "BehroozMoosavi/tugofwar_formalization",
+  "path": "",
+  "commit": "6884ed06c32788e0e27f48ccf4eb9a63616d7ecb",
+  "toolchain": "leanprover/lean4:v4.34.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 1298,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-17T11:58:57Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
+ },
  "BitMiracle-AI/detailed-balance-gac": {
   "repo": "BitMiracle-AI/detailed-balance-gac",
   "path": "lean",
@@ -211,6 +225,34 @@
   "checked_at": "2026-10-28T07:33:12Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40649524970"
  },
+ "Trace231/ProofLoom": {
+  "repo": "Trace231/ProofLoom",
+  "path": "formalizations/ADMM",
+  "commit": "f1aef20709e9ed69baf92a1e595b263f032b4886",
+  "toolchain": "leanprover/lean4:v4.29.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 257,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-17T11:58:57Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
+ },
+ "VC2015/rectangle-clt-singular": {
+  "repo": "VC2015/rectangle-clt-singular",
+  "path": "lean-kane",
+  "commit": "1803366cc994d9facae8e128ee180f68e319486f",
+  "toolchain": "leanprover/lean4:v4.19.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 112,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-17T11:58:57Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
+ },
  "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities": {
   "repo": "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities",
   "path": "",
@@ -280,6 +322,34 @@
   "assumptions": [],
   "checked_at": "2026-11-10T15:47:17Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42827334643"
+ },
+ "anastasiosfragkosmath/Prime_BHT_Palomar_Submission": {
+  "repo": "anastasiosfragkosmath/Prime_BHT_Palomar_Submission",
+  "path": "",
+  "commit": "37e79d9b22162fdb2d4f0b7de020ee97a28b7746",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "sorry",
+  "sorries": 1,
+  "seconds": 3300,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-17T11:58:57Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
+ },
+ "anastasiosfragkosmath/Variation-Norm-Carleson-Along-the-Primes-Palomar-Submission": {
+  "repo": "anastasiosfragkosmath/Variation-Norm-Carleson-Along-the-Primes-Palomar-Submission",
+  "path": "",
+  "commit": "6753794fbfa2895b77eba3039b4ea8783a84be4c",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "sorry",
+  "sorries": 2,
+  "seconds": 4387,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-17T11:58:57Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
  },
  "apemm/Kagey-Problems": {
   "repo": "apemm/Kagey-Problems",
@@ -524,6 +594,20 @@
   "checked_at": "2026-11-06T08:56:56Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42180603557"
  },
+ "lukasniebel/fast_dynamo_lean": {
+  "repo": "lukasniebel/fast_dynamo_lean",
+  "path": "",
+  "commit": "f2e17cdd0f814af1bd9c0a6ce10320b216ed4fe0",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 900,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-17T11:58:57Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
+ },
  "magbenji/discrete-modified-gradient-lean": {
   "repo": "magbenji/discrete-modified-gradient-lean",
   "path": "",
@@ -551,6 +635,20 @@
   "detail": "",
   "checked_at": "2026-10-27T11:34:52Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
+ },
+ "mjarret/products-of-unitaries-lean": {
+  "repo": "mjarret/products-of-unitaries-lean",
+  "path": "",
+  "commit": "e466af3c130b08e9f6376fe0bc7f4d04f47ad0a6",
+  "toolchain": "leanprover/lean4:v4.28.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 866,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-17T11:58:57Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
  },
  "muchenju-math/positivity-lean": {
   "repo": "muchenju-math/positivity-lean",
@@ -785,14 +883,16 @@
  "sun123zxy/ninegates-lean4": {
   "repo": "sun123zxy/ninegates-lean4",
   "path": "",
-  "commit": "9ae14717bb5f591e187f4d6eeb440c69e0ff2680",
-  "toolchain": "leanprover/lean4:v4.33.0",
+  "commit": "e45fd512ebb2cd0bac7d69690f3163647bdc3bc8",
+  "toolchain": "leanprover/lean4:v4.35.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 200,
+  "seconds": 157,
   "detail": "",
-  "checked_at": "2026-11-06T08:56:56Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42180603557"
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-17T11:58:57Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
  },
  "tilenmarc/braid-bruhat-mutation-distance": {
   "repo": "tilenmarc/braid-bruhat-mutation-distance",
@@ -853,5 +953,19 @@
   "detail": "",
   "checked_at": "2026-11-10T13:24:22Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
+ },
+ "zhineos/hubbard-spectral-moments": {
+  "repo": "zhineos/hubbard-spectral-moments",
+  "path": "lean",
+  "commit": "66d5104785daae03e2f91bbb681aa0fbcea1e6d4",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 95,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "checked_at": "2026-11-17T11:58:57Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
  }
 }
