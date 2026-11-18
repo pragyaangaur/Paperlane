@@ -391,6 +391,29 @@
   "checked_at": "2026-11-13T08:09:51Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/43388560193"
  },
+ "chenle02/stratonovich-ham-second-moment-lean": {
+  "repo": "chenle02/stratonovich-ham-second-moment-lean",
+  "path": "",
+  "commit": "f8495d5e9123fd70170527125a1c44b00e1dcc37",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 674,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [
+   "StratonovichHAMSecondMoment/Axioms.lean"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": null,
+  "source": "default branch",
+  "theorems": null,
+  "axioms": null,
+  "axiom_note": "",
+  "checked_at": "2026-11-18T15:41:09Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44325386358"
+ },
  "david44hello/paper_smale-mean-value-constant-equals-4": {
   "repo": "david44hello/paper_smale-mean-value-constant-equals-4",
   "path": "lean",
@@ -674,6 +697,29 @@
   "checked_at": "2026-11-03T14:20:46Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
  },
+ "na0b/pharmonicpoly-lean": {
+  "repo": "na0b/pharmonicpoly-lean",
+  "path": "",
+  "commit": "df7300b4503a05e91ccf27d17867a227b263850b",
+  "toolchain": "leanprover/lean4:v4.35.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 130,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [
+   "Axioms.lean"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": null,
+  "source": "default branch",
+  "theorems": null,
+  "axioms": null,
+  "axiom_note": "",
+  "checked_at": "2026-11-18T15:41:09Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44325386358"
+ },
  "nawafbourabee/persistence-pays-lean": {
   "repo": "nawafbourabee/persistence-pays-lean",
   "path": "",
@@ -917,6 +963,27 @@
   "detail": "",
   "checked_at": "2026-10-27T10:51:24Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+ },
+ "xyzw/pf_ucp": {
+  "repo": "xyzw/pf_ucp",
+  "path": "lean",
+  "commit": "410eddcde2c9d2ca326649be46898f53dd4ebba1",
+  "toolchain": "leanprover/lean4:v4.34.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 3932,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": null,
+  "source": "default branch",
+  "theorems": null,
+  "axioms": null,
+  "axiom_note": "",
+  "checked_at": "2026-11-18T15:41:09Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44325386358"
  },
  "xyzw/qedft_pf_pub": {
   "repo": "xyzw/qedft_pf_pub",
