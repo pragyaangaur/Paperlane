@@ -189,6 +189,18 @@ class LeanCheckTest(unittest.TestCase):
         self.assertNotIn("<", r["axiom_note"])
         self.assertIsNone(leancheck.clean(build_result("builds"))["axioms"])
 
+    def test_mathlib_rev(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            m = Path(tmp) / "lake-manifest.json"
+            m.write_text(json.dumps({"packages": [{"name": "batteries", "rev": "b" * 40}, {"name": "mathlib", "rev": "c" * 40}]}))
+            self.assertEqual(leancheck.mathlib_rev(m), "c" * 40)
+            m.write_text(json.dumps({"packages": [{"name": "batteries", "rev": "b" * 40}]}))
+            self.assertIsNone(leancheck.mathlib_rev(m))
+        self.assertIsNone(leancheck.mathlib_rev(Path("/nonexistent")))
+        r = leancheck.clean(dict(build_result("builds"), mathlib="d" * 40))
+        self.assertEqual((r["mathlib"], r["source"]), ("d" * 40, "default branch"))
+        self.assertIsNone(leancheck.clean(dict(build_result("builds"), mathlib="main; rm"))["mathlib"])
+
     def test_record(self):
         with tempfile.TemporaryDirectory() as tmp:
             (Path(tmp) / "a").mkdir()

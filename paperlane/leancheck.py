@@ -124,6 +124,19 @@ def parse_axioms(text):
     return int(m.group(1)), axs[:MAX_AXIOMS]
 
 
+def mathlib_rev(manifest):
+    """The Mathlib commit pinned in lake-manifest.json, or None when the project does not use Mathlib."""
+    try:
+        data = json.loads(Path(manifest).read_text())
+    except (OSError, ValueError):
+        return None
+    for pkg in data.get("packages") or []:
+        if isinstance(pkg, dict) and str(pkg.get("name", "")).lower() == "mathlib":
+            rev = str(pkg.get("rev") or "")
+            return rev if re.fullmatch(r"[0-9a-f]{7,40}", rev) else None
+    return None
+
+
 def check_axioms(proj, log):
     """Runs the axiom script inside the built project. Returns (theorems, axioms, note)."""
     mods = project_modules(proj)
@@ -250,7 +263,9 @@ def run(repo, path, out, build_minutes=60, url=None):
     src = out / "src"
     shutil.rmtree(src, ignore_errors=True)
     result = {"repo": repo, "path": path, "commit": None, "toolchain": None, "status": "error",
-              "sorries": 0, "seconds": 0, "detail": "", "minutes": build_minutes, "assumptions": [], "checked_at": iso(now())}
+              "sorries": 0, "seconds": 0, "detail": "", "minutes": build_minutes, "assumptions": [], "checked_at": iso(now()),
+              # The check always builds the newest commit on the default branch, not a commit the paper names.
+              "source": "default branch"}
     start = time.time()
 
     def finish(status, detail=""):
@@ -272,6 +287,7 @@ def run(repo, path, out, build_minutes=60, url=None):
     if sh_retry(["elan", "toolchain", "install", result["toolchain"]], timeout=1200, log=log) != 0:
         return finish("error", "the Lean toolchain could not be installed")
     manifest = proj / "lake-manifest.json"
+    result["mathlib"] = mathlib_rev(manifest)
     if manifest.is_file() and '"mathlib"' in manifest.read_text():
         # Downloads Mathlib's compiled files. Without them a build takes hours.
         sh(["lake", "exe", "cache", "get"], cwd=proj, timeout=1800, log=log)
@@ -305,6 +321,8 @@ def clean(r):
         "detail": re.sub(r"[^\w .,:'()-]", "", str(r.get("detail") or ""))[:200],
         "minutes": max(0, min(int(r.get("minutes") or FIRST_MINUTES), 360)),
         "assumptions": [a for a in (r.get("assumptions") or []) if isinstance(a, str) and a and PATH_RE.match(a) and ".." not in a][:MAX_ASSUMPTION_FILES],
+        "mathlib": r["mathlib"] if isinstance(r.get("mathlib"), str) and re.fullmatch(r"[0-9a-f]{7,40}", r["mathlib"]) else None,
+        "source": "default branch",
         "theorems": max(0, min(int(r["theorems"]), 10**7)) if isinstance(r.get("theorems"), int) else None,
         "axioms": sorted({a for a in r["axioms"] if isinstance(a, str) and AXIOM_NAME_RE.match(a) and a not in IGNORED_AXIOMS})[:MAX_AXIOMS] if isinstance(r.get("axioms"), list) else None,
         "axiom_note": re.sub(r"[^\w .,:'()-]", "", str(r.get("axiom_note") or ""))[:200],
