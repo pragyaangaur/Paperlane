@@ -764,6 +764,7 @@ def about_html(days, base, built):
         ("latest/math.CO.md", "One field of the day (swap in any field code)"),
         (f"p/{anchor(days[0]['papers'][0])}.md", "One paper (swap in any arXiv id)"),
         ("feed.xml", "RSS for your feed reader"),
+        ("lean/papers.json", "Every Lean build result, keyed by arXiv id"),
     ]
     rows = "".join(f'<tr><td class="mono"><a href="{f}">{esc(f)}</a></td><td>{esc(t)}</td></tr>' for f, t in files)
     body = f"""<div class="wrap prose">
@@ -922,6 +923,38 @@ def lean_index_html(results, papers_of, kept, base, built):
     return page("Lean builds · Paperlane", body, "", built, summary, base, "lean-index", "", "lean.html")
 
 
+LEAN_FIELDS = ("status", "sorries", "theorems", "axioms", "axiom_note", "reason", "lean_errors", "detail",
+               "commit", "source", "toolchain", "mathlib", "path", "assumptions", "checked_at", "run")
+
+
+def lean_by_arxiv(results, days, base, built):
+    """Every paper that links a checked Lean project, keyed by arXiv id, for other sites to read.
+
+    A paper keeps its first listing date. Each repository record is dated by checked_at and
+    links to its page on Paperlane, so a site that shows the status can link back to the evidence.
+    """
+    papers = {}
+    for d in sorted(days, key=lambda d: d["date"]):
+        for p in d["papers"]:
+            repos = [g["repo"] for g in (p.get("signals") or {}).get("github", []) if g.get("lean") and g["repo"] in results]
+            if not repos:
+                continue
+            e = papers.setdefault(p["id"], {"arxiv": p["id"], "title": p["title"], "listed": d["date"], "repos": {}})
+            e["title"], e["version"] = p["title"], p.get("version")
+            for repo in repos:
+                r = results[repo]
+                e["repos"][repo] = {"repo": repo, "page": f"{base}/lean/{repo}.html", "badge": f"{base}/lean/{repo}.svg",
+                                    "label": leancheck.label(r), **{k: r.get(k) for k in LEAN_FIELDS}}
+    for e in papers.values():
+        e["repos"] = list(e["repos"].values())
+    return {"schema": 1, "generated": built,
+            "about": "Paperlane's Lean build check for every paper that links a Lean project, keyed by arXiv id. "
+                     "'builds' means the project compiled with no sorry on a clean machine. It does not mean the Lean "
+                     "statements match the theorems in the paper. Axioms beyond propext, Classical.choice and Quot.sound "
+                     "are listed under axioms (null when not checked).",
+            "papers": dict(sorted(papers.items()))}
+
+
 def lean_site(out, results, days, kept, base, built):
     """lean.html, plus a page and a badge for every checked repository. Returns the page paths."""
     papers_of = {repo: lean_papers(repo, days) for repo in results}
@@ -934,6 +967,7 @@ def lean_site(out, results, days, kept, base, built):
         (folder / f"{name}.html").write_text(lean_repo_html(r, papers_of[repo], kept, base, built))
         paths.append(f"lean/{repo}.html")
     (out / "lean.html").write_text(lean_index_html(results, papers_of, kept, base, built))
+    (out / "lean" / "papers.json").write_text(json.dumps(lean_by_arxiv(results, days, base, built), ensure_ascii=False, indent=1) + "\n")
     return ["lean.html"] + sorted(paths)
 
 
@@ -998,6 +1032,7 @@ The latest announcement is {latest['date']} ({counts_line(latest)}). Built {buil
 - [Today as JSON]({base}/latest.json): the same data with every field.
 - One paper: {base}/p/<id>.md in Markdown or {base}/p/<id>.html for people, for example {base}/p/{anchor(latest['papers'][0])}.md. Old ids such as math/0601001 use a hyphen.
 - [RSS]({base}/feed.xml): new papers and cross-lists from the latest announcement.
+- [Lean build results by arXiv id]({base}/lean/papers.json): every paper that links a checked Lean project, with build status, sorry count, extra axioms, commit, toolchain, Mathlib revision and the date of the check.
 
 ## Today by subfield
 

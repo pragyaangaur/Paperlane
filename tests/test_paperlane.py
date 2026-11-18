@@ -212,6 +212,16 @@ class LeanCheckTest(unittest.TestCase):
         self.assertEqual(leancheck.label(build_result("fails")), "does not build")
         self.assertIsNone(leancheck.clean(dict(build_result("builds"), reason="lean"))["reason"])
 
+    def test_lean_by_arxiv(self):
+        day = leancheck.annotate([sample_day()], {"x/y": build_result("builds")})[0]
+        res = {"x/y": dict(build_result("builds"), axioms=["myAx"], theorems=3)}
+        data = render.lean_by_arxiv(res, [day], "https://b", "2026-11-18")
+        (pid, e), = data["papers"].items()
+        r = e["repos"][0]
+        self.assertEqual((r["repo"], r["status"], r["axioms"], r["page"]), ("x/y", "builds", ["myAx"], "https://b/lean/x/y.html"))
+        self.assertEqual(e["listed"], day["date"])
+        self.assertEqual(render.lean_by_arxiv({}, [day], "https://b", "x")["papers"], {})
+
     def test_record(self):
         with tempfile.TemporaryDirectory() as tmp:
             (Path(tmp) / "a").mkdir()
