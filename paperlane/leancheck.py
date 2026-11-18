@@ -124,6 +124,29 @@ def parse_axioms(text):
     return int(m.group(1)), axs[:MAX_AXIOMS]
 
 
+# Why a build failed, in words a reader can act on. A missing lakefile and a Lean error mean
+# very different things about a paper's code.
+REASONS = {
+    "setup": "the project is not set up to build",
+    "dependencies": "a dependency could not be downloaded or resolved",
+    "lean": "Lean reported errors in the project's own files",
+    "other": "lake build failed for another reason",
+}
+LEAN_ERROR_RE = re.compile(r"\.lean:\d+:\d+: error")
+
+
+def failure_reason(text):
+    """(reason, number of Lean errors) for a failed lake build, from its output."""
+    errors = len(LEAN_ERROR_RE.findall(text))
+    if re.search(r"(?i)no configuration file|lakefile\.(lean|toml).{0,40}(not found|does not exist)|could not find .{0,20}lakefile", text):
+        return "setup", errors
+    if re.search(r"(?i)error:.{0,200}(failed to clone|failed to fetch|could not resolve|git exited|cloning|unknown package|manifest|dependency|revision)", text):
+        return "dependencies", errors
+    if errors:
+        return "lean", errors
+    return "other", 0
+
+
 def mathlib_rev(manifest):
     """The Mathlib commit pinned in lake-manifest.json, or None when the project does not use Mathlib."""
     try:
@@ -283,6 +306,9 @@ def run(repo, path, out, build_minutes=60, url=None):
     if not tc.is_file():
         return finish("error", f"no lean-toolchain in {path or 'the root'}")
     result["toolchain"] = tc.read_text().strip()[:100]
+    if not any((proj / f).is_file() for f in ("lakefile.lean", "lakefile.toml")):
+        result["reason"] = "setup"
+        return finish("fails", f"no lakefile in {path or 'the root'}")
     # Fetching Lean itself counts as setup, so a slow download is not blamed on the paper.
     if sh_retry(["elan", "toolchain", "install", result["toolchain"]], timeout=1200, log=log) != 0:
         return finish("error", "the Lean toolchain could not be installed")
@@ -300,6 +326,7 @@ def run(repo, path, out, build_minutes=60, url=None):
     if code is None:
         return finish("timeout", f"lake build ran for more than {build_minutes} minutes")
     if code != 0:
+        result["reason"], result["lean_errors"] = failure_reason(text)
         return finish("fails", f"lake build exited with code {code}")
     result["theorems"], result["axioms"], result["axiom_note"] = check_axioms(proj, log)
     return finish("sorry" if result["sorries"] else "builds")
@@ -321,6 +348,8 @@ def clean(r):
         "detail": re.sub(r"[^\w .,:'()-]", "", str(r.get("detail") or ""))[:200],
         "minutes": max(0, min(int(r.get("minutes") or FIRST_MINUTES), 360)),
         "assumptions": [a for a in (r.get("assumptions") or []) if isinstance(a, str) and a and PATH_RE.match(a) and ".." not in a][:MAX_ASSUMPTION_FILES],
+        "reason": r["reason"] if r.get("reason") in REASONS and r["status"] == "fails" else None,
+        "lean_errors": max(0, min(int(r.get("lean_errors") or 0), 100000)) if r["status"] == "fails" else 0,
         "mathlib": r["mathlib"] if isinstance(r.get("mathlib"), str) and re.fullmatch(r"[0-9a-f]{7,40}", r["mathlib"]) else None,
         "source": "default branch",
         "theorems": max(0, min(int(r["theorems"]), 10**7)) if isinstance(r.get("theorems"), int) else None,
@@ -402,7 +431,13 @@ def label(b, short=False):
         n = b["sorries"]
         return f"{n} sorry" if short else f"builds with {n} sorry warning{'s' if n != 1 else ''}"
     if b["status"] == "fails":
-        return "fails" if short else "does not build"
+        if short:
+            return "fails"
+        why = REASONS.get(b.get("reason") or "")
+        if b.get("reason") == "lean" and b.get("lean_errors"):
+            n = b["lean_errors"]
+            why = f"Lean reported {n} error{'s' if n != 1 else ''} in the project's own files"
+        return f"does not build: {why}" if why else "does not build"
     if b["status"] == "timeout":
         return "too large" if short else "is too large to build within the check's time limit"
     return "unchecked" if short else "could not be checked"

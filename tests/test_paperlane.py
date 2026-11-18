@@ -201,6 +201,17 @@ class LeanCheckTest(unittest.TestCase):
         self.assertEqual((r["mathlib"], r["source"]), ("d" * 40, "default branch"))
         self.assertIsNone(leancheck.clean(dict(build_result("builds"), mathlib="main; rm"))["mathlib"])
 
+    def test_failure_reason(self):
+        self.assertEqual(leancheck.failure_reason("error: no configuration file with a supported extension"), ("setup", 0))
+        self.assertEqual(leancheck.failure_reason("error: mathlib: failed to clone repository"), ("dependencies", 0))
+        self.assertEqual(leancheck.failure_reason("A/B.lean:3:4: error: unknown identifier\nA/C.lean:9:1: error: x"), ("lean", 2))
+        self.assertEqual(leancheck.failure_reason("Segmentation fault"), ("other", 0))
+        b = leancheck.clean(dict(build_result("fails"), reason="lean", lean_errors=2))
+        self.assertEqual(leancheck.label(b), "does not build: Lean reported 2 errors in the project's own files")
+        self.assertEqual(leancheck.label(dict(b, reason="setup")), "does not build: the project is not set up to build")
+        self.assertEqual(leancheck.label(build_result("fails")), "does not build")
+        self.assertIsNone(leancheck.clean(dict(build_result("builds"), reason="lean"))["reason"])
+
     def test_record(self):
         with tempfile.TemporaryDirectory() as tmp:
             (Path(tmp) / "a").mkdir()
