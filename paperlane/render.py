@@ -780,7 +780,7 @@ def about_html(days, base, built):
   <h2 id="tags">What the tags mean</h2>
   <dl class="glossary">
     <div><dt class="mono t-lean">∎ lean</dt><dd>A linked GitHub repository contains a Lean project file (<code>lean-toolchain</code> or a <code>lakefile</code>). It has not been built yet.</dd></div>
-    <div><dt class="mono t-lean">∎ lean builds</dt><dd>Paperlane cloned the repository, installed the Lean version it asks for and ran <code>lake build</code> on a clean machine, and the build passed with no <code>sorry</code>. The paper's page names the commit and the Lean version. This shows the project compiles. It does not show that the Lean statements match the theorems in the paper.</dd></div>
+    <div><dt class="mono t-lean">∎ lean builds</dt><dd>Paperlane cloned the repository, installed the Lean version it asks for and ran <code>lake build</code> on a clean machine, and the build passed with no <code>sorry</code>. The paper's page names the commit and the Lean version. This shows the project compiles. The project's page also lists any axioms its theorems use beyond the standard three. It does not show that the Lean statements match the theorems in the paper.</dd></div>
     <div><dt class="mono t-lean">∎ lean 3 sorry</dt><dd>The build passed, but Lean reported declarations proved with <code>sorry</code>, which means some proofs are missing.</dd></div>
     <div><dt class="mono t-lean soft">∎ lean fails</dt><dd>The repository has a Lean project, but <code>lake build</code> failed or ran for more than an hour.</dd></div>
     <div><dt class="mono t-lean soft">□ lean</dt><dd>The paper says it is formalised in Lean, but no Lean repository was found.</dd></div>
@@ -827,6 +827,20 @@ def lean_papers(repo, days):
     return out
 
 
+def axioms_html(r):
+    """What the axiom check found, for a result that built."""
+    axs = r.get("axioms")
+    if axs is None:
+        why = r.get("axiom_note") or "this result is from before the axiom check was added"
+        return f'not checked <span class="mono faint">({esc(why)})</span>'
+    thms = r.get("theorems")
+    of = f" across {thms} theorem{'s' if thms != 1 else ''}" if thms else ""
+    if not axs:
+        return f"only the standard three (propext, Classical.choice, Quot.sound){esc(of)}"
+    names = ", ".join(f'<code>{esc(a)}</code>' for a in axs)
+    return f"{len(axs)} beyond the standard three{esc(of)}: {names}"
+
+
 def lean_repo_html(r, papers, kept, base, built):
     repo = r["repo"]
     prefix = "../../"
@@ -837,8 +851,14 @@ def lean_repo_html(r, papers, kept, base, built):
     rows = [("result", esc(leancheck.label(r)) + (f' <span class="mono faint">({esc(r["detail"])})</span>' if r.get("detail") and r["status"] not in ("builds", "sorry") else ""))]
     if r.get("commit"):
         rows.append(("commit", f'<a class="mono" href="https://github.com/{esc(repo)}/tree/{esc(r["commit"])}" target="_blank" rel="noopener">{esc(r["commit"][:12])}</a>'))
+    if r.get("source"):
+        rows.append(("built", "the newest commit on the default branch"))
     if r.get("toolchain"):
         rows.append(("lean", f'<span class="mono">{esc(r["toolchain"])}</span>'))
+    if r.get("mathlib"):
+        rows.append(("mathlib", f'<a class="mono" href="https://github.com/leanprover-community/mathlib4/tree/{esc(r["mathlib"])}" target="_blank" rel="noopener">{esc(r["mathlib"][:12])}</a>'))
+    if r["status"] in ("builds", "sorry"):
+        rows.append(("axioms", axioms_html(r)))
     if r.get("path"):
         rows.append(("folder", f'<span class="mono">{esc(r["path"])}</span>'))
     rows.append(("checked", esc(r["checked_at"][:10])))
@@ -870,7 +890,7 @@ def lean_repo_html(r, papers, kept, base, built):
   <h2>Papers that link it</h2>
   <ul class="lean-papers">{''.join(items) or '<li>None in the stored issues.</li>'}</ul>
   <h2>What this checks</h2>
-  <p>Paperlane cloned the repository, installed the Lean version named in <code>lean-toolchain</code>, downloaded Mathlib's cache when the project uses Mathlib and ran <code>lake build</code> on a clean machine. It counted the <code>declaration uses sorry</code> warnings. A passing build shows the project compiles at that commit. It does not show that the Lean statements match the theorems in the paper.</p>
+  <p>Paperlane cloned the repository, installed the Lean version named in <code>lean-toolchain</code>, downloaded Mathlib's cache when the project uses Mathlib and ran <code>lake build</code> on a clean machine. It counted the <code>declaration uses sorry</code> warnings. After a passing build it listed every axiom that the project's theorems rest on, as <code>#print axioms</code> would, and reports any beyond <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. An extra axiom can be a declared <code>axiom</code> or a use of <code>native_decide</code>. A passing build shows the project compiles at that commit. It does not show that the Lean statements match the theorems in the paper.</p>
   <p>The check runs again when a new version of a paper links the repository. To ask for a check sooner or to report a wrong result, <a href="{REPO}/issues" target="_blank" rel="noopener">open an issue</a>.</p>
   <h2>Add the badge to your README</h2>
   <p>The badge shows the newest result and links back to this page.</p>
@@ -890,7 +910,8 @@ def lean_index_html(results, papers_of, kept, base, built):
         title = f'<span class="t">{tex_text(first["title"])}</span>' if first else ""
         rows.append(f'<li><a href="lean/{esc(r["repo"])}.html"><img src="lean/{esc(r["repo"])}.svg" alt="{esc(badge.value(r))}" loading="lazy">'
                     f'<span class="mono repo">{esc(r["repo"])}</span>{title}'
-                    + ('<span class="mono faint assumed-tag">lists its assumed inputs</span>' if leancheck.current_assumptions(r.get("assumptions") or []) else "") + '</a></li>')
+                    + ('<span class="mono faint assumed-tag">lists its assumed inputs</span>' if leancheck.current_assumptions(r.get("assumptions") or []) else "")
+                    + (f'<span class="mono faint assumed-tag">{len(r["axioms"])} extra axiom{"s" if len(r["axioms"]) != 1 else ""}</span>' if r.get("axioms") and r["status"] in ("builds", "sorry") else "") + '</a></li>')
     summary = (f'{len(order)} repositories checked: {counts["builds"]} build with no sorry, {counts["sorry"]} build with sorry, '
                f'{counts["fails"]} fail, {counts["timeout"]} too large to build within the time limit and {counts["error"]} could not be checked.')
     body = f"""<div class="wrap">
