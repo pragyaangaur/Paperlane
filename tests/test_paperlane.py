@@ -177,6 +177,18 @@ class LeanCheckTest(unittest.TestCase):
         self.assertIsNone(r["commit"])
         self.assertNotIn("<", r["detail"])
 
+    def test_axioms(self):
+        out = "PAPERLANE_THEOREMS 4\nPAPERLANE_AXIOM propext\nPAPERLANE_AXIOM sorryAx\nPAPERLANE_AXIOM myAx\nPAPERLANE_AXIOM t3._native.native_decide.ax_1_1\n"
+        self.assertEqual(leancheck.parse_axioms(out), (4, ["myAx", "t3._native.native_decide.ax_1_1"]))
+        self.assertEqual(leancheck.parse_axioms("error"), (None, None))
+        script = leancheck.axiom_script(["Demo", "Demo.A"])
+        self.assertIn("import Demo.A", script)
+        self.assertIn("`Demo.A", script)
+        r = leancheck.clean(dict(build_result("builds"), theorems=4, axioms=["myAx", "propext", "bad name;"], axiom_note="x<y"))
+        self.assertEqual((r["theorems"], r["axioms"]), (4, ["myAx"]))
+        self.assertNotIn("<", r["axiom_note"])
+        self.assertIsNone(leancheck.clean(build_result("builds"))["axioms"])
+
     def test_record(self):
         with tempfile.TemporaryDirectory() as tmp:
             (Path(tmp) / "a").mkdir()

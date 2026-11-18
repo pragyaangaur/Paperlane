@@ -38,6 +38,112 @@ OLD_DIRS = {"history", "archive", "archived", "old", "deprecated", "legacy"}
 def current_assumptions(paths):
     """Assumption files outside folders of old copies."""
     return [p for p in paths if not any(part.lower() in OLD_DIRS for part in p.split("/")[:-1])]
+# Axioms every Lean proof may use. Anything else that a project's theorems depend on is reported.
+STANDARD_AXIOMS = {"propext", "Classical.choice", "Quot.sound"}
+# sorryAx is counted as sorry warnings, so it is not listed again as an axiom.
+IGNORED_AXIOMS = STANDARD_AXIOMS | {"sorryAx"}
+AXIOM_MINUTES = 20
+MAX_AXIOMS = 50
+MAX_MODULES = 3000
+MODULE_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_']*(\.[A-Za-z_][A-Za-z0-9_']*)*$")
+AXIOM_NAME_RE = re.compile(r"^[A-Za-z_][\w.'-]{0,200}$")
+
+
+def project_modules(proj):
+    """Module names of the project's own compiled files, from .lake/build/lib."""
+    mods = set()
+    for lib in (proj / ".lake" / "build" / "lib" / "lean", proj / ".lake" / "build" / "lib"):
+        if not lib.is_dir():
+            continue
+        for f in lib.rglob("*.olean"):
+            name = ".".join(f.relative_to(lib).with_suffix("").parts)
+            if MODULE_RE.match(name):
+                mods.add(name)
+        if mods:
+            break
+    return sorted(mods)[:MAX_MODULES]
+
+
+def axiom_script(modules):
+    """A Lean file that imports the project and prints every axiom its theorems rest on.
+
+    It walks the constants used by each theorem declared in the project's own modules, with
+    one shared visited set, which is what #print axioms does for one theorem at a time.
+    """
+    imports = "\n".join(f"import {m}" for m in modules)
+    mods = ", ".join(f"`{m}" for m in modules)
+    return f"""import Lean
+{imports}
+open Lean Elab Command in
+#eval show CommandElabM Unit from do
+  let env ← getEnv
+  let mine : NameSet := ([{mods}] : List Name).foldl (fun s n => s.insert n) {{}}
+  let names := env.header.moduleNames
+  let mut stack : Array Name := #[]
+  let mut thms := 0
+  for (n, ci) in env.constants.toList do
+    if let some idx := env.getModuleIdxFor? n then
+      if let some m := names[idx.toNat]? then
+        if mine.contains m then
+          if let .thmInfo _ := ci then
+            stack := stack.push n
+            thms := thms + 1
+  let mut seen : NameSet := {{}}
+  let mut axs : NameSet := {{}}
+  while true do
+    match stack.back? with
+    | none => break
+    | some n =>
+      stack := stack.pop
+      if seen.contains n then continue
+      seen := seen.insert n
+      match env.find? n with
+      | some (.axiomInfo _) => axs := axs.insert n
+      | some ci =>
+        let body : Option Expr := match ci with
+          | .thmInfo v => some v.value
+          | .defnInfo v => some v.value
+          | .opaqueInfo v => some v.value
+          | _ => none
+        for m in ci.type.getUsedConstants do stack := stack.push m
+        if let some e := body then
+          for m in e.getUsedConstants do stack := stack.push m
+      | none => pure ()
+  IO.println s!"PAPERLANE_THEOREMS {{thms}}"
+  for a in axs.toList do
+    IO.println s!"PAPERLANE_AXIOM {{a}}"
+"""
+
+
+def parse_axioms(text):
+    """(theorem count, sorted non-standard axioms) from the script's output, or (None, None)."""
+    m = re.search(r"PAPERLANE_THEOREMS (\d+)", text)
+    if not m:
+        return None, None
+    axs = sorted({a for a in re.findall(r"PAPERLANE_AXIOM (\S+)", text) if a not in IGNORED_AXIOMS and AXIOM_NAME_RE.match(a)})
+    return int(m.group(1)), axs[:MAX_AXIOMS]
+
+
+def check_axioms(proj, log):
+    """Runs the axiom script inside the built project. Returns (theorems, axioms, note)."""
+    mods = project_modules(proj)
+    if not mods:
+        return None, None, "no compiled modules were found"
+    script = proj / ".paperlane_axioms.lean"
+    script.write_text(axiom_script(mods))
+    out = Path(log).parent / "axioms.log"
+    code = sh(["lake", "env", "lean", script.name], cwd=proj, timeout=AXIOM_MINUTES * 60, log=out)
+    text = out.read_text(errors="replace")
+    with open(log, "a") as f:
+        f.write(text)
+    thms, axs = parse_axioms(text)
+    if code is None:
+        return None, None, f"the axiom check ran for more than {AXIOM_MINUTES} minutes"
+    if thms is None:
+        return None, None, "the axiom check could not run"
+    return thms, axs, ""
+
+
 # A check that could not run (a download failed, or the machine crashed) is tried this many times in all.
 MAX_TRIES = 3
 
@@ -179,6 +285,7 @@ def run(repo, path, out, build_minutes=60, url=None):
         return finish("timeout", f"lake build ran for more than {build_minutes} minutes")
     if code != 0:
         return finish("fails", f"lake build exited with code {code}")
+    result["theorems"], result["axioms"], result["axiom_note"] = check_axioms(proj, log)
     return finish("sorry" if result["sorries"] else "builds")
 
 
@@ -198,6 +305,9 @@ def clean(r):
         "detail": re.sub(r"[^\w .,:'()-]", "", str(r.get("detail") or ""))[:200],
         "minutes": max(0, min(int(r.get("minutes") or FIRST_MINUTES), 360)),
         "assumptions": [a for a in (r.get("assumptions") or []) if isinstance(a, str) and a and PATH_RE.match(a) and ".." not in a][:MAX_ASSUMPTION_FILES],
+        "theorems": max(0, min(int(r["theorems"]), 10**7)) if isinstance(r.get("theorems"), int) else None,
+        "axioms": sorted({a for a in r["axioms"] if isinstance(a, str) and AXIOM_NAME_RE.match(a) and a not in IGNORED_AXIOMS})[:MAX_AXIOMS] if isinstance(r.get("axioms"), list) else None,
+        "axiom_note": re.sub(r"[^\w .,:'()-]", "", str(r.get("axiom_note") or ""))[:200],
         "checked_at": iso(now()),
     }
 
