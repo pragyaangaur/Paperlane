@@ -320,6 +320,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <main>
 {body}
 </main>
+{signup_band(kind)}
 <footer class="site">
   <div class="foot mono">
     <a class="brand small" href="{prefix}index.html">{LOGO}<span>Paperlane</span></a>
@@ -379,6 +380,19 @@ def signup_form(where):
     <label class="finder-box"><span class="sr">Your email address</span><input type="email" name="email_address" required placeholder="you@university.edu" autocomplete="email"></label>
     <button type="submit" class="btn primary">Get it by email</button>
   </form>"""
+
+
+def signup_band(kind):
+    """A small sign-up strip above the footer of every page except the email page, which has its own form."""
+    if not SIGNUP["kit"] or kind in ("email-page", "notfound"):
+        return ""
+    return f"""<aside class="signup-band" aria-label="Get Paperlane by email">
+  <div class="wrap">
+    <p class="kicker mono">every weekday morning</p>
+    <p class="band-line">New maths papers and the Lean results, in one short email.</p>
+    {signup_form("band-" + kind)}
+  </div>
+</aside>"""
 
 
 def email_link(prefix, text="get it by email"):

@@ -1098,12 +1098,13 @@
       f.addEventListener("submit", function () { track("subscribe-" + f.dataset.signup); });
     });
     // Kit sends new subscribers back here with ?subscribed=1 after they submit the form.
-    var form = $("form[data-signup]");
-    if (form && new URLSearchParams(location.search).get("subscribed") === "1") {
-      var note = document.createElement("p");
-      note.className = "signup-done";
-      note.textContent = "Almost done. Kit has sent you an email, and you are subscribed once you click the link in it.";
-      form.replaceWith(note);
+    if (new URLSearchParams(location.search).get("subscribed") === "1") {
+      $$("form[data-signup]").forEach(function (form) {
+        var note = document.createElement("p");
+        note.className = "signup-done";
+        note.textContent = "Almost done. Kit has sent you an email, and you are subscribed once you click the link in it.";
+        form.replaceWith(note);
+      });
     }
   }
 
