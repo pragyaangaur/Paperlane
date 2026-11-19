@@ -537,6 +537,26 @@
     $("[data-copy-md]", panel).addEventListener("click", function (e) { track("copy-markdown"); copy(text, e.target); });
   }
 
+  // Opens the phone's share sheet where there is one, and copies the link everywhere else.
+  function share(btn) {
+    var url = new URL(btn.dataset.url || location.href, location.href).href;
+    var title = btn.dataset.title || document.title;
+    if (navigator.share) {
+      track("share-sheet-" + (btn.dataset.share || "page"));
+      navigator.share({ title: title, url: url }).catch(function () {});
+      return;
+    }
+    track("share-copy-" + (btn.dataset.share || "page"));
+    copy(title + "\n" + url, btn);
+  }
+
+  function shares() {
+    $$("[data-share]").forEach(function (btn) {
+      if (btn.closest("article.paper")) return;
+      btn.addEventListener("click", function () { share(btn); });
+    });
+  }
+
   function rows() {
     document.addEventListener("click", function (e) {
       var head = e.target.closest("article.paper .head");
@@ -552,6 +572,7 @@
       if (!btn) return;
       var card = btn.closest("article.paper");
       if (btn.dataset.act === "link") { track("copy-link"); return copy(new URL(btn.dataset.url, location.href).href, btn); }
+      if (btn.dataset.act === "share") return share(btn);
       var panel = $(".md-panel", card);
       var opening = panel.hidden;
       panel.hidden = !opening;
@@ -1111,6 +1132,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     interestsSync();
     signups();
+    shares();
     notFound();
     flyAway();
     freshWording();

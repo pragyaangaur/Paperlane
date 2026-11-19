@@ -274,7 +274,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
 <meta name="theme-color" content="#fdfdfc">
 <link rel="canonical" href="{esc(base)}/{esc(path)}">
 <meta property="og:site_name" content="Paperlane">
-<meta property="og:type" content="website">
+<meta property="og:type" content="{'article' if kind in ('single', 'lean-repo') else 'website'}">
 <meta property="og:url" content="{esc(base)}/{esc(path)}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(description)}">
@@ -499,7 +499,7 @@ def actions_html(p, prefix, pid):
       <button type="button" class="act" data-act="md" data-md="{prefix}p/{pid}.md" aria-expanded="false">markdown</button>
       <a class="act" href="{p['links']['pdf']}" target="_blank" rel="noopener">pdf ↗</a>
       <a class="act" href="{prefix}p/{pid}.html">page</a>
-      <button type="button" class="act" data-act="link" data-url="{prefix}p/{pid}.html">copy link</button>
+      <button type="button" class="act" data-act="share" data-share="paper" data-url="{prefix}p/{pid}.html" data-title="{esc(p['title'])}">share</button>
       <a class="pid" href="{p['links']['abs']}" target="_blank" rel="noopener" title="Open on arXiv">arXiv:{esc(p['id'])} ↗</a>
     </div>
     <div class="md-panel" hidden></div>"""
@@ -612,7 +612,7 @@ def day_html(day, base, built, prefix, number, newer=None, older=None, is_latest
   <header class="issue-head">
     <p class="kicker mono">no. {number} · {'latest issue' if is_latest else 'from the archive'}{rebuilt}<span class="day-nav">{' '.join(nav)}</span></p>
     <h1>{d:%A}, <em>{d.day} {d:%B %Y}</em></h1>
-    <p class="stats mono">{st['papers']} papers in {st['fields']} fields</p>
+    <p class="stats mono">{st['papers']} papers in {st['fields']} fields <button type="button" class="link mono share-btn" data-share="issue" data-url="{prefix}days/{day['date']}.html" data-title="New maths papers on arXiv, {d.day} {d:%B %Y} · Paperlane">share this issue</button></p>
   </header>
   {toolbar_html(day)}
   <p class="empty" id="f-empty" hidden>Nothing matches. <button type="button" class="link" data-clear>Clear the filters</button></p>
@@ -907,7 +907,7 @@ def lean_repo_html(r, papers, kept, base, built, lic=None):
     body = f"""<div class="wrap prose lean-page">
   <header class="issue-head"><p class="kicker mono"><a href="{prefix}lean.html">lean builds</a></p>
   <h1 class="mono repo"><a href="https://github.com/{esc(repo)}" target="_blank" rel="noopener">{esc(repo)}</a></h1>
-  <p class="badge-img"><img src="{prefix}lean/{esc(repo)}.svg" alt="{esc(badge.LEFT)}: {esc(badge.value(r))}"></p></header>
+  <p class="badge-img"><img src="{prefix}lean/{esc(repo)}.svg" alt="{esc(badge.LEFT)}: {esc(badge.value(r))}"> <button type="button" class="link mono share-btn" data-share="lean">share this result</button></p></header>
   <dl class="facts">{facts}</dl>
   {note}
   {assumed}
@@ -1159,7 +1159,10 @@ def single_html(p, day, base, built, number):
     {actions_html(p, "../", pid)}
   </article>
 </div>"""
-    return page(f"{p['title']} · Paperlane", body, "../", built, p["abstract"][:200], base, "single", "", f"p/{pid}.html")
+    desc = f"{authors_text(p['authors'], 3)}. {p['abstract']}"
+    if len(desc) > 220:
+        desc = desc[:217].rsplit(" ", 1)[0] + "..."
+    return page(f"{p['title']} · Paperlane", body, "../", built, desc, base, "single", "", f"p/{pid}.html")
 
 
 def json_day(day, base):

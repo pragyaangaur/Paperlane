@@ -674,3 +674,8 @@ body > main { flex: 1 0 auto; }
 header nav a { white-space: nowrap; }
 @media (max-width: 420px) { header nav { gap: 0; } header nav a, header nav button { padding: 4px 7px; } }
 .mail-body.mail-html { padding: 0; }
+
+/* Share buttons */
+.share-btn { margin-left: 14px; font-size: 0.8rem; color: var(--muted); }
+.share-btn:hover { color: var(--ink); }
+.badge-img .share-btn { vertical-align: middle; }
