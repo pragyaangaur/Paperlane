@@ -64,6 +64,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:20:03Z",
+   "commit": "823eeed1c7822769d6507e24aa45c7bc5d344a6a",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 8993,
+   "declarations": {
+    "theorems": 4132,
+    "definitions": 1511,
+    "types": 45,
+    "axioms": 0
+   },
+   "build_seconds": 1821,
+   "lean_files": 480,
+   "lean_lines": 63054,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "Arthur742Ramos/TopologicalComputationalPaths": [
@@ -160,6 +179,25 @@
    "toolchain": "leanprover/lean4:v4.19.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:20:03Z",
+   "commit": "a58378c4370a0defec6a239f0998adae4a7b1114",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 799,
+   "declarations": {
+    "theorems": 448,
+    "definitions": 119,
+    "types": 9,
+    "axioms": 0
+   },
+   "build_seconds": 113,
+   "lean_files": 84,
+   "lean_lines": 13518,
+   "toolchain": "leanprover/lean4:v4.19.0",
+   "mathlib": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
+   "axiom_count": 0
   }
  ],
  "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization": [
@@ -192,6 +230,25 @@
    "toolchain": "leanprover/lean4:v4.36.0-rc1",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:20:03Z",
+   "commit": "5f8bba75006bfb98ea48d59c169abb7e2ee7cc62",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 26381,
+   "declarations": {
+    "theorems": 1356,
+    "definitions": 676,
+    "types": 17,
+    "axioms": 0
+   },
+   "build_seconds": 3571,
+   "lean_files": 478,
+   "lean_lines": 285871,
+   "toolchain": "leanprover/lean4:v4.36.0-rc1",
+   "mathlib": "625d8914199bc567cca9b91f90e8e5afafa5ae51",
+   "axiom_count": 0
   }
  ],
  "LeGenAI/llm_guided_EAQECC_search": [
@@ -238,6 +295,25 @@
    "toolchain": "leanprover/lean4:v4.33.1",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:20:03Z",
+   "commit": "6184765c2653d8390212761013e121fc7259006c",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 10692,
+   "declarations": {
+    "theorems": 3990,
+    "definitions": 6720,
+    "types": 13,
+    "axioms": 0
+   },
+   "build_seconds": 557,
+   "lean_files": 87,
+   "lean_lines": 30877,
+   "toolchain": "leanprover/lean4:v4.33.1",
+   "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+   "axiom_count": 0
   }
  ],
  "MColbrook/Kung-Traub_conjecture": [
@@ -657,6 +733,25 @@
    "toolchain": "leanprover/lean4:v4.35.0-rc3",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:20:03Z",
+   "commit": "5aa8d0c033014aa2d73fe5d6306d6e6d4edbb14f",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 42693,
+   "declarations": {
+    "theorems": 13904,
+    "definitions": 6663,
+    "types": 485,
+    "axioms": 0
+   },
+   "build_seconds": 3631,
+   "lean_files": 1201,
+   "lean_lines": 351793,
+   "toolchain": "leanprover/lean4:v4.35.0-rc3",
+   "mathlib": "c55e6e786f49471c72fbddbec5415808896aec1e",
+   "axiom_count": 0
   }
  ],
  "hirokifukui/residue-apn": [
@@ -1180,6 +1275,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:20:03Z",
+   "commit": "d4ee4039e88ac4be481d277369e0c9077c971e4a",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 3213,
+   "declarations": {
+    "theorems": 1856,
+    "definitions": 534,
+    "types": 3,
+    "axioms": 0
+   },
+   "build_seconds": 136,
+   "lean_files": 93,
+   "lean_lines": 29208,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "rtyu-1/coded-sorting-lean": [

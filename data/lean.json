@@ -46,14 +46,34 @@
  "Apsiape/perfect-play-arithmetical-hierarchy": {
   "repo": "Apsiape/perfect-play-arithmetical-hierarchy",
   "path": "lean",
-  "commit": "42f60356cc9d6a8094f962c200e4e9ef62f85429",
+  "commit": "823eeed1c7822769d6507e24aa45c7bc5d344a6a",
   "toolchain": "leanprover/lean4:v4.35.0",
-  "status": "fails",
+  "status": "builds",
   "sorries": 0,
-  "seconds": 14,
-  "detail": "lake build exited with code 1",
-  "checked_at": "2026-11-10T13:24:22Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
+  "seconds": 1905,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [
+   "lean/AXIOMS.txt"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "source": "default branch",
+  "theorems": 8993,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 4132,
+   "definitions": 1511,
+   "types": 45,
+   "axioms": 0
+  },
+  "lean_files": 480,
+  "lean_lines": 63054,
+  "build_seconds": 1821,
+  "checked_at": "2026-11-19T18:20:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44572172964"
  },
  "Arthur742Ramos/TopologicalComputationalPaths": {
   "repo": "Arthur742Ramos/TopologicalComputationalPaths",
@@ -123,21 +143,35 @@
  "HamedMousaviMath/Lean-Formalization-Polynomial-Configurations-and-Pointwise-Averages-Along-Piatetski--Shapiro-Primes": {
   "repo": "HamedMousaviMath/Lean-Formalization-Polynomial-Configurations-and-Pointwise-Averages-Along-Piatetski--Shapiro-Primes",
   "path": "",
-  "commit": "ab2c7e6e82a1a8c0d0454cb3832dc8aaa63c4316",
+  "commit": "a58378c4370a0defec6a239f0998adae4a7b1114",
   "toolchain": "leanprover/lean4:v4.19.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 144,
+  "seconds": 210,
   "detail": "",
-  "minutes": 300,
+  "minutes": 90,
   "assumptions": [
    "PSPrimes/ExternalInputs.lean",
-   "docs/ASSUMPTIONS.md",
-   "history/blueprint-before-orbit/docs/ASSUMPTIONS.md",
-   "history/pre-revision-2026-11-02/docs/ASSUMPTIONS.md"
+   "docs/ASSUMPTIONS.md"
   ],
-  "checked_at": "2026-11-10T15:47:17Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42827334643"
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
+  "source": "default branch",
+  "theorems": 799,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 448,
+   "definitions": 119,
+   "types": 9,
+   "axioms": 0
+  },
+  "lean_files": 84,
+  "lean_lines": 13518,
+  "build_seconds": 113,
+  "checked_at": "2026-11-19T18:20:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44572172964"
  },
  "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization": {
   "repo": "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization",
@@ -159,14 +193,32 @@
  "JYin80/Lean-LSBA1d": {
   "repo": "JYin80/Lean-LSBA1d",
   "path": "",
-  "commit": "6faccdc2d8dd1fae2c622ec697c1c2e747e389ac",
+  "commit": "5f8bba75006bfb98ea48d59c169abb7e2ee7cc62",
   "toolchain": "leanprover/lean4:v4.36.0-rc1",
   "status": "builds",
   "sorries": 0,
-  "seconds": 4367,
+  "seconds": 3684,
   "detail": "",
-  "checked_at": "2026-11-09T16:14:35Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42640215903"
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "625d8914199bc567cca9b91f90e8e5afafa5ae51",
+  "source": "default branch",
+  "theorems": 26381,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 1356,
+   "definitions": 676,
+   "types": 17,
+   "axioms": 0
+  },
+  "lean_files": 478,
+  "lean_lines": 285871,
+  "build_seconds": 3571,
+  "checked_at": "2026-11-19T18:20:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44572172964"
  },
  "LeGenAI/llm_guided_EAQECC_search": {
   "repo": "LeGenAI/llm_guided_EAQECC_search",
@@ -196,14 +248,32 @@
  "LexiaoLai/Nonsmooth-BFGS-Nonstationary": {
   "repo": "LexiaoLai/Nonsmooth-BFGS-Nonstationary",
   "path": "",
-  "commit": "73f52823759ff03069737f18a19abab84bed3d52",
+  "commit": "6184765c2653d8390212761013e121fc7259006c",
   "toolchain": "leanprover/lean4:v4.33.1",
   "status": "builds",
   "sorries": 0,
-  "seconds": 711,
+  "seconds": 689,
   "detail": "",
-  "checked_at": "2026-11-05T07:06:21Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41975052109"
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "source": "default branch",
+  "theorems": 10692,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 3990,
+   "definitions": 6720,
+   "types": 13,
+   "axioms": 0
+  },
+  "lean_files": 87,
+  "lean_lines": 30877,
+  "build_seconds": 557,
+  "checked_at": "2026-11-19T18:20:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44572172964"
  },
  "MColbrook/Kung-Traub_conjecture": {
   "repo": "MColbrook/Kung-Traub_conjecture",
@@ -556,14 +626,35 @@
  "haruhisa-enomoto/third-brauer-thrall-conjecture": {
   "repo": "haruhisa-enomoto/third-brauer-thrall-conjecture",
   "path": "",
-  "commit": "465fa8e97b8a9e0a29ec26b7fd22d766ffb115bf",
+  "commit": "5aa8d0c033014aa2d73fe5d6306d6e6d4edbb14f",
   "toolchain": "leanprover/lean4:v4.35.0-rc3",
   "status": "builds",
   "sorries": 0,
-  "seconds": 4737,
+  "seconds": 3781,
   "detail": "",
-  "checked_at": "2026-11-05T07:06:21Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41975052109"
+  "minutes": 90,
+  "assumptions": [
+   "verification/2026-11-01/axioms.json",
+   "verification/2026-11-03/axioms.json"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "source": "default branch",
+  "theorems": 42693,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 13904,
+   "definitions": 6663,
+   "types": 485,
+   "axioms": 0
+  },
+  "lean_files": 1201,
+  "lean_lines": 351793,
+  "build_seconds": 3631,
+  "checked_at": "2026-11-19T18:20:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44572172964"
  },
  "hirokifukui/residue-apn": {
   "repo": "hirokifukui/residue-apn",
@@ -1015,14 +1106,32 @@
  "ritsumei-aoi/osp-odd-deformations": {
   "repo": "ritsumei-aoi/osp-odd-deformations",
   "path": "",
-  "commit": "28066941a13978e6a4a9e9348d36bbd5ef5dd7ba",
+  "commit": "d4ee4039e88ac4be481d277369e0c9077c971e4a",
   "toolchain": "leanprover/lean4:v4.35.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 285,
+  "seconds": 207,
   "detail": "",
-  "checked_at": "2026-11-10T13:24:22Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42817603331"
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "source": "default branch",
+  "theorems": 3213,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 1856,
+   "definitions": 534,
+   "types": 3,
+   "axioms": 0
+  },
+  "lean_files": 93,
+  "lean_lines": 29208,
+  "build_seconds": 136,
+  "checked_at": "2026-11-19T18:20:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44572172964"
  },
  "rtyu-1/coded-sorting-lean": {
   "repo": "rtyu-1/coded-sorting-lean",
