@@ -445,14 +445,34 @@
  "drjanosch42/rational_quivers": {
   "repo": "drjanosch42/rational_quivers",
   "path": "lean",
-  "commit": "449bbc3b350f4cb299e391faa26f87a966afe6fb",
-  "toolchain": "leanprover/lean4:v4.31.0",
+  "commit": "23dabdf6f900d12f9ed926ef4602ff637c68dcf5",
+  "toolchain": "leanprover/lean4:v4.35.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 988,
+  "seconds": 492,
   "detail": "",
-  "checked_at": "2026-10-30T13:51:27Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+  "minutes": 90,
+  "assumptions": [
+   "lean/Check/Axioms.lean"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "source": "default branch",
+  "theorems": 8780,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 3729,
+   "definitions": 1860,
+   "types": 58,
+   "axioms": 0
+  },
+  "lean_files": 124,
+  "lean_lines": 86392,
+  "build_seconds": 416,
+  "checked_at": "2026-11-19T16:54:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44564345673"
  },
  "ewaingwynne/complex-sle": {
   "repo": "ewaingwynne/complex-sle",
@@ -584,14 +604,32 @@
  "lacey-gatech/CantorSzemeredi": {
   "repo": "lacey-gatech/CantorSzemeredi",
   "path": "",
-  "commit": "d29e8f9f8c4073ee4e62a3fa2370fdaacaf1eb95",
+  "commit": "5505c801a43eb8efd94e9f503fee82b033b8d0ba",
   "toolchain": "leanprover/lean4:v4.35.0",
-  "status": "sorry",
-  "sorries": 2,
-  "seconds": 238,
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 250,
   "detail": "",
-  "checked_at": "2026-10-30T13:51:27Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "source": "default branch",
+  "theorems": 1614,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 843,
+   "definitions": 139,
+   "types": 9,
+   "axioms": 0
+  },
+  "lean_files": 84,
+  "lean_lines": 21720,
+  "build_seconds": 166,
+  "checked_at": "2026-11-19T16:54:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44564345673"
  },
  "lacey-gatech/restricted-polynomials-lean": {
   "repo": "lacey-gatech/restricted-polynomials-lean",
@@ -650,14 +688,32 @@
  "mcoiculescu/NonUniqueEuler": {
   "repo": "mcoiculescu/NonUniqueEuler",
   "path": "lean",
-  "commit": "1df5e7953d9efab4648d38e3ee4919a2906fb49a",
+  "commit": "b0deb9f061460bd3b83791cbf80fbaed1b6736be",
   "toolchain": "leanprover/lean4:v4.34.0-rc2",
   "status": "builds",
   "sorries": 0,
-  "seconds": 1837,
+  "seconds": 1249,
   "detail": "",
-  "checked_at": "2026-10-27T11:34:52Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40493060296"
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "85e3a25e006c35636f0e53b0e9296caca2685bc0",
+  "source": "default branch",
+  "theorems": 13886,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 8861,
+   "definitions": 1480,
+   "types": 142,
+   "axioms": 0
+  },
+  "lean_files": 1281,
+  "lean_lines": 170857,
+  "build_seconds": 1154,
+  "checked_at": "2026-11-19T16:54:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44564345673"
  },
  "mjarret/products-of-unitaries-lean": {
   "repo": "mjarret/products-of-unitaries-lean",
@@ -746,26 +802,61 @@
  "nawafbourabee/persistence-pays-lean": {
   "repo": "nawafbourabee/persistence-pays-lean",
   "path": "",
-  "commit": "11c7e9ee80417ae7f13f873da921b40cb982d853",
+  "commit": "6fc9902019592b2f2686ab68de1f85faaf732b97",
   "toolchain": "leanprover/lean4:v4.34.0-rc2",
   "status": "fails",
   "sorries": 0,
-  "seconds": 55,
+  "seconds": 74,
   "detail": "lake build exited with code 1",
-  "checked_at": "2026-10-27T10:51:24Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+  "minutes": 90,
+  "assumptions": [
+   "PersistencePays/Assumptions.lean"
+  ],
+  "reason": "dependencies",
+  "lean_errors": 0,
+  "mathlib": null,
+  "source": "default branch",
+  "theorems": null,
+  "axioms": null,
+  "axiom_note": "",
+  "declarations": null,
+  "lean_files": 394,
+  "lean_lines": 38128,
+  "build_seconds": 57,
+  "checked_at": "2026-11-19T16:54:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44564345673"
  },
  "nitromannitol/Centrally-Excited-Random-Walk": {
   "repo": "nitromannitol/Centrally-Excited-Random-Walk",
   "path": "",
-  "commit": "411431c4b4ed185336c26053262d6220af9c2be0",
+  "commit": "20b9f57dff29d5f1194ab02ea3f6da3a663b6988",
   "toolchain": "leanprover/lean4:v4.32.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 2181,
+  "seconds": 1979,
   "detail": "",
-  "checked_at": "2026-10-27T10:51:24Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40485986216"
+  "minutes": 90,
+  "assumptions": [
+   "ASSUMPTIONS.md"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "81a5d257c8e410db227a6665ed08f64fea08e997",
+  "source": "default branch",
+  "theorems": 9182,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 2426,
+   "definitions": 354,
+   "types": 16,
+   "axioms": 0
+  },
+  "lean_files": 679,
+  "lean_lines": 156768,
+  "build_seconds": 1878,
+  "checked_at": "2026-11-19T16:54:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44564345673"
  },
  "nitromannitol/FPP-variance": {
   "repo": "nitromannitol/FPP-variance",
@@ -880,14 +971,35 @@
  "sashakolpakov/CoxeterPolytopes": {
   "repo": "sashakolpakov/CoxeterPolytopes",
   "path": "formal",
-  "commit": "36eeaddf646eff25d4990c9ab730a20ada21f80f",
+  "commit": "2d6344b817a0bdf2d58f808627109ec113f59a86",
   "toolchain": "leanprover/lean4:v4.32.2",
   "status": "builds",
   "sorries": 0,
-  "seconds": 1907,
+  "seconds": 1430,
   "detail": "",
-  "checked_at": "2026-10-30T13:51:27Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41062050897"
+  "minutes": 90,
+  "assumptions": [
+   "formal/assumptions.json",
+   "repro/EXTERNAL_INPUTS.md"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": null,
+  "source": "default branch",
+  "theorems": 558,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 266,
+   "definitions": 264,
+   "types": 9,
+   "axioms": 0
+  },
+  "lean_files": 103,
+  "lean_lines": 23696,
+  "build_seconds": 1404,
+  "checked_at": "2026-11-19T16:54:03Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44564345673"
  },
  "sashakolpakov/PseudoArithmetic": {
   "repo": "sashakolpakov/PseudoArithmetic",

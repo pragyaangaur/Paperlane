@@ -525,6 +525,25 @@
    "toolchain": "leanprover/lean4:v4.31.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T16:54:03Z",
+   "commit": "23dabdf6f900d12f9ed926ef4602ff637c68dcf5",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 8780,
+   "declarations": {
+    "theorems": 3729,
+    "definitions": 1860,
+    "types": 58,
+    "axioms": 0
+   },
+   "build_seconds": 416,
+   "lean_files": 124,
+   "lean_lines": 86392,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "ewaingwynne/complex-sle": [
@@ -701,6 +720,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T16:54:03Z",
+   "commit": "5505c801a43eb8efd94e9f503fee82b033b8d0ba",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 1614,
+   "declarations": {
+    "theorems": 843,
+    "definitions": 139,
+    "types": 9,
+    "axioms": 0
+   },
+   "build_seconds": 166,
+   "lean_files": 84,
+   "lean_lines": 21720,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "lacey-gatech/restricted-polynomials-lean": [
@@ -781,6 +819,25 @@
    "toolchain": "leanprover/lean4:v4.34.0-rc2",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T16:54:03Z",
+   "commit": "b0deb9f061460bd3b83791cbf80fbaed1b6736be",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 13886,
+   "declarations": {
+    "theorems": 8861,
+    "definitions": 1480,
+    "types": 142,
+    "axioms": 0
+   },
+   "build_seconds": 1154,
+   "lean_files": 1281,
+   "lean_lines": 170857,
+   "toolchain": "leanprover/lean4:v4.34.0-rc2",
+   "mathlib": "85e3a25e006c35636f0e53b0e9296caca2685bc0",
+   "axiom_count": 0
   }
  ],
  "mjarret/products-of-unitaries-lean": [
@@ -877,6 +934,20 @@
    "toolchain": "leanprover/lean4:v4.34.0-rc2",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T16:54:03Z",
+   "commit": "6fc9902019592b2f2686ab68de1f85faaf732b97",
+   "status": "fails",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 57,
+   "lean_files": 394,
+   "lean_lines": 38128,
+   "toolchain": "leanprover/lean4:v4.34.0-rc2",
+   "mathlib": null,
+   "axiom_count": null
   }
  ],
  "nitromannitol/Centrally-Excited-Random-Walk": [
@@ -893,6 +964,25 @@
    "toolchain": "leanprover/lean4:v4.32.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T16:54:03Z",
+   "commit": "20b9f57dff29d5f1194ab02ea3f6da3a663b6988",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 9182,
+   "declarations": {
+    "theorems": 2426,
+    "definitions": 354,
+    "types": 16,
+    "axioms": 0
+   },
+   "build_seconds": 1878,
+   "lean_files": 679,
+   "lean_lines": 156768,
+   "toolchain": "leanprover/lean4:v4.32.0",
+   "mathlib": "81a5d257c8e410db227a6665ed08f64fea08e997",
+   "axiom_count": 0
   }
  ],
  "nitromannitol/FPP-variance": [
@@ -1053,6 +1143,25 @@
    "toolchain": "leanprover/lean4:v4.32.2",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T16:54:03Z",
+   "commit": "2d6344b817a0bdf2d58f808627109ec113f59a86",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 558,
+   "declarations": {
+    "theorems": 266,
+    "definitions": 264,
+    "types": 9,
+    "axioms": 0
+   },
+   "build_seconds": 1404,
+   "lean_files": 103,
+   "lean_lines": 23696,
+   "toolchain": "leanprover/lean4:v4.32.2",
+   "mathlib": null,
+   "axiom_count": 0
   }
  ],
  "sashakolpakov/PseudoArithmetic": [
