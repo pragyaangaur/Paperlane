@@ -225,6 +225,41 @@ class LeanCheckTest(unittest.TestCase):
         lic = {"x/y": {"spdx": "MIT", "name": "MIT License", "url": "https://github.com/x/y/blob/main/LICENSE", "checked_at": "2026-11-19T00:00:00Z"}}
         self.assertEqual(render.lean_by_arxiv(res, [day], "https://b", "x", lic)["papers"][pid]["repos"][0]["license"]["spdx"], "MIT")
 
+    def test_declarations_and_size(self):
+        self.assertEqual(leancheck.parse_declarations("PAPERLANE_DECLS 1 2 3 4\nPAPERLANE_DECLS 3 3 2 1"),
+                         {"theorems": 3, "definitions": 3, "types": 2, "axioms": 1})
+        self.assertIsNone(leancheck.parse_declarations("nothing"))
+        r = leancheck.clean(dict(build_result("builds"), declarations={"theorems": 3, "definitions": 1, "types": 0, "axioms": 0},
+                                 lean_files=2, lean_lines=14, build_seconds=30))
+        self.assertEqual((r["declarations"]["theorems"], r["lean_lines"], r["build_seconds"]), (3, 14, 30))
+        bad = leancheck.clean(dict(build_result("builds"), declarations={"theorems": "x"}, lean_lines=True))
+        self.assertEqual((bad["declarations"], bad["lean_lines"]), (None, None))
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "A.lean").write_text("a\nb\n")
+            (Path(tmp) / ".lake").mkdir()
+            (Path(tmp) / ".lake" / "B.lean").write_text("x\n")
+            self.assertEqual(leancheck.code_size(Path(tmp)), (1, 2))
+
+    def test_plan_updates(self):
+        when = leancheck.datetime(2026, 11, 20, tzinfo=leancheck.timezone.utc)
+        old = dict(build_result("builds"), commit="a" * 40, checked_at="2026-11-10T00:00:00Z", path="lean")
+        res = {"x/y": old, "x/z": dict(old, repo="x/z"), "x/t": dict(old, repo="x/t", status="timeout")}
+        head = {"x/y": "b" * 40, "x/z": "a" * 40, "x/t": "c" * 40}
+        self.assertEqual(leancheck.plan_updates(res, head, when=when), [{"repo": "x/y", "path": "lean"}])
+        self.assertEqual(leancheck.plan_updates(res, head, when=when, skip={"x/y"}), [])
+        fresh = {"x/y": dict(old, checked_at="2026-11-19T12:00:00Z")}
+        self.assertEqual(leancheck.plan_updates(fresh, head, when=when), [])
+
+    def test_history(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "a").mkdir()
+            (Path(tmp) / "a" / "result.json").write_text(json.dumps(dict(build_result("builds"), axioms=["ax"])))
+            store, hist = Path(tmp) / "lean.json", Path(tmp) / "h.json"
+            leancheck.record(tmp, store, history=hist)
+            leancheck.record(tmp, store, history=hist)
+            h = json.loads(hist.read_text())["x/y"]
+            self.assertEqual((len(h), h[0]["status"], h[0]["axiom_count"]), (2, "builds", 1))
+
     def test_licence_labels(self):
         self.assertIn("not licensed for reuse", licenses.label({"spdx": None}))
         self.assertEqual(licenses.label({"spdx": "MIT", "name": "MIT License"}), "MIT License")

@@ -23,6 +23,13 @@ SORRY_RE = re.compile(r"declaration uses ['`]sorry['`]")
 # A repository that was checked once is checked again only when a new version of a paper links it.
 RECHECK_AFTER = timedelta(days=7)
 MAX_PER_RUN = 20
+# A project with a new commit on its default branch is built again, at most this many per run,
+# and not within a day of its last check, so the history follows the project as it changes.
+UPDATES_PER_RUN = 6
+UPDATE_AFTER = timedelta(days=1)
+DECL_KINDS = ("theorems", "definitions", "types", "axioms")
+HISTORY_FIELDS = ("checked_at", "commit", "status", "sorries", "theorems", "declarations", "axiom_count",
+                  "build_seconds", "lean_files", "lean_lines", "toolchain", "mathlib")
 # The first build of each project stops at FIRST_MINUTES so the daily email is not held up.
 # A project that runs out of time gets one longer build in a separate run, if it is new.
 FIRST_MINUTES = 90
@@ -81,6 +88,10 @@ open Lean Elab Command in
   let names := env.header.moduleNames
   let mut stack : Array Name := #[]
   let mut thms := 0
+  let mut dThm := 0
+  let mut dDef := 0
+  let mut dType := 0
+  let mut dAx := 0
   for (n, ci) in env.constants.toList do
     if let some idx := env.getModuleIdxFor? n then
       if let some m := names[idx.toNat]? then
@@ -88,6 +99,16 @@ open Lean Elab Command in
           if let .thmInfo _ := ci then
             stack := stack.push n
             thms := thms + 1
+          -- Declarations the authors wrote, without the ones Lean generates.
+          -- Only names with their own place in a source file count, which leaves out what Lean generates.
+          if !n.isInternal && !isAuxRecursor env n && !isNoConfusion env n && (declRangeExt.find? env n).isSome then
+            match ci with
+            | .thmInfo _ => dThm := dThm + 1
+            | .defnInfo _ => dDef := dDef + 1
+            | .opaqueInfo _ => dDef := dDef + 1
+            | .inductInfo _ => dType := dType + 1
+            | .axiomInfo _ => dAx := dAx + 1
+            | _ => pure ()
   let mut seen : NameSet := {{}}
   let mut axs : NameSet := {{}}
   while true do
@@ -110,6 +131,7 @@ open Lean Elab Command in
           for m in e.getUsedConstants do stack := stack.push m
       | none => pure ()
   IO.println s!"PAPERLANE_THEOREMS {{thms}}"
+  IO.println s!"PAPERLANE_DECLS {{dThm}} {{dDef}} {{dType}} {{dAx}}"
   for a in axs.toList do
     IO.println s!"PAPERLANE_AXIOM {{a}}"
 """
@@ -122,6 +144,25 @@ def parse_axioms(text):
         return None, None
     axs = sorted({a for a in re.findall(r"PAPERLANE_AXIOM (\S+)", text) if a not in IGNORED_AXIOMS and AXIOM_NAME_RE.match(a)})
     return int(m.group(1)), axs[:MAX_AXIOMS]
+
+
+def parse_declarations(text):
+    """{"theorems", "definitions", "types", "axioms"} the authors declared, or None."""
+    found = re.findall(r"PAPERLANE_DECLS (\d+) (\d+) (\d+) (\d+)", text)
+    return dict(zip(DECL_KINDS, map(int, found[-1]))) if found else None
+
+
+def code_size(proj):
+    """(Lean files, lines of Lean) in the project, without its downloaded dependencies."""
+    files = lines = 0
+    for f in proj.rglob("*.lean"):
+        rel = f.relative_to(proj).parts
+        if rel[0] in (".lake", "lake-packages") or f.name == ".paperlane_axioms.lean" or f.is_symlink():
+            continue
+        files += 1
+        with open(f, "rb") as fh:
+            lines += sum(1 for _ in fh)
+    return files, lines
 
 
 # Why a build failed, in words a reader can act on. A missing lakefile and a Lean error mean
@@ -180,6 +221,12 @@ def check_axioms(proj, log):
     return thms, axs, ""
 
 
+def declarations_from(log):
+    """The declaration counts the axiom script printed into the build log, if it ran."""
+    path = Path(log).parent / "axioms.log"
+    return parse_declarations(path.read_text(errors="replace")) if path.is_file() else None
+
+
 # A check that could not run (a download failed, or the machine crashed) is tried this many times in all.
 MAX_TRIES = 3
 
@@ -224,6 +271,46 @@ def plan(days, results, when=None, force=()):
                 if due:
                     jobs[repo] = {"repo": repo, "path": project_dir(g.get("lean_paths") or [])}
     return list(jobs.values())[:MAX_PER_RUN]
+
+
+def heads(repos, token=None):
+    """The newest commit on each repository's default branch, from the GitHub API."""
+    import urllib.error
+    import urllib.request
+    from . import USER_AGENT
+    out = {}
+    for repo in sorted(repos):
+        headers = {"User-Agent": USER_AGENT, "Accept": "application/vnd.github.sha"}
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+        try:
+            with urllib.request.urlopen(urllib.request.Request(f"https://api.github.com/repos/{repo}/commits/HEAD", headers=headers), timeout=30) as r:
+                sha = r.read().decode().strip()
+        except (urllib.error.URLError, TimeoutError, ValueError) as e:
+            print(f"  could not read the newest commit of {repo}: {e}")
+            continue
+        if re.fullmatch(r"[0-9a-f]{40}", sha):
+            out[repo] = sha
+    return out
+
+
+def plan_updates(results, head, when=None, skip=(), limit=UPDATES_PER_RUN):
+    """Checked projects whose default branch has moved on since their last build, longest unchecked first.
+
+    A project that ran out of time is left alone, because each rebuild would take hours.
+    """
+    when = when or now()
+    due = []
+    for repo, r in results.items():
+        if repo in skip or repo not in head or not r.get("commit") or head[repo] == r["commit"]:
+            continue
+        if r["status"] == "timeout" or (r["status"] == "error" and r.get("tries", 1) >= MAX_TRIES):
+            continue
+        checked = datetime.fromisoformat(r["checked_at"].replace("Z", "+00:00"))
+        if when - checked >= UPDATE_AFTER:
+            due.append((checked, {"repo": repo, "path": r.get("path") or ""}))
+    due.sort(key=lambda x: x[0])
+    return [j for _, j in due[:limit]]
 
 
 def plan_long(days, results, when=None, force=()):
@@ -306,6 +393,7 @@ def run(repo, path, out, build_minutes=60, url=None):
     if not tc.is_file():
         return finish("error", f"no lean-toolchain in {path or 'the root'}")
     result["toolchain"] = tc.read_text().strip()[:100]
+    result["lean_files"], result["lean_lines"] = code_size(proj)
     if not any((proj / f).is_file() for f in ("lakefile.lean", "lakefile.toml")):
         result["reason"] = "setup"
         return finish("fails", f"no lakefile in {path or 'the root'}")
@@ -318,7 +406,9 @@ def run(repo, path, out, build_minutes=60, url=None):
         # Downloads Mathlib's compiled files. Without them a build takes hours.
         sh(["lake", "exe", "cache", "get"], cwd=proj, timeout=1800, log=log)
     mark = log.stat().st_size
+    began = time.time()
     code = sh(["lake", "build"], cwd=proj, timeout=build_minutes * 60, log=log)
+    result["build_seconds"] = int(time.time() - began)
     with open(log, errors="replace") as f:
         f.seek(mark)
         text = f.read()
@@ -329,6 +419,7 @@ def run(repo, path, out, build_minutes=60, url=None):
         result["reason"], result["lean_errors"] = failure_reason(text)
         return finish("fails", f"lake build exited with code {code}")
     result["theorems"], result["axioms"], result["axiom_note"] = check_axioms(proj, log)
+    result["declarations"] = declarations_from(log)
     return finish("sorry" if result["sorries"] else "builds")
 
 
@@ -355,11 +446,43 @@ def clean(r):
         "theorems": max(0, min(int(r["theorems"]), 10**7)) if isinstance(r.get("theorems"), int) else None,
         "axioms": sorted({a for a in r["axioms"] if isinstance(a, str) and AXIOM_NAME_RE.match(a) and a not in IGNORED_AXIOMS})[:MAX_AXIOMS] if isinstance(r.get("axioms"), list) else None,
         "axiom_note": re.sub(r"[^\w .,:'()-]", "", str(r.get("axiom_note") or ""))[:200],
+        "declarations": clean_declarations(r.get("declarations")),
+        "lean_files": bounded(r.get("lean_files"), 10**6),
+        "lean_lines": bounded(r.get("lean_lines"), 10**8),
+        "build_seconds": bounded(r.get("build_seconds"), 100000),
         "checked_at": iso(now()),
     }
 
 
-def record(folder, store, run_url=None, expect=None, keep_missing=False):
+def bounded(v, top):
+    return max(0, min(v, top)) if isinstance(v, int) and not isinstance(v, bool) else None
+
+
+def clean_declarations(d):
+    if not isinstance(d, dict):
+        return None
+    out = {k: bounded(d.get(k), 10**7) for k in DECL_KINDS}
+    return out if all(v is not None for v in out.values()) else None
+
+
+def snapshot(r):
+    """One line of a project's history: what a single check found."""
+    snap = {k: r.get(k) for k in HISTORY_FIELDS if k != "axiom_count"}
+    snap["axiom_count"] = len(r["axioms"]) if isinstance(r.get("axioms"), list) else None
+    return snap
+
+
+def add_history(history_path, results, repos):
+    """Append the newest result of each repository in `repos` to the history file."""
+    path = Path(history_path)
+    hist = json.loads(path.read_text()) if path.exists() else {}
+    for repo in sorted(repos):
+        if repo in results:
+            hist.setdefault(repo, []).append(snapshot(results[repo]))
+    path.write_text(json.dumps(dict(sorted(hist.items())), indent=1) + "\n")
+
+
+def record(folder, store, run_url=None, expect=None, keep_missing=False, history=None):
     """Merge every result.json under `folder` into the store file. Returns how many changed.
 
     `expect` is the set of repositories that were planned. A build job runs untrusted code,
@@ -399,6 +522,8 @@ def record(folder, store, run_url=None, expect=None, keep_missing=False):
                          **({"run": run_url} if run_url else {})}
         n += 1
     Path(store).write_text(json.dumps(dict(sorted(results.items())), indent=1) + "\n")
+    if history:
+        add_history(history, results, seen | (set() if keep_missing else (expect or set()) - seen))
     return n
 
 

@@ -81,7 +81,7 @@ def cmd_build(args):
     # GitHub reports a custom domain as http:// until HTTPS is enforced for the project, but the site is served over HTTPS.
     base = re.sub(r"^http://(?!localhost\b|127\.0\.0\.1\b)", "https://", args.base_url)
     render.build(days, args.out, base, goatcounter=args.goatcounter, kit_form=args.kit_form, lean=lean,
-                 licences=licenses.load(args.licenses))
+                 licences=licenses.load(args.licenses), history=leancheck.load(args.history))
 
 
 def cmd_lean_plan(args):
@@ -94,7 +94,13 @@ def cmd_lean_plan(args):
     if args.long:
         jobs = leancheck.plan_long(load_days(args.data), leancheck.load(args.lean), force=force)
     else:
-        jobs = leancheck.plan(days, leancheck.load(args.lean), force=force)
+        results = leancheck.load(args.lean)
+        jobs = leancheck.plan(days, results, force=force)
+        # Projects that changed since their last build fill the remaining places.
+        room = leancheck.MAX_PER_RUN - len(jobs)
+        if args.updates and not args.date and room > 0:
+            head = leancheck.heads(results, os.environ.get("GITHUB_TOKEN"))
+            jobs += leancheck.plan_updates(results, head, skip={j["repo"] for j in jobs}, limit=min(room, leancheck.UPDATES_PER_RUN))
     print(f"{len(jobs)} Lean projects to build: " + ", ".join(j["repo"] for j in jobs))
     set_output("matrix", json.dumps({"include": jobs}))
     set_output("count", len(jobs))
@@ -106,7 +112,7 @@ def cmd_lean_run(args):
 
 def cmd_lean_record(args):
     expect = {j["repo"] for j in json.loads(args.expect)["include"]} if args.expect else None
-    n = leancheck.record(args.folder, args.lean, args.run_url, expect, keep_missing=args.keep_missing)
+    n = leancheck.record(args.folder, args.lean, args.run_url, expect, keep_missing=args.keep_missing, history=args.history)
     print(f"Stored {n} Lean build results in {args.lean}")
     set_output("changed", "true" if n else "false")
 
@@ -218,6 +224,7 @@ def main():
     b.add_argument("--kit-form", default=os.environ.get("PAPERLANE_KIT_FORM"), help="Kit form id for the email sign-up form")
     b.add_argument("--lean", default="data/lean.json", help="stored Lean build results")
     b.add_argument("--licenses", default="data/licenses.json", help="stored code licences of the Lean repositories")
+    b.add_argument("--history", default="data/lean-history.json", help="every Lean check, oldest first")
     li = sub.add_parser("licenses", help="look up the code licence of every checked Lean repository on GitHub")
     li.add_argument("--lean", default="data/lean.json")
     li.add_argument("--licenses", default="data/licenses.json")
@@ -227,6 +234,7 @@ def main():
     lp.add_argument("--force", help="comma-separated repositories to check again")
     lp.add_argument("--lean", default="data/lean.json")
     lp.add_argument("--long", action="store_true", help="list the new builds that ran out of time, for the longer second run")
+    lp.add_argument("--updates", action="store_true", help="also list checked projects with a new commit (needs the GitHub API)")
     lr = sub.add_parser("lean-run", help="clone and build one Lean project (runs the authors' code)")
     lr.add_argument("--repo", required=True)
     lr.add_argument("--path", default="")
@@ -236,6 +244,7 @@ def main():
     lc.add_argument("--folder", required=True)
     lc.add_argument("--lean", default="data/lean.json")
     lc.add_argument("--run-url")
+    lc.add_argument("--history", default="data/lean-history.json", help="every check of every project, oldest first")
     lc.add_argument("--keep-missing", action="store_true", help="keep the stored result when a build left none (the longer second run)")
     lc.add_argument("--expect", help="the plan's matrix JSON; results for other repositories are dropped")
     d = sub.add_parser("digest", help="send the newest issue as a Kit broadcast")

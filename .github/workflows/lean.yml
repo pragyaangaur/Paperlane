@@ -44,7 +44,8 @@ jobs:
         env:
           DAY: ${{ inputs.date }}
           FORCE: ${{ inputs.force }}
-        run: python -m paperlane lean-plan ${DAY:+--date "$DAY"} --force "$FORCE"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m paperlane lean-plan --updates ${DAY:+--date "$DAY"} --force "$FORCE"
 
   # The build runs the authors' code, so this job gets no token and no secrets. It only
   # writes a result file, which the publish job checks field by field before storing it.
@@ -134,7 +135,7 @@ jobs:
           python -m paperlane lean-record --folder results --expect "$PLANNED" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/lean.json
+          git add data/lean.json data/lean-history.json
           if ! git diff --cached --quiet; then
             git commit -m "Add Lean build results"
             git pull --rebase
