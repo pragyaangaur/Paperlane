@@ -108,7 +108,7 @@ Every Lean project linked from a paper is cloned and built on a clean machine. P
 
 [Lean builds](https://pragyaangaur.dev/Paperlane/lean.html) lists every checked project. Each one has a page with the commit, the Lean version, the code's licence and the papers that link it. The Lean code belongs to the paper's authors, so Paperlane shows the licence GitHub detects on each repository and never relicenses the code.
 
-All results are in [`lean/papers.json`](https://pragyaangaur.dev/Paperlane/lean/papers.json), one entry per arXiv paper with links to the paper and each project, the build result and the code's licence. [Prove2Me](https://prove2.me) imports this file automatically.
+All results are in [`lean/papers.json`](https://pragyaangaur.dev/Paperlane/lean/papers.json), one entry per arXiv paper with links to the paper and each project, the build result and the code's licence. [Prove2Me](https://prove2.me), the open formalisation project that Kunal Marwaha writes about on [Proofs and Prompts](https://proofsandprompts.com), imports this file automatically.
 
 <p align="center">
   <img src="docs/lean.png" alt="The Lean builds page, listing every checked Lean project with a badge that says whether it builds" width="92%">
