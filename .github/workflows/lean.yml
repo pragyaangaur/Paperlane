@@ -141,26 +141,40 @@ jobs:
             git push
           fi
 
+      # The code licence of every checked repository, so readers know whether they may reuse it.
+      - name: Look up code licences
+        id: licences
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -m paperlane licenses
+          git add data/licenses.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update the code licences of Lean repositories"
+            git pull --rebase
+            git push
+          fi
+
       - name: Configure Pages
         id: pages
-        if: steps.record.outputs.changed == 'true'
+        if: steps.record.outputs.changed == 'true' || steps.licences.outputs.changed == 'true'
         uses: actions/configure-pages@v6
 
       - name: Build the site
-        if: steps.record.outputs.changed == 'true'
+        if: steps.record.outputs.changed == 'true' || steps.licences.outputs.changed == 'true'
         env:
           PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
           PAPERLANE_KIT_FORM: ${{ vars.KIT_FORM_ID }}
         run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
 
       - uses: actions/upload-pages-artifact@v5
-        if: steps.record.outputs.changed == 'true'
+        if: steps.record.outputs.changed == 'true' || steps.licences.outputs.changed == 'true'
         with:
           path: _site
           include-hidden-files: true
 
       - name: Deploy
-        if: steps.record.outputs.changed == 'true'
+        if: steps.record.outputs.changed == 'true' || steps.licences.outputs.changed == 'true'
         uses: actions/deploy-pages@v5
 
       # Sends once per issue, and only on the day of the issue. Until the repository variable

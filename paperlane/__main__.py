@@ -11,7 +11,7 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import USER_AGENT, arxiv, digest, leancheck, render, signals
+from . import USER_AGENT, arxiv, digest, leancheck, licenses, render, signals
 
 
 def load_days(data):
@@ -80,7 +80,8 @@ def cmd_build(args):
     leancheck.annotate(days, lean)
     # GitHub reports a custom domain as http:// until HTTPS is enforced for the project, but the site is served over HTTPS.
     base = re.sub(r"^http://(?!localhost\b|127\.0\.0\.1\b)", "https://", args.base_url)
-    render.build(days, args.out, base, goatcounter=args.goatcounter, kit_form=args.kit_form, lean=lean)
+    render.build(days, args.out, base, goatcounter=args.goatcounter, kit_form=args.kit_form, lean=lean,
+                 licences=licenses.load(args.licenses))
 
 
 def cmd_lean_plan(args):
@@ -107,6 +108,13 @@ def cmd_lean_record(args):
     expect = {j["repo"] for j in json.loads(args.expect)["include"]} if args.expect else None
     n = leancheck.record(args.folder, args.lean, args.run_url, expect, keep_missing=args.keep_missing)
     print(f"Stored {n} Lean build results in {args.lean}")
+    set_output("changed", "true" if n else "false")
+
+
+def cmd_licenses(args):
+    repos = set(leancheck.load(args.lean))
+    n = licenses.refresh(repos, args.licenses, os.environ.get("GITHUB_TOKEN"))
+    print(f"Licences: {n} new or changed for {len(repos)} repositories")
     set_output("changed", "true" if n else "false")
 
 
@@ -209,6 +217,10 @@ def main():
     b.add_argument("--goatcounter", default=os.environ.get("PAPERLANE_GOATCOUNTER"), help="GoatCounter site code for visitor counts")
     b.add_argument("--kit-form", default=os.environ.get("PAPERLANE_KIT_FORM"), help="Kit form id for the email sign-up form")
     b.add_argument("--lean", default="data/lean.json", help="stored Lean build results")
+    b.add_argument("--licenses", default="data/licenses.json", help="stored code licences of the Lean repositories")
+    li = sub.add_parser("licenses", help="look up the code licence of every checked Lean repository on GitHub")
+    li.add_argument("--lean", default="data/lean.json")
+    li.add_argument("--licenses", default="data/licenses.json")
     lp = sub.add_parser("lean-plan", help="list the Lean projects that need a build check")
     lp.add_argument("--date", help="only this day")
     lp.add_argument("--days", type=int, default=1, help="the newest N days (default 1)")
@@ -239,7 +251,7 @@ def main():
     c.add_argument("--final", action="store_true", help="fail when today's issue is missing (the last run of the day)")
     args = ap.parse_args()
     {"fetch": cmd_fetch, "build": cmd_build, "check": cmd_check, "lean-plan": cmd_lean_plan, "lean-run": cmd_lean_run,
-     "lean-record": cmd_lean_record, "digest": cmd_digest}[args.cmd](args)
+     "lean-record": cmd_lean_record, "digest": cmd_digest, "licenses": cmd_licenses}[args.cmd](args)
 
 
 if __name__ == "__main__":

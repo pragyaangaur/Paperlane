@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta, timezone
 from email.utils import format_datetime
 from pathlib import Path
 
-from . import badge, categories, digest, leancheck, signals
+from . import badge, categories, digest, leancheck, licenses, signals
 
 ASSETS = Path(__file__).parent / "assets"
 SECTIONS = [
@@ -842,7 +842,14 @@ def axioms_html(r):
     return f"{len(axs)} beyond the standard three{esc(of)}: {names}"
 
 
-def lean_repo_html(r, papers, kept, base, built):
+def licence_html(lic):
+    text = esc(licenses.label(lic))
+    if lic and lic.get("url"):
+        text = f'<a href="{esc(lic["url"])}" target="_blank" rel="noopener">{text}</a>'
+    return text + ' <span class="mono faint">(the authors\' licence, on the default branch)</span>'
+
+
+def lean_repo_html(r, papers, kept, base, built, lic=None):
     repo = r["repo"]
     prefix = "../../"
     img = f"{base}/lean/{repo}.svg"
@@ -862,6 +869,7 @@ def lean_repo_html(r, papers, kept, base, built):
         rows.append(("axioms", axioms_html(r)))
     if r.get("path"):
         rows.append(("folder", f'<span class="mono">{esc(r["path"])}</span>'))
+    rows.append(("licence", licence_html(lic)))
     rows.append(("checked", esc(r["checked_at"][:10])))
     if r.get("run"):
         rows.append(("log", f'<a href="{esc(r["run"])}" target="_blank" rel="noopener">the build run on GitHub</a>'))
@@ -927,7 +935,7 @@ LEAN_FIELDS = ("status", "sorries", "theorems", "axioms", "axiom_note", "reason"
                "commit", "source", "toolchain", "mathlib", "path", "assumptions", "checked_at", "run")
 
 
-def lean_by_arxiv(results, days, base, built):
+def lean_by_arxiv(results, days, base, built, licences=None):
     """Every paper that links a checked Lean project, keyed by arXiv id, for other sites to read.
 
     A paper keeps its first listing date. Each repository record is dated by checked_at and
@@ -939,23 +947,30 @@ def lean_by_arxiv(results, days, base, built):
             repos = [g["repo"] for g in (p.get("signals") or {}).get("github", []) if g.get("lean") and g["repo"] in results]
             if not repos:
                 continue
-            e = papers.setdefault(p["id"], {"arxiv": p["id"], "title": p["title"], "listed": d["date"], "repos": {}})
+            e = papers.setdefault(p["id"], {"arxiv": p["id"], "title": p["title"], "listed": d["date"],
+                                            "url": f"https://arxiv.org/abs/{p['id']}", "repos": {}})
             e["title"], e["version"] = p["title"], p.get("version")
             for repo in repos:
                 r = results[repo]
-                e["repos"][repo] = {"repo": repo, "page": f"{base}/lean/{repo}.html", "badge": f"{base}/lean/{repo}.svg",
-                                    "label": leancheck.label(r), **{k: r.get(k) for k in LEAN_FIELDS}}
+                lic = (licences or {}).get(repo)
+                e["repos"][repo] = {"repo": repo, "url": f"https://github.com/{repo}", "page": f"{base}/lean/{repo}.html",
+                                    "badge": f"{base}/lean/{repo}.svg", "label": leancheck.label(r),
+                                    "license": ({k: lic.get(k) for k in ("spdx", "name", "url", "checked_at")} if lic else None),
+                                    **{k: r.get(k) for k in LEAN_FIELDS}}
     for e in papers.values():
         e["repos"] = list(e["repos"].values())
     return {"schema": 1, "generated": built,
             "about": "Paperlane's Lean build check for every paper that links a Lean project, keyed by arXiv id. "
                      "'builds' means the project compiled with no sorry on a clean machine. It does not mean the Lean "
                      "statements match the theorems in the paper. Axioms beyond propext, Classical.choice and Quot.sound "
-                     "are listed under axioms (null when not checked).",
+                     "are listed under axioms (null when not checked). Each Lean project belongs to its authors: license gives "
+                     "the code licence GitHub detects on the repository's default branch (spdx null means no licence file, "
+                     "so the code is not licensed for reuse; license null means not looked up yet).",
             "papers": dict(sorted(papers.items()))}
 
 
-def lean_site(out, results, days, kept, base, built):
+def lean_site(out, results, days, kept, base, built, licences=None):
+    licences = licences or {}
     """lean.html, plus a page and a badge for every checked repository. Returns the page paths."""
     papers_of = {repo: lean_papers(repo, days) for repo in results}
     paths = []
@@ -964,10 +979,10 @@ def lean_site(out, results, days, kept, base, built):
         folder.mkdir(parents=True, exist_ok=True)
         name = repo.split("/")[1]
         (folder / f"{name}.svg").write_text(badge.svg(r))
-        (folder / f"{name}.html").write_text(lean_repo_html(r, papers_of[repo], kept, base, built))
+        (folder / f"{name}.html").write_text(lean_repo_html(r, papers_of[repo], kept, base, built, licences.get(repo)))
         paths.append(f"lean/{repo}.html")
     (out / "lean.html").write_text(lean_index_html(results, papers_of, kept, base, built))
-    (out / "lean" / "papers.json").write_text(json.dumps(lean_by_arxiv(results, days, base, built), ensure_ascii=False, indent=1) + "\n")
+    (out / "lean" / "papers.json").write_text(json.dumps(lean_by_arxiv(results, days, base, built, licences), ensure_ascii=False, indent=1) + "\n")
     return ["lean.html"] + sorted(paths)
 
 
@@ -1094,7 +1109,7 @@ def json_day(day, base):
 KEEP_DAYS = 92
 
 
-def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None, lean=None):
+def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None, lean=None, licences=None):
     """Write the whole site for `days` (newest first) into `out`."""
     code = (goatcounter or "").strip().lower()
     ANALYTICS["goatcounter"] = code if re.fullmatch(r"[a-z0-9-]{2,50}", code) else None
@@ -1150,6 +1165,6 @@ def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None, lean=
     (out / "llms.txt").write_text(llms_txt(days, base, built))
     (out / "404.html").write_text(notfound_html(base, built))
     kept = {anchor(p) for d in days for p in d["papers"]}
-    lean_paths = lean_site(out, lean or {}, all_days, kept, base, built) if lean else []
+    lean_paths = lean_site(out, lean or {}, all_days, kept, base, built, licences or {}) if lean else []
     (out / "sitemap.xml").write_text(sitemap(days, base, lean_paths))
     print(f"Built {len(days)} days into {out}")

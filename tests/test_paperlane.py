@@ -6,7 +6,7 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from paperlane import arxiv, badge, digest, leancheck, render, signals
+from paperlane import arxiv, badge, digest, leancheck, licenses, render, signals
 from paperlane.categories import math_categories
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -221,6 +221,20 @@ class LeanCheckTest(unittest.TestCase):
         self.assertEqual((r["repo"], r["status"], r["axioms"], r["page"]), ("x/y", "builds", ["myAx"], "https://b/lean/x/y.html"))
         self.assertEqual(e["listed"], day["date"])
         self.assertEqual(render.lean_by_arxiv({}, [day], "https://b", "x")["papers"], {})
+        self.assertEqual((e["url"], r["url"], r["license"]), (f"https://arxiv.org/abs/{pid}", "https://github.com/x/y", None))
+        lic = {"x/y": {"spdx": "MIT", "name": "MIT License", "url": "https://github.com/x/y/blob/main/LICENSE", "checked_at": "2026-11-19T00:00:00Z"}}
+        self.assertEqual(render.lean_by_arxiv(res, [day], "https://b", "x", lic)["papers"][pid]["repos"][0]["license"]["spdx"], "MIT")
+
+    def test_licence_labels(self):
+        self.assertIn("not licensed for reuse", licenses.label({"spdx": None}))
+        self.assertEqual(licenses.label({"spdx": "MIT", "name": "MIT License"}), "MIT License")
+        self.assertEqual(licenses.label(None), "not looked up yet")
+        with tempfile.TemporaryDirectory() as tmp:
+            store = Path(tmp) / "l.json"
+            store.write_text(json.dumps({"x/y": {"spdx": "MIT", "name": "MIT", "url": None, "checked_at": "2026-11-18T00:00:00Z"}}))
+            # A fresh entry is not looked up again, so this makes no network call.
+            when = licenses.datetime(2026, 11, 19, tzinfo=licenses.timezone.utc)
+            self.assertEqual(licenses.refresh({"x/y"}, store, when=when), 0)
 
     def test_record(self):
         with tempfile.TemporaryDirectory() as tmp:
