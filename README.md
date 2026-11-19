@@ -48,6 +48,8 @@ Type anything you are curious about and the matching papers from last night appe
 - **Keep code and proofs.** The **Code** and **Lean** buttons keep only papers that link to code or to a Lean formalisation.
 - **Open any paper.** Paste an arXiv link or id into the box in the header. Papers from any issue open on their own page, and older papers are looked up for you.
 - **Take the Markdown.** Every paper has a Markdown version one click away, ready for a chat window or your notes.
+- **Keep your own digest.** [My digest](https://pragyaangaur.dev/Paperlane/mine.html) shows only the papers in your fields, by the authors you follow or on your topics. Your choices stay in your browser or in a link you can bookmark.
+- **Share a find.** Every paper, issue and Lean result has a share button, which opens your phone's share sheet or copies the link.
 - **Get it by email.** A short email each weekday morning gives the night's numbers, the papers whose Lean proofs compile and the busiest fields, with links into the issue. [Sign up here](https://pragyaangaur.dev/Paperlane/email.html).
 
 ## If you are not a mathematician
@@ -88,6 +90,9 @@ curl -s https://pragyaangaur.dev/Paperlane/latest-titles.md | head
 | `latest/<field>.md` | One field of the issue, for example [`latest/math.CO.md`](https://pragyaangaur.dev/Paperlane/latest/math.CO.md) |
 | `p/<arXiv id>.md` | One paper, for example [`p/2610.30655.md`](https://pragyaangaur.dev/Paperlane/p/2610.30655.md) |
 | [`feed.xml`](https://pragyaangaur.dev/Paperlane/feed.xml) | RSS for your feed reader |
+| `feed/<field>.xml` | RSS for one field, for example [`feed/math.CO.xml`](https://pragyaangaur.dev/Paperlane/feed/math.CO.xml) |
+| [`lean/papers.json`](https://pragyaangaur.dev/Paperlane/lean/papers.json) | Every Lean build result keyed by arXiv id, with links to the paper and the code and the code's licence |
+| [`lean/feed.xml`](https://pragyaangaur.dev/Paperlane/lean/feed.xml) | RSS of the newest Lean build results |
 
 ## How it works
 
@@ -101,7 +106,7 @@ A scheduled job collects the night's announcement and looks up the details of ea
 
 Every Lean project linked from a paper is cloned and built on a clean machine. Paperlane installs the Lean version named in `lean-toolchain`, downloads Mathlib's cache when the project uses Mathlib, runs `lake build` and counts the `declaration uses sorry` warnings. The build runs with no secrets and no write access, because it runs the authors' code. A passing build shows that the project compiles at that commit. It does not show that the Lean statements match the theorems in the paper.
 
-[Lean builds](https://pragyaangaur.dev/Paperlane/lean.html) lists every checked project. Each one has a page with the commit, the Lean version and the papers that link it.
+[Lean builds](https://pragyaangaur.dev/Paperlane/lean.html) lists every checked project. Each one has a page with the commit, the Lean version, the code's licence and the papers that link it. The Lean code belongs to the paper's authors, so Paperlane shows the licence GitHub detects on each repository and never relicenses the code.
 
 <p align="center">
   <img src="docs/lean.png" alt="The Lean builds page, listing every checked Lean project with a badge that says whether it builds" width="92%">
@@ -114,6 +119,8 @@ If your paper links a Lean project, its page on Paperlane has a badge that shows
 ```markdown
 [![Paperlane Lean](https://pragyaangaur.dev/Paperlane/lean/OWNER/REPO.svg)](https://pragyaangaur.dev/Paperlane/lean/OWNER/REPO.html)
 ```
+
+The same result is available as shields.io endpoint JSON at `lean/OWNER/REPO.json`, and `lean/arxiv/<arXiv id>.svg` gives one badge per paper.
 
 ## What the tags mean
 
