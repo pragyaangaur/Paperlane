@@ -29,6 +29,25 @@
    "toolchain": "leanprover/lean4:v4.34.1",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T17:14:05Z",
+   "commit": "6b7d4aac1df041186e3f5064e21230e3b09edce4",
+   "status": "sorry",
+   "sorries": 3,
+   "theorems": 9498,
+   "declarations": {
+    "theorems": 4558,
+    "definitions": 2386,
+    "types": 76,
+    "axioms": 0
+   },
+   "build_seconds": 449,
+   "lean_files": 199,
+   "lean_lines": 62828,
+   "toolchain": "leanprover/lean4:v4.34.1",
+   "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+   "axiom_count": 0
   }
  ],
  "Apsiape/perfect-play-arithmetical-hierarchy": [
@@ -188,6 +207,20 @@
    "lean_lines": null,
    "toolchain": "leanprover/lean4:v4.29.0-rc6",
    "mathlib": null,
+   "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T17:14:05Z",
+   "commit": "c7cacff6f1826a41adf5521dd201d7e28ab72376",
+   "status": "fails",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 0,
+   "lean_files": 8,
+   "lean_lines": 966,
+   "toolchain": "leanprover/lean4:v4.29.0-rc6",
+   "mathlib": "1ea3462986d06c85c98fb18c10082274043405e4",
    "axiom_count": null
   }
  ],
@@ -704,6 +737,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T17:14:05Z",
+   "commit": "c8916e6d0343bff5b9107c77cb64aba4550f1ddb",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 2914,
+   "declarations": {
+    "theorems": 1817,
+    "definitions": 188,
+    "types": 18,
+    "axioms": 0
+   },
+   "build_seconds": 490,
+   "lean_files": 77,
+   "lean_lines": 37031,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "lacey-gatech/CantorSzemeredi": [
@@ -754,6 +806,20 @@
    "lean_lines": null,
    "toolchain": "leanprover/lean4:v4.34.1",
    "mathlib": null,
+   "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T17:14:05Z",
+   "commit": "3ec5e22b0bc08843a356104029f88730aaac961f",
+   "status": "sorry",
+   "sorries": 1,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 722,
+   "lean_files": 181,
+   "lean_lines": 79830,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
    "axiom_count": null
   }
  ],
@@ -886,6 +952,25 @@
    "toolchain": "leanprover/lean4:v4.35.0-rc2",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T17:14:05Z",
+   "commit": "97f4f7895616cb2bcaefea70dab6ab0158d0e1b5",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 593,
+   "declarations": {
+    "theorems": 166,
+    "definitions": 25,
+    "types": 0,
+    "axioms": 0
+   },
+   "build_seconds": 175,
+   "lean_files": 198,
+   "lean_lines": 22732,
+   "toolchain": "leanprover/lean4:v4.35.0-rc2",
+   "mathlib": "065356127b1dc0016f66b7283ce0ce2c4055aa55",
+   "axiom_count": 0
   }
  ],
  "na0b/pharmonicpoly-lean": [
@@ -1194,6 +1279,25 @@
    "toolchain": "leanprover/lean4:v4.33.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T17:14:05Z",
+   "commit": "3e6e9db20795940b135fb98960ce17e354f418bf",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 8516,
+   "declarations": {
+    "theorems": 2136,
+    "definitions": 599,
+    "types": 16,
+    "axioms": 0
+   },
+   "build_seconds": 571,
+   "lean_files": 187,
+   "lean_lines": 44174,
+   "toolchain": "leanprover/lean4:v4.33.0",
+   "mathlib": "db584cd6d46c92f209a44c0f1c829460d327499d",
+   "axiom_count": 0
   }
  ],
  "so-okada/kronecker-euler-sources": [
