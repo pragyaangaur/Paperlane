@@ -679,3 +679,18 @@ header nav a { white-space: nowrap; }
 .share-btn { margin-left: 14px; font-size: 0.8rem; color: var(--muted); }
 .share-btn:hover { color: var(--ink); }
 .badge-img .share-btn { vertical-align: middle; }
+
+/* Personal digest */
+.mine-form { display: grid; gap: 8px; max-width: 720px; margin: 0 0 24px; }
+.mine-form label.mono { margin-top: 10px; font-size: 0.8rem; color: var(--muted); }
+.mine-fields summary { cursor: pointer; font-size: 0.85rem; }
+.mine-cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 4px 16px; margin: 10px 0 4px; }
+.mine-cat { display: flex; align-items: baseline; gap: 6px; font-size: 0.92rem; }
+.mine-cat .faint { font-size: 0.72rem; }
+.mine-list { list-style: none; margin: 8px 0 0; padding: 0; border-top: 1px solid var(--rule); }
+.mine-list li { padding: 14px 0; border-bottom: 1px solid var(--rule); display: grid; gap: 4px; }
+.mine-list a { font-family: var(--serif); font-size: 1.12rem; color: var(--ink); text-decoration: none; }
+.mine-list a:hover { text-decoration: underline; }
+.mine-meta { font-size: 0.88rem; color: var(--ink-2); }
+.mine-list .faint { font-size: 0.75rem; }
+.mine-keep { margin-top: 36px; }

@@ -304,6 +304,7 @@ def page(title, body, prefix, built, description="", base="", kind="page", activ
     <nav class="mono">
       {nav("today.html", "today", "today")}
       {nav("archive.html", "archive", "archive")}
+      {nav("mine.html", "my digest", "mine")}
       {nav("ask.html", "ask AI", "ask")}
       {nav("email.html", "email", "email") if SIGNUP["kit"] else ""}
       {nav("about.html", "about", "about")}
@@ -704,6 +705,30 @@ def archive_html(days, numbers, built, base):
     return page("Archive · Paperlane", body, "", built, "The last three months of Paperlane, one issue per weekday.", base, "archive", "archive", "archive.html")
 
 
+def mine_html(base, built):
+    boxes = "".join(f'<label class="mine-cat"><input type="checkbox" name="mine-cat" value="{c}"><span>{esc(n)}</span> <span class="mono faint">{c}</span></label>'
+                    for c, n in sorted(categories.MATH.items(), key=lambda x: x[1]))
+    body = f"""<div class="wrap">
+  <header class="issue-head"><p class="kicker mono">your digest</p>
+  <h1>Only the papers <em>you</em> care about.</h1>
+  <p class="lede small">Pick your fields, and add authors or topics if you like. Paperlane keeps your choice on this device and shows the matching papers from the newest issue each time you come back.</p></header>
+  <section class="mine-form">
+    <details class="mine-fields" open><summary class="mono">fields <span id="mine-count"></span></summary><div class="mine-cats">{boxes}</div></details>
+    <label for="mine-authors" class="mono">authors (optional, comma separated)</label>
+    <input id="mine-authors" class="interest-input" type="text" placeholder="Tao, Green" autocomplete="off" spellcheck="false">
+    <label for="mine-topics" class="mono">topics (optional, comma separated)</label>
+    <input id="mine-topics" class="interest-input" type="text" placeholder="random graphs, polyominoes" autocomplete="off" data-interests>
+  </section>
+  <p class="stats mono" id="mine-stats"></p>
+  <ol class="mine-list" id="mine-list"></ol>
+  <section class="mine-keep prose">
+    <h2>Keep it</h2>
+    <p>Bookmark <a id="mine-link" href="mine.html">this link</a>, which holds your choices, or <button type="button" class="link" id="mine-copy">copy it</button> to use on another device. For a feed reader, each field has its own RSS feed: <span id="mine-feeds" class="mono">pick a field first</span>.</p>
+  </section>
+</div>"""
+    return page("Your digest · Paperlane", body, "", built, "Only the new arXiv maths papers in your fields, by your authors or on your topics.", base, "mine-page", "mine", "mine.html")
+
+
 def lookup_html(built, base):
     body = """<div class="wrap">
   <article class="first-page" id="lk-page">
@@ -762,7 +787,7 @@ def notfound_html(base, built):
 
 
 def sitemap(days, base, extra=()):
-    urls = ["", "today.html", "archive.html", "about.html", "ask.html"] + (["email.html"] if SIGNUP["kit"] else []) + list(extra)
+    urls = ["", "today.html", "archive.html", "about.html", "ask.html", "mine.html"] + (["email.html"] if SIGNUP["kit"] else []) + list(extra)
     urls += [f"days/{d['date']}.html" for d in days]
     urls += sorted({f"p/{anchor(p)}.html" for d in days for p in d["papers"]})
     rows = "".join(f"<url><loc>{esc(base)}/{u}</loc></url>" for u in urls)
@@ -778,6 +803,7 @@ def about_html(days, base, built):
         ("latest/math.CO.md", "One field of the day (swap in any field code)"),
         (f"p/{anchor(days[0]['papers'][0])}.md", "One paper (swap in any arXiv id)"),
         ("feed.xml", "RSS for your feed reader"),
+        ("feed/math.CO.xml", "RSS for one field (any field code works, such as math.NT)"),
         ("lean/papers.json", "Every Lean build result, keyed by arXiv id, with the code licence"),
         ("lean/feed.xml", "RSS of the newest Lean build results"),
     ]
@@ -1052,12 +1078,14 @@ def lean_site(out, results, days, kept, base, built, licences=None):
 # Feeds and indexes
 
 
-def rss(days, base, built_dt, limit_days=1):
+def rss(days, base, built_dt, limit_days=1, field=None):
     items = []
     for d in days[:limit_days]:
         pub = format_datetime(datetime.fromisoformat(d["fetched_at"].replace("Z", "+00:00")))
         g = grouped(d)
         for p in g["new"] + g["cross"]:
+            if field and field not in (p.get("math_categories") or []):
+                continue
             desc = (
                 f"<p>{esc(', '.join(p['authors']))}</p><p>{esc(p['abstract'])}</p>"
                 f"<p>{esc('; '.join(signal_notes(p)))}</p>"
@@ -1073,9 +1101,9 @@ def rss(days, base, built_dt, limit_days=1):
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-<title>Paperlane: new arXiv mathematics</title>
-<link>{esc(base)}/</link>
-<atom:link href="{esc(base)}/feed.xml" rel="self" type="application/rss+xml"/>
+<title>Paperlane: new arXiv {esc(categories.name(field) if field else "mathematics")}</title>
+<link>{esc(base)}/{f"mine.html?f={field}" if field else ""}</link>
+<atom:link href="{esc(base)}/{f"feed/{field}.xml" if field else "feed.xml"}" rel="self" type="application/rss+xml"/>
 <description>New arXiv mathematics papers each day, with code and Lean signals. {ARXIV_THANKS}</description>
 <language>en</language>
 <lastBuildDate>{format_datetime(built_dt)}</lastBuildDate>
@@ -1109,7 +1137,7 @@ The latest announcement is {latest['date']} ({counts_line(latest)}). Built {buil
 - [Today in Markdown]({base}/latest.md): every paper with its abstract.
 - [Today as JSON]({base}/latest.json): the same data with every field.
 - One paper: {base}/p/<id>.md in Markdown or {base}/p/<id>.html for people, for example {base}/p/{anchor(latest['papers'][0])}.md. Old ids such as math/0601001 use a hyphen.
-- [RSS]({base}/feed.xml): new papers and cross-lists from the latest announcement.
+- [RSS]({base}/feed.xml): new papers and cross-lists from the latest announcement. One field only: {base}/feed/<field>.xml, for example {base}/feed/math.CO.xml.
 - [Lean build results by arXiv id]({base}/lean/papers.json): every paper that links a checked Lean project, with links to the paper and the code, build status, sorry count, extra axioms, commit, toolchain, Mathlib revision, the code's licence and the date of the check.
 - [Lean build results as RSS]({base}/lean/feed.xml): the newest checks first.
 
@@ -1229,6 +1257,10 @@ def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None, lean=
     (out / "ask.html").write_text(ask_html(base, built))
     (out / "email.html").write_text(email_html(latest, numbers[latest["date"]], base, built))
     (out / "feed.xml").write_text(rss(days, base, built_dt))
+    (out / "mine.html").write_text(mine_html(base, built))
+    (out / "feed").mkdir()
+    for c in categories.MATH:
+        (out / "feed" / f"{c}.xml").write_text(rss(days, base, built_dt, field=c))
     (out / "llms.txt").write_text(llms_txt(days, base, built))
     (out / "404.html").write_text(notfound_html(base, built))
     kept = {anchor(p) for d in days for p in d["papers"]}

@@ -1129,6 +1129,80 @@
     }
   }
 
+  // The personal digest. Choices stay on this device, or in the page link when the reader copies it.
+  function minePage() {
+    var list = $("#mine-list");
+    if (!list) return;
+    var boxes = $$('input[name="mine-cat"]'), authors = $("#mine-authors"), topics = $("#mine-topics");
+    var q = new URLSearchParams(location.search);
+    if (q.has("f")) store.set("paperlane-fields", q.get("f"));
+    if (q.has("a")) store.set("paperlane-authors", q.get("a"));
+    if (q.has("q")) { store.set("paperlane-interests", q.get("q")); topics.value = q.get("q"); }
+    var picked = (store.get("paperlane-fields") || "").split(",").filter(Boolean);
+    boxes.forEach(function (b) { b.checked = picked.indexOf(b.value) >= 0; });
+    authors.value = store.get("paperlane-authors") || "";
+    var day = null, ranker = null;
+
+    function chosen() { return boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; }); }
+    function names(text) { return text.split(",").map(function (x) { return x.trim().toLowerCase(); }).filter(function (x) { return x.length > 1; }); }
+
+    function save() {
+      var f = chosen();
+      store.set("paperlane-fields", f.join(","));
+      store.set("paperlane-authors", authors.value.trim());
+      $("#mine-count").textContent = f.length ? "(" + f.length + " picked)" : "(none picked)";
+      var u = new URL("mine.html", location.href);
+      if (f.length) u.searchParams.set("f", f.join(","));
+      if (authors.value.trim()) u.searchParams.set("a", authors.value.trim());
+      if (topics.value.trim()) u.searchParams.set("q", topics.value.trim());
+      $("#mine-link").href = u.href;
+      $("#mine-feeds").innerHTML = f.length ? f.map(function (c) { return '<a href="feed/' + c + '.xml">' + c + "</a>"; }).join(", ") : "pick a field first";
+    }
+
+    function show() {
+      save();
+      if (!day) return;
+      var f = chosen(), who = names(authors.value), topic = topics.value.trim();
+      var scores = topic && ranker ? ranker.rank(topic) : null;
+      var rows = [];
+      day.papers.forEach(function (p, i) {
+        if (p.announce_type.indexOf("replace") === 0) return;
+        var why = [];
+        var inField = f.some(function (c) { return (p.math_categories || []).indexOf(c) >= 0; });
+        var byAuthor = who.filter(function (n) { return p.authors.some(function (a) { return a.toLowerCase().indexOf(n) >= 0; }); });
+        var hit = scores && scores[i].score > 0 ? scores[i] : null;
+        // Authors always count. Fields pick the papers, and topics then narrow them to the ones that mention a topic.
+        var keep = byAuthor.length > 0 || (f.length ? inField && (!topic || hit) : !!hit);
+        if (!keep) return;
+        if (byAuthor.length) why.push("by " + byAuthor.join(", "));
+        if (hit) why.push("mentions " + hit.hits.slice(0, 3).join(", "));
+        if (!why.length) why.push(p.primary_category);
+        rows.push({ p: p, why: why, score: (byAuthor.length ? 100 : 0) + (hit ? hit.score : 0) });
+      });
+      rows.sort(function (a, b) { return b.score - a.score; });
+      $("#mine-stats").textContent = !f.length && !who.length && !topic ? "Pick a field to start." :
+        rows.length + " of " + day.papers.length + " papers in the issue of " + day.date + " match.";
+      list.innerHTML = rows.map(function (r) {
+        return '<li><a href="' + esc(r.p.paperlane_url) + '">' + esc(r.p.title) + '</a><span class="mine-meta">' +
+          esc(r.p.authors.slice(0, 4).join(", ") + (r.p.authors.length > 4 ? " and others" : "")) +
+          '</span><span class="mono faint">' + esc(r.why.join(" · ")) + "</span></li>";
+      }).join("");
+      renderMath(list);
+    }
+
+    boxes.forEach(function (b) { b.addEventListener("change", function () { track("mine-field"); show(); }); });
+    authors.addEventListener("input", show);
+    topics.addEventListener("input", show);
+    $("#mine-copy").addEventListener("click", function (e) { track("mine-copy"); copy($("#mine-link").href, e.target); });
+    save();
+    getJSON("latest.json").then(function (d) {
+      if (!d) { $("#mine-stats").textContent = "The newest issue could not be loaded."; return; }
+      day = d;
+      ranker = new Ranker(d.papers.map(function (p) { return p.title + " " + p.title + " " + p.abstract; }));
+      show();
+    }).catch(function () { $("#mine-stats").textContent = "The newest issue could not be loaded."; });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     interestsSync();
     signups();
@@ -1144,6 +1218,7 @@
     ask();
     copyButtons();
     lookupPage();
+    minePage();
     externalize();
     lazyMath($("main"));
     drift();
