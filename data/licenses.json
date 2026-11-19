@@ -1,0 +1,470 @@
+{
+ "ANRGUSC/TINA": {
+  "checked_at": "2026-11-19T15:39:21Z",
+  "spdx": "BSD-3-Clause",
+  "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+  "url": "https://github.com/ANRGUSC/TINA/blob/main/LICENSE"
+ },
+ "Apsiape/kaplansky-conjectures-hyperbolic-groups": {
+  "checked_at": "2026-11-19T15:39:22Z",
+  "spdx": "other",
+  "name": "a licence GitHub could not identify",
+  "url": "https://github.com/Apsiape/kaplansky-conjectures-hyperbolic-groups/blob/main/LICENSE.md"
+ },
+ "Apsiape/perfect-play-arithmetical-hierarchy": {
+  "checked_at": "2026-11-19T15:39:25Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/Apsiape/perfect-play-arithmetical-hierarchy/blob/main/LICENSE-MIT.txt"
+ },
+ "Arthur742Ramos/TopologicalComputationalPaths": {
+  "checked_at": "2026-11-19T15:39:26Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/Arthur742Ramos/TopologicalComputationalPaths/blob/main/LICENSE"
+ },
+ "BehroozMoosavi/tugofwar_formalization": {
+  "checked_at": "2026-11-19T15:39:27Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/BehroozMoosavi/tugofwar_formalization/blob/main/LICENSE"
+ },
+ "BitMiracle-AI/detailed-balance-gac": {
+  "checked_at": "2026-11-19T15:39:31Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/BitMiracle-AI/detailed-balance-gac/blob/main/LICENSE"
+ },
+ "Fedor-Popov/Lean_VOA": {
+  "checked_at": "2026-11-19T15:39:34Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/Fedor-Popov/Lean_VOA/blob/main/LICENSE"
+ },
+ "FormalCert-AI/llm2cert": {
+  "checked_at": "2026-11-19T15:39:36Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/FormalCert-AI/llm2cert/blob/main/LICENSE"
+ },
+ "HamedMousaviMath/Lean-Formalization-Polynomial-Configurations-and-Pointwise-Averages-Along-Piatetski--Shapiro-Primes": {
+  "checked_at": "2026-11-19T15:39:37Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization": {
+  "checked_at": "2026-11-19T15:39:38Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/HamedMousaviMath/lean4-paper-On-Distribution-of-Prime-Squares-formalization/blob/main/LICENSE"
+ },
+ "JYin80/Lean-LSBA1d": {
+  "checked_at": "2026-11-19T15:39:41Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/JYin80/Lean-LSBA1d_arXiv-2611.09776/blob/main/LICENSE"
+ },
+ "LeGenAI/llm_guided_EAQECC_search": {
+  "checked_at": "2026-11-19T15:39:44Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/LeGenAI/llm_guided_EAQECC_search/blob/main/LICENSE"
+ },
+ "LexiaoLai/Nonsmooth-BFGS-Nonstationary": {
+  "checked_at": "2026-11-19T15:39:45Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/LexiaoLai/Nonsmooth-BFGS-Nonstationary/blob/main/LICENSE"
+ },
+ "MColbrook/Kung-Traub_conjecture": {
+  "checked_at": "2026-11-19T15:39:46Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/MColbrook/Kung-Traub_conjecture/blob/main/LICENSE"
+ },
+ "ManuelManas/btp-pbf-verification": {
+  "checked_at": "2026-11-19T15:39:48Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "MikhailLevit1987/icosahedron-rational-faces": {
+  "checked_at": "2026-11-19T15:39:49Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/MikhailLevit1987/icosahedron-rational-faces/blob/master/LICENSE"
+ },
+ "TokyoProbabilityGroup/SYK_CLT": {
+  "checked_at": "2026-11-19T15:39:50Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/TokyoProbabilityGroup/SYK_CLT/blob/main/LICENSE"
+ },
+ "Trace231/ProofLoom": {
+  "checked_at": "2026-11-19T15:39:51Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/Trace231/ProofLoom/blob/main/LICENSE"
+ },
+ "VC2015/rectangle-clt-singular": {
+  "checked_at": "2026-11-19T15:39:52Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities": {
+  "checked_at": "2026-11-19T15:39:53Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "adamtilepe/Annular_Obstructions_and_Skew-Shape_Block_Identities": {
+  "checked_at": "2026-11-19T15:39:56Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "adamtilepe/RootedTrailTrapHeterogeneousBouquets": {
+  "checked_at": "2026-11-19T15:39:57Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "aguevara22/gluon-knot-lean": {
+  "checked_at": "2026-11-19T15:39:58Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "anastasiosfragkosmath/Pointwise-Ergodic-Theorems-Along-floor-p-c-Palomar-Submission": {
+  "checked_at": "2026-11-19T15:39:59Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/anastasiosfragkosmath/Pointwise-Ergodic-Theorems-Along-floor-p-c-Palomar-Submission/blob/main/LICENSE"
+ },
+ "anastasiosfragkosmath/Prime_BHT_Palomar_Submission": {
+  "checked_at": "2026-11-19T15:40:01Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/anastasiosfragkosmath/Prime_BHT_Palomar_Submission/blob/main/LICENSE"
+ },
+ "anastasiosfragkosmath/Variation-Norm-Carleson-Along-the-Primes-Palomar-Submission": {
+  "checked_at": "2026-11-19T15:40:03Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/anastasiosfragkosmath/Variation-Norm-Carleson-Along-the-Primes-Palomar-Submission/blob/main/LICENSE"
+ },
+ "apemm/Kagey-Problems": {
+  "checked_at": "2026-11-19T15:40:04Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/apemm/Kagey-Problems/blob/main/LICENSE"
+ },
+ "apemm/elephant-bias-interval": {
+  "checked_at": "2026-11-19T15:40:05Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/apemm/elephant-bias-interval/blob/main/LICENSE"
+ },
+ "bishara74/lowhalf-mul3": {
+  "checked_at": "2026-11-19T15:40:07Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/bishara74/lowhalf-mul3/blob/main/LICENSE"
+ },
+ "chenle02/stratonovich-ham-second-moment-lean": {
+  "checked_at": "2026-11-19T15:40:08Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/chenle02/stratonovich-ham-second-moment-lean/blob/main/LICENSE"
+ },
+ "david44hello/paper_smale-mean-value-constant-equals-4": {
+  "checked_at": "2026-11-19T15:40:10Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/david44hello/paper_smale-mean-value-constant-equals-4/blob/main/LICENSE"
+ },
+ "david44hello/papers_supporting_materials": {
+  "checked_at": "2026-11-19T15:40:14Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/david44hello/papers_supporting_materials/blob/main/LICENSE"
+ },
+ "drjanosch42/rational_quivers": {
+  "checked_at": "2026-11-19T15:40:19Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/drjanosch42/rational_quivers/blob/main/LICENSE"
+ },
+ "ewaingwynne/complex-sle": {
+  "checked_at": "2026-11-19T15:40:29Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "ewaingwynne/conjugate-branching-lean": {
+  "checked_at": "2026-11-19T15:40:34Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "hanyi162013-Yihan/Poisson_Statistic_1dAndersonBernoulli": {
+  "checked_at": "2026-11-19T15:40:36Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "hanyi162013-Yihan/scalar-she-lean": {
+  "checked_at": "2026-11-19T15:40:36Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "haruhisa-enomoto/third-brauer-thrall-conjecture": {
+  "checked_at": "2026-11-19T15:40:38Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/haruhisa-enomoto/third-brauer-thrall-conjecture/blob/main/LICENSE"
+ },
+ "hirokifukui/residue-apn": {
+  "checked_at": "2026-11-19T15:40:39Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/hirokifukui/residue-apn/blob/main/LICENSE"
+ },
+ "jacopoborga/DLQG1-bipolar-triangulations-Lean": {
+  "checked_at": "2026-11-19T15:40:41Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/jacopoborga/DLQG1-bipolar-triangulations-Lean/blob/main/LICENSE"
+ },
+ "jaideepsaipadhi/erdos-sums-almost-primes": {
+  "checked_at": "2026-11-19T15:40:45Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "joaquimortega/MR1923965": {
+  "checked_at": "2026-11-19T15:40:46Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/joaquimortega/MR1923965/blob/main/LICENSE"
+ },
+ "joaquimortega/MR1949832": {
+  "checked_at": "2026-11-19T15:40:47Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/joaquimortega/MR1949832/blob/main/LICENSE"
+ },
+ "lacey-gatech/CantorSzemeredi": {
+  "checked_at": "2026-11-19T15:40:49Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/lacey-gatech/CantorSzemeredi/blob/main/LICENSE"
+ },
+ "lacey-gatech/restricted-polynomials-lean": {
+  "checked_at": "2026-11-19T15:40:50Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/lacey-gatech/restricted-polynomials-lean/blob/main/LICENSE"
+ },
+ "leobon12/lean-formalizations": {
+  "checked_at": "2026-11-19T15:40:51Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "lukasniebel/fast_dynamo_lean": {
+  "checked_at": "2026-11-19T15:40:52Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/lukasniebel/fast_dynamo_lean/blob/main/LICENSE"
+ },
+ "magbenji/discrete-modified-gradient-lean": {
+  "checked_at": "2026-11-19T15:40:54Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/magbenji/discrete-modified-gradient-lean/blob/main/LICENSE"
+ },
+ "mcoiculescu/NonUniqueEuler": {
+  "checked_at": "2026-11-19T15:40:58Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/mcoiculescu/NonUniqueEuler/blob/main/LICENSE"
+ },
+ "mjarret/products-of-unitaries-lean": {
+  "checked_at": "2026-11-19T15:41:00Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/mjarret/products-of-unitaries-lean/blob/main/LICENSE"
+ },
+ "muchenju-math/positivity-lean": {
+  "checked_at": "2026-11-19T15:41:07Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "na0b/gaussianriesz-lean": {
+  "checked_at": "2026-11-19T15:41:10Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/na0b/gaussianriesz-lean/blob/main/LICENSE"
+ },
+ "na0b/phigherorder-lean": {
+  "checked_at": "2026-11-19T15:41:23Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/na0b/phigherorder-lean/blob/main/LICENSE"
+ },
+ "nawafbourabee/persistence-pays-lean": {
+  "checked_at": "2026-11-19T15:41:29Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/nawafbourabee/persistence-pays-lean/blob/main/LICENSE"
+ },
+ "nitromannitol/Centrally-Excited-Random-Walk": {
+  "checked_at": "2026-11-19T15:41:31Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/nitromannitol/Centrally-Excited-Random-Walk/blob/main/LICENSE"
+ },
+ "nitromannitol/FPP-variance": {
+  "checked_at": "2026-11-19T15:41:32Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/nitromannitol/FPP-variance/blob/main/LICENSE"
+ },
+ "oasisss6666/pure-semisimplicity-lean": {
+  "checked_at": "2026-11-19T15:41:34Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "pedrotradacete/DSTBL3": {
+  "checked_at": "2026-11-19T15:41:35Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/pedrotradacete/DSTBL3/blob/main/LICENSE"
+ },
+ "pedrotradacete/FBLOrderContinuousLH": {
+  "checked_at": "2026-11-19T15:41:36Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/pedrotradacete/FBLOrderContinuousLH/blob/main/LICENSE"
+ },
+ "pxwu24/additivity-of-classical-communication": {
+  "checked_at": "2026-11-19T15:41:38Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "qiangwu2/approximate-counting-spin-glasses": {
+  "checked_at": "2026-11-19T15:41:40Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "ritsumei-aoi/osp-odd-deformations": {
+  "checked_at": "2026-11-19T15:41:41Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/ritsumei-aoi/osp-odd-deformations/blob/main/LICENSE"
+ },
+ "rtyu-1/coded-sorting-lean": {
+  "checked_at": "2026-11-19T15:41:44Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/rtyu-1/coded-sorting-lean/blob/main/LICENSE"
+ },
+ "samyama-ai/gw-speed-certificate": {
+  "checked_at": "2026-11-19T15:41:50Z",
+  "spdx": "other",
+  "name": "a licence GitHub could not identify",
+  "url": "https://github.com/samyama-ai/gw-speed-certificate/blob/main/LICENSE"
+ },
+ "sashakolpakov/CoxeterPolytopes": {
+  "checked_at": "2026-11-19T15:41:53Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "sashakolpakov/PseudoArithmetic": {
+  "checked_at": "2026-11-19T15:41:53Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "skypher/szkraw": {
+  "checked_at": "2026-11-19T15:41:54Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "so-okada/kronecker-euler-sources": {
+  "checked_at": "2026-11-19T15:41:57Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "stacks-ai/papers": {
+  "checked_at": "2026-11-19T15:41:58Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "stemma-math/stemma-exedra": {
+  "checked_at": "2026-11-19T15:41:59Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/stemma-math/stemma-exedra/blob/main/LICENSE"
+ },
+ "sun123zxy/ninegates-lean4": {
+  "checked_at": "2026-11-19T15:42:00Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/sun123zxy/ninegates-lean4/blob/master/LICENSE"
+ },
+ "tilenmarc/braid-bruhat-mutation-distance": {
+  "checked_at": "2026-11-19T15:42:02Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/tilenmarc/braid-bruhat-mutation-distance/blob/main/LICENSE"
+ },
+ "willmfeldman/bernoulli-perron-variational": {
+  "checked_at": "2026-11-19T15:42:04Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/willmfeldman/bernoulli-perron-variational/blob/main/LICENSE"
+ },
+ "xyzw/pf_ucp": {
+  "checked_at": "2026-11-19T15:42:06Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "xyzw/qedft_pf_pub": {
+  "checked_at": "2026-11-19T15:42:08Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "ywatanabex/bp-degree-syzygies-lean": {
+  "checked_at": "2026-11-19T15:42:11Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/ywatanabex/bp-degree-syzygies-lean/blob/main/LICENSE"
+ },
+ "ywatanabex/bp-response-geometry-lean": {
+  "checked_at": "2026-11-19T15:42:15Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/ywatanabex/bp-response-geometry-lean/blob/main/LICENSE"
+ },
+ "zhineos/hubbard-spectral-moments": {
+  "checked_at": "2026-11-19T15:42:22Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/zhineos/hubbard-spectral-moments/blob/main/LICENSE"
+ }
+}
