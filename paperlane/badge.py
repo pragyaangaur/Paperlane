@@ -56,3 +56,9 @@ def svg(result):
 </g>
 </svg>
 """
+
+
+def endpoint(result):
+    """The badge as shields.io endpoint JSON, so authors can restyle it with shields.io."""
+    bg, _ = COLOURS.get(result["status"], COLOURS["error"])
+    return {"schemaVersion": 1, "label": LEFT, "message": value(result), "color": bg.lstrip("#")}

@@ -906,6 +906,7 @@ def lean_repo_html(r, papers, kept, base, built, lic=None):
   <p>The badge shows the newest result and links back to this page.</p>
   <div class="snippet"><div class="md-bar"><span class="mono">markdown</span><button type="button" class="link mono" data-copy-from="#snip-md" data-track="copy-badge-md">copy</button></div><pre id="snip-md">{esc(md)}</pre></div>
   <div class="snippet"><div class="md-bar"><span class="mono">html</span><button type="button" class="link mono" data-copy-from="#snip-html" data-track="copy-badge-html">copy</button></div><pre id="snip-html">{esc(html_snip)}</pre></div>
+  <p>To restyle it, the same result is available as shields.io endpoint JSON: <code>https://img.shields.io/endpoint?url={esc(urllib.parse.quote(f"{base}/lean/{repo}.json", safe=""))}</code>. For a paper with several Lean projects, <code>{esc(base)}/lean/arxiv/&lt;arXiv id&gt;.svg</code> shows the best result among them.</p>
 </div>"""
     desc = f"Paperlane's Lean build check for {repo}: {leancheck.label(r)}."
     return page(f"{repo} · Lean build · Paperlane", body, prefix, built, desc, base, "lean-repo", "", f"lean/{repo}.html")
@@ -926,7 +927,8 @@ def lean_index_html(results, papers_of, kept, base, built):
                f'{counts["fails"]} fail, {counts["timeout"]} too large to build within the time limit and {counts["error"]} could not be checked.')
     body = f"""<div class="wrap">
   <header class="issue-head"><p class="kicker mono">lean builds</p><h1>Lean projects from <em>new papers</em></h1>
-  <p class="lede small">Every Lean project linked from a paper in Paperlane is cloned and built on a clean machine with <code>lake build</code>. {esc(summary)} <a href="about.html#tags">What the results mean</a>.</p></header>
+  <p class="lede small">Every Lean project linked from a paper in Paperlane is cloned and built on a clean machine with <code>lake build</code>. {esc(summary)} <a href="about.html#tags">What the results mean</a>.</p>
+  <p class="lede small">Wrote one of these papers? Open your project's page and copy its badge into your README. It always shows the newest result and links back to the evidence.</p></header>
   <ul class="lean-list">{''.join(rows)}</ul>
   <section class="prose lean-data" id="data">
     <h2>Use the results</h2>
@@ -1017,11 +1019,17 @@ def lean_site(out, results, days, kept, base, built, licences=None):
         folder.mkdir(parents=True, exist_ok=True)
         name = repo.split("/")[1]
         (folder / f"{name}.svg").write_text(badge.svg(r))
+        (folder / f"{name}.json").write_text(json.dumps(badge.endpoint(r)) + "\n")
         (folder / f"{name}.html").write_text(lean_repo_html(r, papers_of[repo], kept, base, built, licences.get(repo)))
         paths.append(f"lean/{repo}.html")
     (out / "lean.html").write_text(lean_index_html(results, papers_of, kept, base, built))
     data = lean_by_arxiv(results, days, base, built, licences)
     (out / "lean" / "papers.json").write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
+    # One badge per arXiv id, for an author who would rather point at the paper than the repository.
+    (out / "lean" / "arxiv").mkdir(exist_ok=True)
+    for pid, e in data["papers"].items():
+        best = min(e["repos"], key=lambda x: LEAN_ORDER[x["status"]])
+        (out / "lean" / "arxiv" / f"{pid.replace('/', '-')}.svg").write_text(badge.svg(results[best["repo"]]))
     built_dt = datetime.strptime(built, "%Y-%m-%d %H:%M UTC").replace(tzinfo=timezone.utc)
     (out / "lean" / "feed.xml").write_text(lean_feed(data, base, built_dt))
     return ["lean.html"] + sorted(paths)

@@ -337,6 +337,7 @@ class BadgeTest(unittest.TestCase):
         self.assertIn("builds, 3 sorry", svg)
         self.assertTrue(svg.startswith("<svg"))
         self.assertEqual(badge.value({"status": "error"}), "not checked")
+        self.assertEqual(badge.endpoint({"status": "builds"}), {"schemaVersion": 1, "label": "Paperlane Lean", "message": "builds", "color": "c8f53c"})
         self.assertGreater(badge.text_width("builds, 20 sorry"), badge.text_width("builds"))
 
 
