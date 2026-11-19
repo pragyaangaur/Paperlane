@@ -13,6 +13,20 @@
    "toolchain": "leanprover/lean4:v4.33.1",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:50:20Z",
+   "commit": "f338bcf5a80de4523055335ebfa17a2d4e141f93",
+   "status": "error",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": null,
+   "lean_files": null,
+   "lean_lines": null,
+   "toolchain": null,
+   "mathlib": null,
+   "axiom_count": null
   }
  ],
  "Apsiape/kaplansky-conjectures-hyperbolic-groups": [
@@ -214,6 +228,25 @@
    "toolchain": "leanprover/lean4:v4.34.1",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:50:20Z",
+   "commit": "29a84c0da99c77cc7bad4823a465804db1ab83b6",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 8894,
+   "declarations": {
+    "theorems": 4707,
+    "definitions": 1102,
+    "types": 35,
+    "axioms": 0
+   },
+   "build_seconds": 1531,
+   "lean_files": 1386,
+   "lean_lines": 90501,
+   "toolchain": "leanprover/lean4:v4.34.1",
+   "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+   "axiom_count": 0
   }
  ],
  "JYin80/Lean-LSBA1d": [
@@ -426,6 +459,20 @@
    "toolchain": "leanprover/lean4:v4.35.0-rc4",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:50:20Z",
+   "commit": "e4727e42bb5b0298c578a92ee9c8c0d115a5f1df",
+   "status": "fails",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 0,
+   "lean_files": 1,
+   "lean_lines": 30055,
+   "toolchain": "leanprover/lean4:v4.35.0-rc4",
+   "mathlib": "1f414401f69059aa7eead47b53ee40bd38455eeb",
+   "axiom_count": null
   }
  ],
  "adamtilepe/Annular_Obstructions_and_Skew-Shape_Block_Identities": [
@@ -570,6 +617,25 @@
    "toolchain": "leanprover/lean4:v4.35.0-rc3",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:50:20Z",
+   "commit": "88afc511c0b3f19ffdf18baf7c28043b164dc86d",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 716,
+   "declarations": {
+    "theorems": 486,
+    "definitions": 123,
+    "types": 3,
+    "axioms": 0
+   },
+   "build_seconds": 422,
+   "lean_files": 37,
+   "lean_lines": 9104,
+   "toolchain": "leanprover/lean4:v4.35.0-rc3",
+   "mathlib": "c55e6e786f49471c72fbddbec5415808896aec1e",
+   "axiom_count": 0
   }
  ],
  "chenle02/stratonovich-ham-second-moment-lean": [
@@ -602,6 +668,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:50:20Z",
+   "commit": "173f1c5ea5df2fb4bdf559cb6d27a2f1ebb8c9d1",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 635,
+   "declarations": {
+    "theorems": 312,
+    "definitions": 70,
+    "types": 0,
+    "axioms": 0
+   },
+   "build_seconds": 131,
+   "lean_files": 26,
+   "lean_lines": 7264,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "david44hello/papers_supporting_materials": [
@@ -964,6 +1049,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-19T18:50:20Z",
+   "commit": "5e25ee8c92fe392236c4831559f23b709af33e40",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 34,
+   "declarations": {
+    "theorems": 32,
+    "definitions": 5,
+    "types": 2,
+    "axioms": 0
+   },
+   "build_seconds": 10,
+   "lean_files": 6,
+   "lean_lines": 732,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "mcoiculescu/NonUniqueEuler": [
