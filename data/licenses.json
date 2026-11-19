@@ -311,6 +311,12 @@
   "name": "Apache License 2.0",
   "url": "https://github.com/na0b/gaussianriesz-lean/blob/main/LICENSE"
  },
+ "na0b/pharmonicpoly-lean": {
+  "checked_at": "2026-11-19T16:01:53Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/na0b/pharmonicpoly-lean/blob/main/LICENSE"
+ },
  "na0b/phigherorder-lean": {
   "checked_at": "2026-11-19T15:41:23Z",
   "spdx": "Apache-2.0",
