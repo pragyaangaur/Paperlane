@@ -764,7 +764,8 @@ def about_html(days, base, built):
         ("latest/math.CO.md", "One field of the day (swap in any field code)"),
         (f"p/{anchor(days[0]['papers'][0])}.md", "One paper (swap in any arXiv id)"),
         ("feed.xml", "RSS for your feed reader"),
-        ("lean/papers.json", "Every Lean build result, keyed by arXiv id"),
+        ("lean/papers.json", "Every Lean build result, keyed by arXiv id, with the code licence"),
+        ("lean/feed.xml", "RSS of the newest Lean build results"),
     ]
     rows = "".join(f'<tr><td class="mono"><a href="{f}">{esc(f)}</a></td><td>{esc(t)}</td></tr>' for f, t in files)
     body = f"""<div class="wrap prose">
@@ -927,6 +928,11 @@ def lean_index_html(results, papers_of, kept, base, built):
   <header class="issue-head"><p class="kicker mono">lean builds</p><h1>Lean projects from <em>new papers</em></h1>
   <p class="lede small">Every Lean project linked from a paper in Paperlane is cloned and built on a clean machine with <code>lake build</code>. {esc(summary)} <a href="about.html#tags">What the results mean</a>.</p></header>
   <ul class="lean-list">{''.join(rows)}</ul>
+  <section class="prose lean-data" id="data">
+    <h2>Use the results</h2>
+    <p>Every result is published each day in two files that other sites and tools are welcome to read. <a href="lean/papers.json">lean/papers.json</a> lists every paper that links a checked Lean project, keyed by arXiv id. Each entry links the arXiv paper, the code and its evidence page, and gives the build status, the sorry count, extra axioms, the commit, the toolchain, the Mathlib revision and the code licence. <a href="lean/feed.xml">lean/feed.xml</a> is an RSS feed of the newest checks.</p>
+    <p>The results themselves are free to reuse under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> with a link back to Paperlane. The Lean code belongs to each paper's authors and stays under their own licence, which is why the licence is listed with every result.</p>
+  </section>
 </div>"""
     return page("Lean builds · Paperlane", body, "", built, summary, base, "lean-index", "", "lean.html")
 
@@ -969,6 +975,38 @@ def lean_by_arxiv(results, days, base, built, licences=None):
             "papers": dict(sorted(papers.items()))}
 
 
+def lean_feed(data, base, built_dt, limit=60):
+    """RSS of the Lean results, one item per paper and repository, newest check first."""
+    rows = [(r["checked_at"] or "", e, r) for e in data["papers"].values() for r in e["repos"]]
+    rows.sort(key=lambda x: x[0], reverse=True)
+    items = []
+    for when, e, r in rows[:limit]:
+        try:
+            pub = format_datetime(datetime.fromisoformat(when.replace("Z", "+00:00")))
+        except ValueError:
+            continue
+        lic = (r.get("license") or {})
+        desc = (f"<p>{esc(e['title'])} (arXiv:{esc(e['arxiv'])})</p><p>{esc(r['repo'])}: {esc(r['label'])}</p>"
+                f"<p>Code licence: {esc(licenses.label(r.get('license')))}</p>"
+                f"<p><a href=\"{esc(e['url'])}\">arXiv</a> · <a href=\"{esc(r['url'])}\">code</a> · <a href=\"{esc(r['page'])}\">evidence</a></p>")
+        items.append(f"<item><title>{esc(r['label'] + ': ' + e['title'])}</title><link>{esc(r['page'])}</link>"
+                     f"<guid isPermaLink=\"false\">lean:{esc(e['arxiv'])}:{esc(r['repo'])}:{esc(when)}</guid>"
+                     f"<pubDate>{pub}</pubDate><description>{esc(desc)}</description></item>")
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>Paperlane: Lean build results</title>
+<link>{esc(base)}/lean.html</link>
+<atom:link href="{esc(base)}/lean/feed.xml" rel="self" type="application/rss+xml"/>
+<description>Build results for Lean projects linked from new arXiv mathematics papers, newest check first.</description>
+<language>en</language>
+<lastBuildDate>{format_datetime(built_dt)}</lastBuildDate>
+{chr(10).join(items)}
+</channel>
+</rss>
+"""
+
+
 def lean_site(out, results, days, kept, base, built, licences=None):
     licences = licences or {}
     """lean.html, plus a page and a badge for every checked repository. Returns the page paths."""
@@ -982,7 +1020,10 @@ def lean_site(out, results, days, kept, base, built, licences=None):
         (folder / f"{name}.html").write_text(lean_repo_html(r, papers_of[repo], kept, base, built, licences.get(repo)))
         paths.append(f"lean/{repo}.html")
     (out / "lean.html").write_text(lean_index_html(results, papers_of, kept, base, built))
-    (out / "lean" / "papers.json").write_text(json.dumps(lean_by_arxiv(results, days, base, built, licences), ensure_ascii=False, indent=1) + "\n")
+    data = lean_by_arxiv(results, days, base, built, licences)
+    (out / "lean" / "papers.json").write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
+    built_dt = datetime.strptime(built, "%Y-%m-%d %H:%M UTC").replace(tzinfo=timezone.utc)
+    (out / "lean" / "feed.xml").write_text(lean_feed(data, base, built_dt))
     return ["lean.html"] + sorted(paths)
 
 
@@ -1047,7 +1088,8 @@ The latest announcement is {latest['date']} ({counts_line(latest)}). Built {buil
 - [Today as JSON]({base}/latest.json): the same data with every field.
 - One paper: {base}/p/<id>.md in Markdown or {base}/p/<id>.html for people, for example {base}/p/{anchor(latest['papers'][0])}.md. Old ids such as math/0601001 use a hyphen.
 - [RSS]({base}/feed.xml): new papers and cross-lists from the latest announcement.
-- [Lean build results by arXiv id]({base}/lean/papers.json): every paper that links a checked Lean project, with build status, sorry count, extra axioms, commit, toolchain, Mathlib revision and the date of the check.
+- [Lean build results by arXiv id]({base}/lean/papers.json): every paper that links a checked Lean project, with links to the paper and the code, build status, sorry count, extra axioms, commit, toolchain, Mathlib revision, the code's licence and the date of the check.
+- [Lean build results as RSS]({base}/lean/feed.xml): the newest checks first.
 
 ## Today by subfield
 
