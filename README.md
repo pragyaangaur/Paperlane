@@ -152,6 +152,8 @@ Paper details come from arXiv. Thank you to arXiv for use of its open access int
 
 ## License
 
-Paperlane's code is free to use, copy and change for any noncommercial purpose under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). Personal projects, research, teaching, universities, charities and public bodies are all covered, but any commercial use needs written permission from the author. Copies must keep the license and its notice, and a copy that you run yourself should go by a different name, because the name Paperlane is not part of the license.
+Paperlane's code is open source under the [Apache License 2.0](LICENSE). You may use, copy, change and share it for any purpose, including commercial use, as long as copies keep the license and its notices. The name Paperlane is not part of the license, so a copy that you run yourself should go by a different name.
 
-The license covers only the code and the site's design. Paper titles, abstracts and other paper details belong to their authors and come from arXiv under arXiv's own terms. The Geist fonts are under the SIL Open Font License and Latin Modern is under the GUST Font License.
+The data that Paperlane produces itself, such as the signals, the Lean build results in `data/lean.json` and `lean/papers.json`, and the daily JSON and Markdown files, is free to reuse under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) with a link back to Paperlane.
+
+These licenses cover only Paperlane's own code, design and data. Paper titles, abstracts and other paper details belong to their authors and come from arXiv under arXiv's own terms. The Geist fonts are under the SIL Open Font License and Latin Modern is under the GUST Font License.
