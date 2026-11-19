@@ -720,6 +720,29 @@
   "checked_at": "2026-11-18T15:41:09Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44325386358"
  },
+ "na0b/phigherorder-lean": {
+  "repo": "na0b/phigherorder-lean",
+  "path": "",
+  "commit": "1ab3890a96c86ab99822d51d99058a81269c2262",
+  "toolchain": "leanprover/lean4:v4.33.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 229,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [
+   "Axioms.lean"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "db584cd6d46c92f209a44c0f1c829460d327499d",
+  "source": "default branch",
+  "theorems": 272,
+  "axioms": [],
+  "axiom_note": "",
+  "checked_at": "2026-11-19T05:44:31Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44466637706"
+ },
  "nawafbourabee/persistence-pays-lean": {
   "repo": "nawafbourabee/persistence-pays-lean",
   "path": "",
