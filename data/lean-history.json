@@ -443,6 +443,25 @@
    "toolchain": "leanprover/lean4:v4.19.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-20T15:07:09Z",
+   "commit": "d54a236fd0d1579dd3770a46e05e1a120d1e26c8",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 254,
+   "declarations": {
+    "theorems": 147,
+    "definitions": 50,
+    "types": 2,
+    "axioms": 0
+   },
+   "build_seconds": 24,
+   "lean_files": 21,
+   "lean_lines": 2917,
+   "toolchain": "leanprover/lean4:v4.19.0",
+   "mathlib": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
+   "axiom_count": 0
   }
  ],
  "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities": [
@@ -652,6 +671,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-20T15:07:09Z",
+   "commit": "d659c59f7a8241e2360f371e1d722200a4e75155",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 6949,
+   "declarations": {
+    "theorems": 3774,
+    "definitions": 960,
+    "types": 30,
+    "axioms": 0
+   },
+   "build_seconds": 433,
+   "lean_files": 1997,
+   "lean_lines": 250852,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "david44hello/paper_smale-mean-value-constant-equals-4": [
@@ -1202,6 +1240,25 @@
    "toolchain": "leanprover/lean4:v4.33.0",
    "mathlib": "db584cd6d46c92f209a44c0f1c829460d327499d",
    "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-20T15:07:09Z",
+   "commit": "9ae7a4c737bda5ce0a2efa17a1a95a36f1c6f894",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 272,
+   "declarations": {
+    "theorems": 80,
+    "definitions": 10,
+    "types": 8,
+    "axioms": 0
+   },
+   "build_seconds": 94,
+   "lean_files": 78,
+   "lean_lines": 7869,
+   "toolchain": "leanprover/lean4:v4.33.0",
+   "mathlib": "db584cd6d46c92f209a44c0f1c829460d327499d",
+   "axiom_count": 0
   }
  ],
  "nawafbourabee/persistence-pays-lean": [
@@ -1692,6 +1749,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-20T15:07:09Z",
+   "commit": "68828a3248f465cd00a88ca6c12a0bf187cb0549",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 858,
+   "declarations": {
+    "theorems": 370,
+    "definitions": 134,
+    "types": 3,
+    "axioms": 0
+   },
+   "build_seconds": 104,
+   "lean_files": 32,
+   "lean_lines": 8538,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ]
 }

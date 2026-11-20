@@ -371,16 +371,32 @@
  "VC2015/rectangle-clt-singular": {
   "repo": "VC2015/rectangle-clt-singular",
   "path": "lean-kane",
-  "commit": "1803366cc994d9facae8e128ee180f68e319486f",
+  "commit": "d54a236fd0d1579dd3770a46e05e1a120d1e26c8",
   "toolchain": "leanprover/lean4:v4.19.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 112,
+  "seconds": 105,
   "detail": "",
   "minutes": 90,
   "assumptions": [],
-  "checked_at": "2026-11-17T11:58:57Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
+  "source": "default branch",
+  "theorems": 254,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 147,
+   "definitions": 50,
+   "types": 2,
+   "axioms": 0
+  },
+  "lean_files": 21,
+  "lean_lines": 2917,
+  "build_seconds": 24,
+  "checked_at": "2026-11-20T15:07:09Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44758110397"
  },
  "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities": {
   "repo": "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities",
@@ -550,11 +566,11 @@
  "chenle02/stratonovich-ham-second-moment-lean": {
   "repo": "chenle02/stratonovich-ham-second-moment-lean",
   "path": "",
-  "commit": "f8495d5e9123fd70170527125a1c44b00e1dcc37",
+  "commit": "d659c59f7a8241e2360f371e1d722200a4e75155",
   "toolchain": "leanprover/lean4:v4.35.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 674,
+  "seconds": 516,
   "detail": "",
   "minutes": 90,
   "assumptions": [
@@ -562,13 +578,22 @@
   ],
   "reason": null,
   "lean_errors": 0,
-  "mathlib": null,
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
   "source": "default branch",
-  "theorems": null,
-  "axioms": null,
+  "theorems": 6949,
+  "axioms": [],
   "axiom_note": "",
-  "checked_at": "2026-11-18T15:41:09Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44325386358"
+  "declarations": {
+   "theorems": 3774,
+   "definitions": 960,
+   "types": 30,
+   "axioms": 0
+  },
+  "lean_files": 1997,
+  "lean_lines": 250852,
+  "build_seconds": 433,
+  "checked_at": "2026-11-20T15:07:09Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44758110397"
  },
  "david44hello/paper_smale-mean-value-constant-equals-4": {
   "repo": "david44hello/paper_smale-mean-value-constant-equals-4",
@@ -1039,11 +1064,11 @@
  "na0b/phigherorder-lean": {
   "repo": "na0b/phigherorder-lean",
   "path": "",
-  "commit": "1ab3890a96c86ab99822d51d99058a81269c2262",
+  "commit": "9ae7a4c737bda5ce0a2efa17a1a95a36f1c6f894",
   "toolchain": "leanprover/lean4:v4.33.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 229,
+  "seconds": 177,
   "detail": "",
   "minutes": 90,
   "assumptions": [
@@ -1056,8 +1081,17 @@
   "theorems": 272,
   "axioms": [],
   "axiom_note": "",
-  "checked_at": "2026-11-19T05:44:31Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44466637706"
+  "declarations": {
+   "theorems": 80,
+   "definitions": 10,
+   "types": 8,
+   "axioms": 0
+  },
+  "lean_files": 78,
+  "lean_lines": 7869,
+  "build_seconds": 94,
+  "checked_at": "2026-11-20T15:07:09Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44758110397"
  },
  "nawafbourabee/persistence-pays-lean": {
   "repo": "nawafbourabee/persistence-pays-lean",
@@ -1455,15 +1489,31 @@
  "zhineos/hubbard-spectral-moments": {
   "repo": "zhineos/hubbard-spectral-moments",
   "path": "lean",
-  "commit": "66d5104785daae03e2f91bbb681aa0fbcea1e6d4",
+  "commit": "68828a3248f465cd00a88ca6c12a0bf187cb0549",
   "toolchain": "leanprover/lean4:v4.35.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 95,
+  "seconds": 182,
   "detail": "",
   "minutes": 90,
   "assumptions": [],
-  "checked_at": "2026-11-17T11:58:57Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "source": "default branch",
+  "theorems": 858,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 370,
+   "definitions": 134,
+   "types": 3,
+   "axioms": 0
+  },
+  "lean_files": 32,
+  "lean_lines": 8538,
+  "build_seconds": 104,
+  "checked_at": "2026-11-20T15:07:09Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44758110397"
  }
 }
