@@ -342,6 +342,36 @@
   "tries": 3,
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/42840861065"
  },
+ "TTony2019/OptPaper": {
+  "repo": "TTony2019/OptPaper",
+  "path": "",
+  "commit": "1bde49b1bdcb673657585049509e033ffcb57726",
+  "toolchain": "leanprover/lean4:v4.30.0-rc2",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 105,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+  "source": "default branch",
+  "theorems": 0,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 0,
+   "definitions": 0,
+   "types": 0,
+   "axioms": 0
+  },
+  "lean_files": 558,
+  "lean_lines": 158967,
+  "build_seconds": 11,
+  "checked_at": "2026-11-20T15:12:41Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44758335932"
+ },
  "TokyoProbabilityGroup/SYK_CLT": {
   "repo": "TokyoProbabilityGroup/SYK_CLT",
   "path": "",

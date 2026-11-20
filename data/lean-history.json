@@ -397,6 +397,27 @@
    "axiom_count": null
   }
  ],
+ "TTony2019/OptPaper": [
+  {
+   "checked_at": "2026-11-20T15:12:41Z",
+   "commit": "1bde49b1bdcb673657585049509e033ffcb57726",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 0,
+   "declarations": {
+    "theorems": 0,
+    "definitions": 0,
+    "types": 0,
+    "axioms": 0
+   },
+   "build_seconds": 11,
+   "lean_files": 558,
+   "lean_lines": 158967,
+   "toolchain": "leanprover/lean4:v4.30.0-rc2",
+   "mathlib": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+   "axiom_count": 0
+  }
+ ],
  "TokyoProbabilityGroup/SYK_CLT": [
   {
    "checked_at": "2026-10-28T07:33:12Z",
