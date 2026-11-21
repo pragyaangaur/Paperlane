@@ -27,6 +27,20 @@
    "toolchain": null,
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-21T15:23:14Z",
+   "commit": "44d190a790757c7bb2a932c8f7a58e8fe8dc6c0d",
+   "status": "error",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": null,
+   "lean_files": null,
+   "lean_lines": null,
+   "toolchain": null,
+   "mathlib": null,
+   "axiom_count": null
   }
  ],
  "Apsiape/kaplansky-conjectures-hyperbolic-groups": [
@@ -641,6 +655,25 @@
    "toolchain": "leanprover/lean4:v4.33.1",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-21T15:23:14Z",
+   "commit": "fca4cd1cbe47c62b62ede357182b6f2771ac11b4",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 2935,
+   "declarations": {
+    "theorems": 1403,
+    "definitions": 258,
+    "types": 10,
+    "axioms": 0
+   },
+   "build_seconds": 183,
+   "lean_files": 119,
+   "lean_lines": 21246,
+   "toolchain": "leanprover/lean4:v4.33.1",
+   "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+   "axiom_count": 0
   }
  ],
  "bishara74/lowhalf-mul3": [
@@ -1538,6 +1571,25 @@
     "axioms": 0
    },
    "build_seconds": 1404,
+   "lean_files": 103,
+   "lean_lines": 23696,
+   "toolchain": "leanprover/lean4:v4.32.2",
+   "mathlib": null,
+   "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-21T15:23:14Z",
+   "commit": "60303a812fd7cb4e590cdc287810e26a291b4c25",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 558,
+   "declarations": {
+    "theorems": 266,
+    "definitions": 264,
+    "types": 9,
+    "axioms": 0
+   },
+   "build_seconds": 1790,
    "lean_files": 103,
    "lean_lines": 23696,
    "toolchain": "leanprover/lean4:v4.32.2",
