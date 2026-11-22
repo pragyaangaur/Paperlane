@@ -296,6 +296,20 @@
    "toolchain": "leanprover/lean4:v4.36.0-rc1",
    "mathlib": "625d8914199bc567cca9b91f90e8e5afafa5ae51",
    "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-22T15:37:00Z",
+   "commit": "0bf3b6f81d68fbd5f9a0cad60948d5a5490dab24",
+   "status": "sorry",
+   "sorries": 2,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 2791,
+   "lean_files": 481,
+   "lean_lines": 288421,
+   "toolchain": "leanprover/lean4:v4.36.0-rc1",
+   "mathlib": "625d8914199bc567cca9b91f90e8e5afafa5ae51",
+   "axiom_count": null
   }
  ],
  "LeGenAI/llm_guided_EAQECC_search": [
