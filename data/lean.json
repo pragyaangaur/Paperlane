@@ -1405,11 +1405,11 @@
  "sashakolpakov/CoxeterPolytopes": {
   "repo": "sashakolpakov/CoxeterPolytopes",
   "path": "formal",
-  "commit": "60303a812fd7cb4e590cdc287810e26a291b4c25",
+  "commit": "f0ab8591ed87d514b870054915f4153ca5bc861e",
   "toolchain": "leanprover/lean4:v4.32.2",
   "status": "builds",
   "sorries": 0,
-  "seconds": 1812,
+  "seconds": 1283,
   "detail": "",
   "minutes": 90,
   "assumptions": [
@@ -1431,9 +1431,9 @@
   },
   "lean_files": 103,
   "lean_lines": 23696,
-  "build_seconds": 1790,
-  "checked_at": "2026-11-21T15:23:14Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44915976012"
+  "build_seconds": 1260,
+  "checked_at": "2026-11-23T18:58:41Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45239680602"
  },
  "sashakolpakov/PseudoArithmetic": {
   "repo": "sashakolpakov/PseudoArithmetic",

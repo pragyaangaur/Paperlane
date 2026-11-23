@@ -1754,6 +1754,25 @@
    "toolchain": "leanprover/lean4:v4.32.2",
    "mathlib": null,
    "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-23T18:58:41Z",
+   "commit": "f0ab8591ed87d514b870054915f4153ca5bc861e",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 558,
+   "declarations": {
+    "theorems": 266,
+    "definitions": 264,
+    "types": 9,
+    "axioms": 0
+   },
+   "build_seconds": 1260,
+   "lean_files": 103,
+   "lean_lines": 23696,
+   "toolchain": "leanprover/lean4:v4.32.2",
+   "mathlib": null,
+   "axiom_count": 0
   }
  ],
  "sashakolpakov/PseudoArithmetic": [
