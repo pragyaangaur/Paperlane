@@ -148,7 +148,8 @@
   "lean_lines": 3889346,
   "build_seconds": 5400,
   "checked_at": "2026-11-23T09:24:23Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45133013076"
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45133013076",
+  "long_tried": true
  },
  "FormalCert-AI/llm2cert": {
   "repo": "FormalCert-AI/llm2cert",
