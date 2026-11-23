@@ -1901,6 +1901,25 @@
    "toolchain": "leanprover/lean4:v4.34.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-23T11:04:37Z",
+   "commit": "f4a7b956ad1d6d791e1bf960caae63f8977cf3b1",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 12472,
+   "declarations": {
+    "theorems": 6293,
+    "definitions": 1454,
+    "types": 18,
+    "axioms": 0
+   },
+   "build_seconds": 12229,
+   "lean_files": 2009,
+   "lean_lines": 189446,
+   "toolchain": "leanprover/lean4:v4.34.0",
+   "mathlib": null,
+   "axiom_count": 0
   }
  ],
  "willmfeldman/bernoulli-perron-variational": [

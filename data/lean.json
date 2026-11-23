@@ -1544,11 +1544,11 @@
   "path": "",
   "commit": "f4a7b956ad1d6d791e1bf960caae63f8977cf3b1",
   "toolchain": "leanprover/lean4:v4.34.0",
-  "status": "timeout",
+  "status": "builds",
   "sorries": 0,
-  "seconds": 5412,
-  "detail": "lake build ran for more than 90 minutes",
-  "minutes": 90,
+  "seconds": 12257,
+  "detail": "",
+  "minutes": 300,
   "assumptions": [
    "validation/axioms.lean"
   ],
@@ -1556,15 +1556,20 @@
   "lean_errors": 0,
   "mathlib": null,
   "source": "default branch",
-  "theorems": null,
-  "axioms": null,
+  "theorems": 12472,
+  "axioms": [],
   "axiom_note": "",
-  "declarations": null,
+  "declarations": {
+   "theorems": 6293,
+   "definitions": 1454,
+   "types": 18,
+   "axioms": 0
+  },
   "lean_files": 2009,
   "lean_lines": 189446,
-  "build_seconds": 5400,
-  "checked_at": "2026-11-23T07:37:36Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45121863869"
+  "build_seconds": 12229,
+  "checked_at": "2026-11-23T11:04:37Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45132524091"
  },
  "willmfeldman/bernoulli-perron-variational": {
   "repo": "willmfeldman/bernoulli-perron-variational",
