@@ -340,6 +340,25 @@
    "toolchain": "leanprover/lean4:v4.29.0-rc6",
    "mathlib": "1ea3462986d06c85c98fb18c10082274043405e4",
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-23T07:46:44Z",
+   "commit": "3e7b2e8d42487f1f117f0ab9b457c50701588068",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 114,
+   "declarations": {
+    "theorems": 32,
+    "definitions": 34,
+    "types": 3,
+    "axioms": 0
+   },
+   "build_seconds": 21,
+   "lean_files": 9,
+   "lean_lines": 968,
+   "toolchain": "leanprover/lean4:v4.29.0-rc6",
+   "mathlib": "1ea3462986d06c85c98fb18c10082274043405e4",
+   "axiom_count": 0
   }
  ],
  "LexiaoLai/Nonsmooth-BFGS-Nonstationary": [
@@ -1077,6 +1096,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
    "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-23T07:46:44Z",
+   "commit": "d443965bcfc693d1b5d8bc72696c82e934a7b5ca",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 1614,
+   "declarations": {
+    "theorems": 843,
+    "definitions": 139,
+    "types": 9,
+    "axioms": 0
+   },
+   "build_seconds": 155,
+   "lean_files": 84,
+   "lean_lines": 21720,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "lacey-gatech/restricted-polynomials-lean": [
@@ -1225,6 +1263,25 @@
    "toolchain": "leanprover/lean4:v4.28.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-23T07:46:44Z",
+   "commit": "468891f736f8463a1e933ed2f4ee51f64fa6addf",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 964,
+   "declarations": {
+    "theorems": 503,
+    "definitions": 131,
+    "types": 0,
+    "axioms": 0
+   },
+   "build_seconds": 222,
+   "lean_files": 84,
+   "lean_lines": 15048,
+   "toolchain": "leanprover/lean4:v4.28.0",
+   "mathlib": "8f9d9cff6bd728b17a24e163c9402775d9e6a365",
+   "axiom_count": 0
   }
  ],
  "muchenju-math/positivity-lean": [
