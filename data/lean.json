@@ -1458,6 +1458,33 @@
   "checked_at": "2026-10-27T11:41:41Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/40497324435"
  },
+ "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four": {
+  "repo": "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four",
+  "path": "",
+  "commit": "f4a7b956ad1d6d791e1bf960caae63f8977cf3b1",
+  "toolchain": "leanprover/lean4:v4.34.0",
+  "status": "timeout",
+  "sorries": 0,
+  "seconds": 5412,
+  "detail": "lake build ran for more than 90 minutes",
+  "minutes": 90,
+  "assumptions": [
+   "validation/axioms.lean"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": null,
+  "source": "default branch",
+  "theorems": null,
+  "axioms": null,
+  "axiom_note": "",
+  "declarations": null,
+  "lean_files": 2009,
+  "lean_lines": 189446,
+  "build_seconds": 5400,
+  "checked_at": "2026-11-23T07:37:36Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45121863869"
+ },
  "willmfeldman/bernoulli-perron-variational": {
   "repo": "willmfeldman/bernoulli-perron-variational",
   "path": "",
