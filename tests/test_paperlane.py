@@ -381,3 +381,12 @@ def test_old_copies_of_assumptions_are_skipped():
     from paperlane import leancheck
     paths = ["docs/ASSUMPTIONS.md", "history/pre-revision/docs/ASSUMPTIONS.md", "Archive/AXIOMS.md", "PSPrimes/ExternalInputs.lean"]
     assert leancheck.current_assumptions(paths) == ["docs/ASSUMPTIONS.md", "PSPrimes/ExternalInputs.lean"]
+
+
+def test_author_links_add_a_repo():
+    from paperlane import signals
+    paper = {"id": "2611.25630", "abstract": "Verified in Lean 4.", "comments": ""}
+    extra = {"2611.25630": ["https://github.com/wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four"]}
+    s = signals.compute(paper, {}, check_github=False, extra=extra)
+    assert s["code_links"] == extra["2611.25630"]
+    assert signals.compute(paper, {}, check_github=False, extra={})["code_links"] == []

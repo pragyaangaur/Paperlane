@@ -5,6 +5,7 @@ metadata or from a public repository. A bad summary can never create a Lean clai
 """
 
 import json
+from pathlib import Path
 import os
 import re
 import urllib.error
@@ -99,9 +100,21 @@ def lean_check(repo, cache, token=None):
     return result
 
 
-def compute(paper, cache, check_github=True, token=None):
+AUTHOR_LINKS = Path(__file__).resolve().parent.parent / "data" / "author_links.json"
+
+
+def author_links(path=AUTHOR_LINKS):
+    """Code links that authors sent us for papers whose abstract and comments name none, keyed by arXiv id."""
+    path = Path(path)
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def compute(paper, cache, check_github=True, token=None, extra=None):
     text = " ".join(filter(None, [paper.get("abstract"), paper.get("comments")]))
     links = find_links(text)
+    for u in (extra if extra is not None else author_links()).get(paper.get("id", ""), []):
+        if u not in links:
+            links.append(u)
     code = [u for u in links if host(u) in CODE_HOSTS]
     repos = []
     for u in code:
@@ -123,8 +136,9 @@ def compute(paper, cache, check_github=True, token=None):
 def add_signals(day, check_github=True):
     token = os.environ.get("GITHUB_TOKEN")
     cache = {}
+    extra = author_links()
     for p in day["papers"]:
-        p["signals"] = compute(p, cache, check_github, token)
+        p["signals"] = compute(p, cache, check_github, token, extra)
     if cache:
         found = sum(1 for c in cache.values() if c["lean"])
         print(f"GitHub: checked {len(cache)} repos, {found} Lean projects")

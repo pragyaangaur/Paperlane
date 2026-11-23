@@ -5091,10 +5091,22 @@
     "pdf": "https://arxiv.org/pdf/2611.25630v1"
    },
    "signals": {
-    "code_links": [],
+    "code_links": [
+     "https://github.com/wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four"
+    ],
     "other_links": [],
-    "github": [],
-    "lean_repo": false,
+    "github": [
+     {
+      "repo": "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four",
+      "status": "ok",
+      "lean": true,
+      "lean_paths": [
+       "lakefile.toml",
+       "lean-toolchain"
+      ]
+     }
+    ],
+    "lean_repo": true,
     "mentions_lean": true,
     "new_version": false,
     "journal_ref": false
