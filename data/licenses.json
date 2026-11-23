@@ -443,6 +443,12 @@
   "name": "MIT License",
   "url": "https://github.com/tilenmarc/braid-bruhat-mutation-distance/blob/main/LICENSE"
  },
+ "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four": {
+  "checked_at": "2026-11-23T07:37:38Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
  "willmfeldman/bernoulli-perron-variational": {
   "checked_at": "2026-11-19T15:42:04Z",
   "spdx": "Apache-2.0",
