@@ -197,6 +197,12 @@
   "name": "Apache License 2.0",
   "url": "https://github.com/david44hello/papers_supporting_materials/blob/main/LICENSE"
  },
+ "dglasscockUML/NSF_LEAPS": {
+  "checked_at": "2026-11-23T09:22:23Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/dglasscockUML/NSF_LEAPS/blob/main/LICENSE"
+ },
  "drjanosch42/rational_quivers": {
   "checked_at": "2026-11-19T15:40:19Z",
   "spdx": "Apache-2.0",
@@ -250,6 +256,12 @@
   "spdx": null,
   "name": null,
   "url": null
+ },
+ "jfairfaxball-348/Inverse-Greedy": {
+  "checked_at": "2026-11-23T09:22:24Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/jfairfaxball-348/Inverse-Greedy/blob/main/LICENSE"
  },
  "joaquimortega/MR1923965": {
   "checked_at": "2026-11-19T15:40:46Z",
