@@ -189,6 +189,20 @@
    "toolchain": "leanprover/lean4:v4.35.0-rc3",
    "mathlib": "b63f6e8a68d220e3b3bc4f3792bb53650d375f24",
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-23T09:24:23Z",
+   "commit": "faedf8eb9e3fe275d3ac09e645aac694e496e965",
+   "status": "timeout",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 5400,
+   "lean_files": 12173,
+   "lean_lines": 3889346,
+   "toolchain": "leanprover/lean4:v4.35.0-rc3",
+   "mathlib": "b63f6e8a68d220e3b3bc4f3792bb53650d375f24",
+   "axiom_count": null
   }
  ],
  "FormalCert-AI/llm2cert": [
@@ -858,6 +872,20 @@
    "toolchain": "leanprover/lean4:v4.35.0-rc3",
    "mathlib": "c55e6e786f49471c72fbddbec5415808896aec1e",
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-23T09:24:23Z",
+   "commit": "4e04ce87e198f31cbbf6de63c4d43d26ff4d7e44",
+   "status": "sorry",
+   "sorries": 9,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 41,
+   "lean_files": 21,
+   "lean_lines": 20832,
+   "toolchain": "leanprover/lean4:v4.35.0-rc3",
+   "mathlib": "c55e6e786f49471c72fbddbec5415808896aec1e",
+   "axiom_count": null
   }
  ],
  "drjanosch42/rational_quivers": [
@@ -1045,6 +1073,20 @@
  "jfairfaxball-348/Inverse-Greedy": [
   {
    "checked_at": "2026-11-23T09:22:22Z",
+   "commit": "3f2953680a144ca3e470cb9416fadbe4f468b239",
+   "status": "sorry",
+   "sorries": 1,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 197,
+   "lean_files": 97,
+   "lean_lines": 15483,
+   "toolchain": "leanprover/lean4:v4.35.0-rc3",
+   "mathlib": "c55e6e786f49471c72fbddbec5415808896aec1e",
+   "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-23T09:24:23Z",
    "commit": "3f2953680a144ca3e470cb9416fadbe4f468b239",
    "status": "sorry",
    "sorries": 1,
