@@ -1310,6 +1310,6 @@ def build(days, out, base, built_dt=None, goatcounter=None, kit_form=None, lean=
     (out / "llms.txt").write_text(llms_txt(days, base, built))
     (out / "404.html").write_text(notfound_html(base, built))
     kept = {anchor(p) for d in days for p in d["papers"]}
-    lean_paths = lean_site(out, lean or {}, all_days, kept, base, built, licences or {}, history or {}) if lean else []
+    lean_paths = lean_site(out, lean or {}, all_days + leancheck.registered(), kept, base, built, licences or {}, history or {}) if lean else []
     (out / "sitemap.xml").write_text(sitemap(days, base, lean_paths))
     print(f"Built {len(days)} days into {out}")

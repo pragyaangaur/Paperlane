@@ -249,6 +249,20 @@ def project_dir(lean_paths):
     return dirs[0] if dirs else ""
 
 
+# Papers whose authors asked for a build check after the paper was listed, or before Paperlane existed.
+# They are stored as one pseudo-day that feeds the Lean planner and the Lean pages, never the issues.
+REGISTERED = Path(__file__).resolve().parent.parent / "data" / "registered.json"
+
+
+def registered(path=REGISTERED):
+    """The registered papers as a list with one day, or an empty list."""
+    path = Path(path)
+    if not path.exists():
+        return []
+    day = json.loads(path.read_text())
+    return [day] if day.get("papers") else []
+
+
 def load(path):
     path = Path(path)
     return json.loads(path.read_text()) if path.exists() else {}

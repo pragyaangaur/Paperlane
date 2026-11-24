@@ -89,10 +89,10 @@ def cmd_lean_plan(args):
     if args.date:
         days = [d for d in days if d["date"] == args.date]
     else:
-        days = days[:args.days]
+        days = days[:args.days] + leancheck.registered()
     force = {r for r in (args.force or "").split(",") if r}
     if args.long:
-        jobs = leancheck.plan_long(load_days(args.data), leancheck.load(args.lean), force=force)
+        jobs = leancheck.plan_long(load_days(args.data) + leancheck.registered(), leancheck.load(args.lean), force=force)
     else:
         results = leancheck.load(args.lean)
         jobs = leancheck.plan(days, results, force=force)
