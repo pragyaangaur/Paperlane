@@ -788,6 +788,25 @@
    "toolchain": "leanprover/lean4:v4.33.1",
    "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
    "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-24T10:13:32Z",
+   "commit": "f36a2ad704b83887dee933d5de158f41ef16ebf9",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 2935,
+   "declarations": {
+    "theorems": 1403,
+    "definitions": 258,
+    "types": 10,
+    "axioms": 0
+   },
+   "build_seconds": 175,
+   "lean_files": 119,
+   "lean_lines": 21246,
+   "toolchain": "leanprover/lean4:v4.33.1",
+   "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+   "axiom_count": 0
   }
  ],
  "armandorodado/weierstrass-delaunay": [

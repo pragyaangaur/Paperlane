@@ -643,11 +643,11 @@
  "apemm/elephant-bias-interval": {
   "repo": "apemm/elephant-bias-interval",
   "path": "lean",
-  "commit": "fca4cd1cbe47c62b62ede357182b6f2771ac11b4",
+  "commit": "f36a2ad704b83887dee933d5de158f41ef16ebf9",
   "toolchain": "leanprover/lean4:v4.33.1",
   "status": "builds",
   "sorries": 0,
-  "seconds": 272,
+  "seconds": 266,
   "detail": "",
   "minutes": 90,
   "assumptions": [],
@@ -666,9 +666,10 @@
   },
   "lean_files": 119,
   "lean_lines": 21246,
-  "build_seconds": 183,
-  "checked_at": "2026-11-21T15:23:14Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44915976012"
+  "build_seconds": 175,
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-24T10:13:32Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45370603183"
  },
  "armandorodado/weierstrass-delaunay": {
   "repo": "armandorodado/weierstrass-delaunay",
