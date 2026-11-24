@@ -1435,9 +1435,9 @@
   "path": "",
   "commit": "88fecfcb805c05c34a44cd5e780a6c3be604490a",
   "toolchain": "leanprover/lean4:v4.35.0",
-  "status": "sorry",
-  "sorries": 3,
-  "seconds": 136,
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 164,
   "detail": "",
   "minutes": 90,
   "assumptions": [
@@ -1453,9 +1453,10 @@
   "declarations": null,
   "lean_files": 24,
   "lean_lines": 3395,
-  "build_seconds": 62,
-  "checked_at": "2026-11-24T09:56:41Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45366348652"
+  "build_seconds": 86,
+  "challenge_sorries": 3,
+  "checked_at": "2026-11-24T10:05:17Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45370471196"
  },
  "pxwu24/additivity-of-classical-communication": {
   "repo": "pxwu24/additivity-of-classical-communication",
