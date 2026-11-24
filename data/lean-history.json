@@ -1795,6 +1795,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
    "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-24T10:42:51Z",
+   "commit": "5753f1dae48276a630db6d70a0ec6ec6280cd6fc",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 993,
+   "declarations": {
+    "theorems": 185,
+    "definitions": 68,
+    "types": 1,
+    "axioms": 0
+   },
+   "build_seconds": 60,
+   "lean_files": 24,
+   "lean_lines": 3395,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "pxwu24/additivity-of-classical-communication": [
