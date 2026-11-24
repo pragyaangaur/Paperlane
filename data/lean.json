@@ -1430,6 +1430,33 @@
   "checked_at": "2026-11-03T14:20:46Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41640012997"
  },
+ "pragyaangaur/Polyhex-Hull": {
+  "repo": "pragyaangaur/Polyhex-Hull",
+  "path": "",
+  "commit": "88fecfcb805c05c34a44cd5e780a6c3be604490a",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "status": "sorry",
+  "sorries": 3,
+  "seconds": 136,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [
+   "scripts/Axioms.lean"
+  ],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "source": "default branch",
+  "theorems": null,
+  "axioms": null,
+  "axiom_note": "the axiom check could not run",
+  "declarations": null,
+  "lean_files": 24,
+  "lean_lines": 3395,
+  "build_seconds": 62,
+  "checked_at": "2026-11-24T09:56:41Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45366348652"
+ },
  "pxwu24/additivity-of-classical-communication": {
   "repo": "pxwu24/additivity-of-classical-communication",
   "path": "Lean",
