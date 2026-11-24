@@ -100,6 +100,7 @@ jobs:
       contents: write
       pages: write
       id-token: write
+      actions: read
     environment:
       name: github-pages
     steps:
@@ -149,6 +150,22 @@ jobs:
         with:
           path: _site
           include-hidden-files: true
+
+      # GitHub's artifact list can lag a few seconds behind an upload, and deploy-pages then fails
+      # with "No artifacts named github-pages". Wait until the run lists it.
+      - name: Wait for the Pages artifact
+        if: steps.record.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for i in $(seq 24); do
+            if gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?per_page=100" \
+                 --jq '.artifacts[].name' | grep -qx github-pages; then
+              echo "Pages artifact listed after $(( (i - 1) * 5 )) seconds"; exit 0
+            fi
+            sleep 5
+          done
+          echo "::warning::The Pages artifact was still not listed after two minutes; trying the deploy anyway."
 
       - name: Deploy
         if: steps.record.outputs.changed == 'true'
