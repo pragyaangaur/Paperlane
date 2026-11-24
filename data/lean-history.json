@@ -76,6 +76,25 @@
    "toolchain": "leanprover/lean4:v4.34.1",
    "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
    "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-24T20:33:25Z",
+   "commit": "ab68e48a9da80cb3466e6fa55cd7acfeb7153cab",
+   "status": "sorry",
+   "sorries": 3,
+   "theorems": 9498,
+   "declarations": {
+    "theorems": 4558,
+    "definitions": 2386,
+    "types": 76,
+    "axioms": 0
+   },
+   "build_seconds": 717,
+   "lean_files": 199,
+   "lean_lines": 62828,
+   "toolchain": "leanprover/lean4:v4.34.1",
+   "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+   "axiom_count": 0
   }
  ],
  "Apsiape/perfect-play-arithmetical-hierarchy": [
@@ -111,6 +130,20 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
    "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-24T20:33:25Z",
+   "commit": null,
+   "status": "error",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": null,
+   "lean_files": null,
+   "lean_lines": null,
+   "toolchain": null,
+   "mathlib": null,
+   "axiom_count": null
   }
  ],
  "Arthur742Ramos/TopologicalComputationalPaths": [

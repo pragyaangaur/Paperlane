@@ -28,11 +28,11 @@
  "Apsiape/kaplansky-conjectures-hyperbolic-groups": {
   "repo": "Apsiape/kaplansky-conjectures-hyperbolic-groups",
   "path": "lean/KaplanskyLean",
-  "commit": "6b7d4aac1df041186e3f5064e21230e3b09edce4",
+  "commit": "ab68e48a9da80cb3466e6fa55cd7acfeb7153cab",
   "toolchain": "leanprover/lean4:v4.34.1",
   "status": "sorry",
   "sorries": 3,
-  "seconds": 543,
+  "seconds": 838,
   "detail": "",
   "minutes": 90,
   "assumptions": [],
@@ -51,41 +51,23 @@
   },
   "lean_files": 199,
   "lean_lines": 62828,
-  "build_seconds": 449,
-  "checked_at": "2026-11-19T17:14:05Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44569159476"
+  "build_seconds": 717,
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-24T20:33:25Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45455044623"
  },
  "Apsiape/perfect-play-arithmetical-hierarchy": {
   "repo": "Apsiape/perfect-play-arithmetical-hierarchy",
-  "path": "lean",
-  "commit": "823eeed1c7822769d6507e24aa45c7bc5d344a6a",
-  "toolchain": "leanprover/lean4:v4.35.0",
-  "status": "builds",
+  "path": "",
+  "commit": null,
+  "toolchain": null,
+  "status": "error",
   "sorries": 0,
-  "seconds": 1905,
-  "detail": "",
-  "minutes": 90,
-  "assumptions": [
-   "lean/AXIOMS.txt"
-  ],
-  "reason": null,
-  "lean_errors": 0,
-  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
-  "source": "default branch",
-  "theorems": 8993,
-  "axioms": [],
-  "axiom_note": "",
-  "declarations": {
-   "theorems": 4132,
-   "definitions": 1511,
-   "types": 45,
-   "axioms": 0
-  },
-  "lean_files": 480,
-  "lean_lines": 63054,
-  "build_seconds": 1821,
-  "checked_at": "2026-11-19T18:20:03Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44572172964"
+  "seconds": 0,
+  "detail": "the build machine stopped before the build finished",
+  "checked_at": "2026-11-24T20:33:25Z",
+  "tries": 1,
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45455044623"
  },
  "Arthur742Ramos/TopologicalComputationalPaths": {
   "repo": "Arthur742Ramos/TopologicalComputationalPaths",
