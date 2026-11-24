@@ -401,6 +401,12 @@
   "name": "Apache License 2.0",
   "url": "https://github.com/pedrotradacete/FBLOrderContinuousLH/blob/main/LICENSE"
  },
+ "pragyaangaur/Polyhex-Hull": {
+  "checked_at": "2026-11-24T09:56:43Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/pragyaangaur/Polyhex-Hull/blob/main/LICENSE"
+ },
  "pxwu24/additivity-of-classical-communication": {
   "checked_at": "2026-11-19T15:41:38Z",
   "spdx": null,
