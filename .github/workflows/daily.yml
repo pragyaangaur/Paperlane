@@ -10,20 +10,19 @@ on:
     # it fails (so GitHub emails you) when a weekday still has no issue.
     - cron: "28 7 * * *"
     - cron: "28 8 * * *"
-  # A push that changes the code or the stored days rebuilds the site without fetching.
+  # A push that changes the code runs the tests. Deploy site builds and publishes it.
   push:
     branches: [main]
-    paths: ["paperlane/**", "data/days/**", "data/lean.json", "data/licenses.json", ".github/workflows/daily.yml"]
+    paths: ["paperlane/**", "tests/**", ".github/workflows/daily.yml"]
   workflow_dispatch:
     inputs:
       api_date:
         description: "Backfill a day (YYYY-MM-DD) from the arXiv API instead of the RSS feed"
         required: false
 
+# This workflow only fetches and commits. Deploy site runs after it and publishes the site.
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: daily-feed
@@ -34,8 +33,6 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       changed: ${{ steps.fetch.outputs.changed }}
-      stale: ${{ steps.live.outputs.stale }}
-      site: ${{ steps.pages.outputs.base_url }}
     steps:
       - uses: actions/checkout@v7
 
@@ -77,60 +74,3 @@ jobs:
       - name: Note a failed fetch
         if: steps.fetch.outcome == 'failure'
         run: echo "::warning title=Fetch failed::The next backup run will try again."
-
-      - name: Configure Pages
-        id: pages
-        uses: actions/configure-pages@v6
-
-      # Catches a deploy that failed after the day was committed, so a backup run deploys it.
-      - name: Compare with the live site
-        id: live
-        if: github.event_name == 'schedule'
-        run: python -m paperlane check --site "${{ steps.pages.outputs.base_url }}"
-
-      - name: Build the site
-        if: steps.fetch.outputs.changed == 'true' || steps.live.outputs.stale == 'true' || github.event_name != 'schedule'
-        env:
-          # Set this repository variable to a GoatCounter site code to turn on visitor counts.
-          PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
-          # Set this repository variable to a Kit form id to show the email sign-up form.
-          PAPERLANE_KIT_FORM: ${{ vars.KIT_FORM_ID }}
-        run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
-
-      - uses: actions/upload-pages-artifact@v5
-        if: steps.fetch.outputs.changed == 'true' || steps.live.outputs.stale == 'true' || github.event_name != 'schedule'
-        with:
-          path: _site
-          # Keeps .nojekyll, which this action drops by default since v4.
-          include-hidden-files: true
-
-  deploy:
-    needs: build
-    if: needs.build.outputs.changed == 'true' || needs.build.outputs.stale == 'true' || github.event_name != 'schedule'
-    runs-on: ubuntu-24.04
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v5
-
-  # Only the last scheduled run of the day reports, so a failure that a backup run fixed
-  # sends no email. A failed job here makes GitHub email the repository owner.
-  report:
-    needs: [build, deploy]
-    if: always() && github.event.schedule == '28 8 * * *'
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          ref: main
-
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-
-      - name: Check that today's issue is live
-        run: |
-          sleep 60
-          python -m paperlane check --final --site "${{ needs.build.outputs.site || 'https://pragyaangaur.dev/Paperlane' }}"

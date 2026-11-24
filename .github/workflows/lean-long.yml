@@ -2,7 +2,7 @@ name: Long Lean builds
 
 # The daily Lean check stops each build at 90 minutes so the email is not held up. This
 # workflow runs after it and gives each new project that ran out of time one longer build,
-# of up to 300 minutes, then stores the result and deploys the site. It sends no email.
+# of up to 300 minutes, then stores the result. Deploy site publishes it. It sends no email.
 on:
   workflow_run:
     workflows: ["Lean builds and email"]
@@ -98,12 +98,6 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-    outputs:
-      deploy: ${{ steps.record.outputs.changed == 'true' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -133,38 +127,3 @@ jobs:
             git pull --rebase
             git push
           fi
-
-      - name: Configure Pages
-        id: pages
-        if: steps.record.outputs.changed == 'true'
-        uses: actions/configure-pages@v6
-
-      - name: Build the site
-        if: steps.record.outputs.changed == 'true'
-        env:
-          PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
-          PAPERLANE_KIT_FORM: ${{ vars.KIT_FORM_ID }}
-        run: python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
-
-      - uses: actions/upload-pages-artifact@v5
-        if: steps.record.outputs.changed == 'true'
-        with:
-          path: _site
-          include-hidden-files: true
-
-  # Deploying from its own job means the Pages artifact is finished and listed before deploy-pages
-  # looks for it. In the same job it sometimes was not, and the deploy failed with
-  # "No artifacts named github-pages" (twice on 24 November 2026). The daily feed works this way too.
-  deploy:
-    needs: publish
-    if: always() && needs.publish.outputs.deploy == 'true'
-    runs-on: ubuntu-24.04
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v5

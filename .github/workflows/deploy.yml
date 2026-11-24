@@ -1,0 +1,125 @@
+name: Deploy site
+
+# The only workflow that publishes the site. The others (Daily feed, Lean builds and email,
+# Long Lean builds) only commit data to main. This one runs after each of them, and on any
+# push that changes the code or the data, builds the newest main and deploys it.
+#
+# It is started by "workflow finished" and not only by push, because commits that the other
+# workflows push with GITHUB_TOKEN do not start new workflow runs.
+on:
+  workflow_run:
+    workflows: ["Daily feed", "Lean builds and email", "Long Lean builds"]
+    types: [completed]
+  push:
+    branches: [main]
+    paths: ["paperlane/**", "data/**", ".github/workflows/deploy.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deploy at a time. GitHub keeps only the newest waiting run in a group, so a burst of
+# triggers ends in one deploy of the newest main.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      deploy: ${{ steps.gate.outputs.deploy }}
+      site: ${{ steps.pages.outputs.base_url }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v6
+
+      # Every deployed site carries the commit it was built from. When the live site already
+      # shows the newest main, there is nothing to do, which is most runs after a quiet workflow.
+      - name: Compare with the live site
+        id: gate
+        env:
+          SITE: ${{ steps.pages.outputs.base_url }}
+        run: |
+          head=$(git rev-parse HEAD)
+          live=$(curl -sf --max-time 30 "$SITE/commit.txt" || true)
+          echo "main is $head, live site is ${live:-unknown}"
+          if [ "$live" = "$head" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build the site
+        if: steps.gate.outputs.deploy == 'true'
+        env:
+          # Set this repository variable to a GoatCounter site code to turn on visitor counts.
+          PAPERLANE_GOATCOUNTER: ${{ vars.GOATCOUNTER_CODE }}
+          # Set this repository variable to a Kit form id to show the email sign-up form.
+          PAPERLANE_KIT_FORM: ${{ vars.KIT_FORM_ID }}
+        run: |
+          python -m paperlane build --out _site --base-url "${{ steps.pages.outputs.base_url }}"
+          git rev-parse HEAD > _site/commit.txt
+
+      - uses: actions/upload-pages-artifact@v5
+        if: steps.gate.outputs.deploy == 'true'
+        with:
+          path: _site
+          # Keeps .nojekyll, which this action drops by default since v4.
+          include-hidden-files: true
+
+  # A separate job, so the Pages artifact is finished and listed before deploy-pages looks for it.
+  deploy:
+    needs: build
+    if: needs.build.outputs.deploy == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+
+  # After the last scheduled Daily feed run (08:28 UTC), check that today's issue is live.
+  # A failed job here makes GitHub email the repository owner. Earlier runs stay quiet, so a
+  # failure that a backup run fixed sends no email.
+  report:
+    needs: [build, deploy]
+    if: >-
+      always() && github.event_name == 'workflow_run' &&
+      github.event.workflow_run.name == 'Daily feed' && github.event.workflow_run.event == 'schedule'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Check that today's issue is live
+        env:
+          STARTED: ${{ github.event.workflow_run.created_at }}
+        run: |
+          hour=$(echo "$STARTED" | cut -c12-13)
+          if [ "$hour" -lt 8 ]; then
+            echo "Not the last scheduled run of the day ($STARTED), so no report."; exit 0
+          fi
+          sleep 60
+          python -m paperlane check --final --site "${{ needs.build.outputs.site || 'https://pragyaangaur.dev/Paperlane' }}"
