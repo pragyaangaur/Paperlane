@@ -689,8 +689,12 @@ header nav a { white-space: nowrap; }
 .mine-cat .faint { font-size: 0.72rem; }
 .mine-list { list-style: none; margin: 8px 0 0; padding: 0; border-top: 1px solid var(--rule); }
 .mine-list li { padding: 14px 0; border-bottom: 1px solid var(--rule); display: grid; gap: 4px; }
-.mine-list a { font-family: var(--serif); font-size: 1.12rem; color: var(--ink); text-decoration: none; }
-.mine-list a:hover { text-decoration: underline; }
+.mine-title { all: unset; cursor: pointer; font-family: var(--serif); font-size: 1.12rem; color: var(--ink); }
+.mine-title:hover { text-decoration: underline; }
+.mine-title:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.mine-body .abstract { margin: 8px 0 6px; }
+.mine-links { font-size: 0.8rem; margin: 0; }
+.mine-links a { color: var(--ink-2); }
 .mine-meta { font-size: 0.88rem; color: var(--ink-2); }
 .mine-list .faint { font-size: 0.75rem; }
 .mine-keep { margin-top: 36px; }

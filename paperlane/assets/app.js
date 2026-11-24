@@ -527,6 +527,35 @@
     row.classList.toggle("open", open);
     var head = $(".head", row);
     if (head) head.setAttribute("aria-expanded", open);
+    foldLater(row, open);
+  }
+
+  function openMine(li, open) {
+    li.classList.toggle("open", open);
+    $(".mine-title", li).setAttribute("aria-expanded", open);
+    $(".mine-body", li).hidden = !open;
+    foldLater(li, open);
+  }
+
+  // An open abstract folds shut once it has scrolled fully above the screen, so a long page
+  // does not fill up with open entries. The page is scrolled back by the height it lost,
+  // so what the reader is looking at does not jump.
+  var folder = "IntersectionObserver" in window ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting || en.boundingClientRect.bottom > 0) return;
+      // Some browsers keep the view still by themselves and some do not, so measure an
+      // element on screen before and after, and correct only by what actually moved.
+      var el = en.target, ref = document.elementFromPoint(innerWidth / 2, 10) || document.body;
+      var top = ref.getBoundingClientRect().top;
+      if (el.matches("article.paper")) openRow(el, false); else openMine(el, false);
+      var moved = ref.getBoundingClientRect().top - top;
+      if (moved) window.scrollBy(0, moved);
+    });
+  }) : null;
+
+  function foldLater(el, open) {
+    if (!folder) return;
+    if (open) folder.observe(el); else folder.unobserve(el);
   }
 
   function showMarkdown(panel, name, text, url) {
@@ -1182,14 +1211,27 @@
       rows.sort(function (a, b) { return b.score - a.score; });
       $("#mine-stats").textContent = !f.length && !who.length && !topic ? "Pick a field to start." :
         rows.length + " of " + day.papers.length + " papers in the issue of " + day.date + " match.";
+      // A click on a title opens the abstract right here, as on the issue page.
       list.innerHTML = rows.map(function (r) {
-        return '<li><a href="' + esc(r.p.paperlane_url) + '">' + esc(r.p.title) + '</a><span class="mine-meta">' +
-          esc(r.p.authors.slice(0, 4).join(", ") + (r.p.authors.length > 4 ? " and others" : "")) +
-          '</span><span class="mono faint">' + esc(r.why.join(" · ")) + "</span></li>";
+        var p = r.p, links = p.links || {};
+        return '<li><button type="button" class="mine-title" aria-expanded="false">' + esc(p.title) + '</button><span class="mine-meta">' +
+          esc(p.authors.slice(0, 4).join(", ") + (p.authors.length > 4 ? " and others" : "")) +
+          '</span><span class="mono faint">' + esc(r.why.join(" · ")) + '</span><div class="mine-body" hidden><p class="abstract">' +
+          esc(p.abstract) + '</p><p class="mono mine-links"><a href="' + esc(p.paperlane_url) + '">paper page</a>' +
+          (links.abs ? ' · <a href="' + esc(links.abs) + '">arXiv</a>' : "") + (links.pdf ? ' · <a href="' + esc(links.pdf) + '">pdf</a>' : "") +
+          "</p></div></li>";
       }).join("");
+      externalize(list);
       renderMath(list);
     }
 
+    list.addEventListener("click", function (e) {
+      var t = e.target.closest(".mine-title");
+      if (!t) return;
+      var li = t.closest("li"), open = !li.classList.contains("open");
+      if (open) track("mine-open");
+      openMine(li, open);
+    });
     boxes.forEach(function (b) { b.addEventListener("change", function () { track("mine-field"); show(); }); });
     authors.addEventListener("input", show);
     topics.addEventListener("input", show);
