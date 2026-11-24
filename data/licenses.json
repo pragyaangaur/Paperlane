@@ -35,6 +35,12 @@
   "name": "Apache License 2.0",
   "url": "https://github.com/BitMiracle-AI/detailed-balance-gac/blob/main/LICENSE"
  },
+ "DrZhouKarl/SharpContractionCutJohnEllipsoid": {
+  "checked_at": "2026-11-24T09:51:45Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/DrZhouKarl/SharpContractionCutJohnEllipsoid/blob/main/LICENSE"
+ },
  "Fedor-Popov/Lean_VOA": {
   "checked_at": "2026-11-19T15:39:34Z",
   "spdx": "Apache-2.0",
@@ -95,6 +101,12 @@
   "name": "Apache License 2.0",
   "url": "https://github.com/MikhailLevit1987/icosahedron-rational-faces/blob/master/LICENSE"
  },
+ "MinjaePark-Math/antichain-lean": {
+  "checked_at": "2026-11-24T09:51:45Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/MinjaePark-Math/antichain-lean/blob/main/LICENSE"
+ },
  "TTony2019/OptPaper": {
   "checked_at": "2026-11-20T15:12:43Z",
   "spdx": null,
@@ -118,6 +130,12 @@
   "spdx": null,
   "name": null,
   "url": null
+ },
+ "XinyuanXie-hub/BooleanThreshold": {
+  "checked_at": "2026-11-24T09:51:46Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/XinyuanXie-hub/BooleanThreshold/blob/main/LICENSE"
  },
  "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities": {
   "checked_at": "2026-11-19T15:39:53Z",
@@ -172,6 +190,12 @@
   "spdx": "MIT",
   "name": "MIT License",
   "url": "https://github.com/apemm/elephant-bias-interval/blob/main/LICENSE"
+ },
+ "armandorodado/weierstrass-delaunay": {
+  "checked_at": "2026-11-24T09:51:46Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/armandorodado/weierstrass-delaunay/blob/main/LICENSE"
  },
  "bishara74/lowhalf-mul3": {
   "checked_at": "2026-11-19T15:40:07Z",
@@ -454,6 +478,12 @@
   "spdx": "MIT",
   "name": "MIT License",
   "url": "https://github.com/tilenmarc/braid-bruhat-mutation-distance/blob/main/LICENSE"
+ },
+ "tomhutchcroft/near-critical-diffusivity": {
+  "checked_at": "2026-11-24T09:51:46Z",
+  "spdx": null,
+  "name": null,
+  "url": null
  },
  "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four": {
   "checked_at": "2026-11-23T07:37:38Z",
