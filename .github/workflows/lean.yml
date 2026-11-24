@@ -109,9 +109,10 @@ jobs:
       contents: write
       pages: write
       id-token: write
-      actions: read
     environment:
       name: github-pages
+    outputs:
+      deploy: ${{ steps.record.outputs.changed == 'true' || steps.licences.outputs.changed == 'true' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -177,26 +178,6 @@ jobs:
           path: _site
           include-hidden-files: true
 
-      # GitHub's artifact list can lag a few seconds behind an upload, and deploy-pages then fails
-      # with "No artifacts named github-pages". Wait until the run lists it.
-      - name: Wait for the Pages artifact
-        if: steps.record.outputs.changed == 'true' || steps.licences.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          for i in $(seq 24); do
-            if gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?per_page=100" \
-                 --jq '.artifacts[].name' | grep -qx github-pages; then
-              echo "Pages artifact listed after $(( (i - 1) * 5 )) seconds"; exit 0
-            fi
-            sleep 5
-          done
-          echo "::warning::The Pages artifact was still not listed after two minutes; trying the deploy anyway."
-
-      - name: Deploy
-        if: steps.record.outputs.changed == 'true' || steps.licences.outputs.changed == 'true'
-        uses: actions/deploy-pages@v5
-
       # Sends once per issue, and only on the day of the issue. Until the repository variable
       # DIGEST_SEND is set to true, each email waits in Kit as a draft for a look first.
       # The issue itself was deployed by the daily feed, so a failed Lean page deploy should not hold the email back.
@@ -213,3 +194,20 @@ jobs:
             git pull --rebase
             git push
           fi
+
+  # Deploying from its own job means the Pages artifact is finished and listed before deploy-pages
+  # looks for it. In the same job it sometimes was not, and the deploy failed with
+  # "No artifacts named github-pages" (twice on 24 November 2026). The daily feed works this way too.
+  deploy:
+    needs: publish
+    if: always() && needs.publish.outputs.deploy == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
