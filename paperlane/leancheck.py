@@ -20,6 +20,27 @@ REPO_RE = re.compile(r"^(?!\.{1,2}/)[A-Za-z0-9_.-]{1,100}/(?!\.{1,2}$)[A-Za-z0-9
 PATH_RE = re.compile(r"^(?:[A-Za-z0-9_.-]{1,100}/){0,8}[A-Za-z0-9_.-]{0,100}$")
 # Older Lean quotes it as 'sorry' and newer Lean as `sorry`.
 SORRY_RE = re.compile(r"declaration uses ['`]sorry['`]")
+SORRY_AT_RE = re.compile(r"([^\s:]+\.lean):\d+:\d+: declaration uses ['`]sorry['`]")
+
+
+def challenge_sorries(proj, text):
+    """Sorry warnings from a Palomar challenge file, which states theorems with sorry on purpose.
+
+    comparator.json names the challenge module, and the solution module proves each statement.
+    They are set aside only when the file has no more of them than comparator.json lists theorems,
+    so a project cannot hide real gaps by naming its main file the challenge.
+    """
+    try:
+        comp = json.loads((proj / "comparator.json").read_text())
+        mod = comp["challenge_module"]
+        names = comp.get("theorem_names") or []
+    except (OSError, ValueError, KeyError, TypeError):
+        return 0
+    if not isinstance(mod, str) or not re.fullmatch(r"[\w.]+", mod) or not isinstance(names, list):
+        return 0
+    want = mod.replace(".", "/") + ".lean"
+    n = sum(1 for f in SORRY_AT_RE.findall(text) if re.sub(r"^(\./)+", "", f) == want)
+    return n if n <= len(names) else 0
 # A repository that was checked once is checked again only when a new version of a paper links it.
 RECHECK_AFTER = timedelta(days=7)
 MAX_PER_RUN = 20
@@ -426,7 +447,8 @@ def run(repo, path, out, build_minutes=60, url=None):
     with open(log, errors="replace") as f:
         f.seek(mark)
         text = f.read()
-    result["sorries"] = len(SORRY_RE.findall(text))
+    result["challenge_sorries"] = challenge_sorries(proj, text)
+    result["sorries"] = len(SORRY_RE.findall(text)) - result["challenge_sorries"]
     if code is None:
         return finish("timeout", f"lake build ran for more than {build_minutes} minutes")
     if code != 0:
@@ -464,6 +486,7 @@ def clean(r):
         "lean_files": bounded(r.get("lean_files"), 10**6),
         "lean_lines": bounded(r.get("lean_lines"), 10**8),
         "build_seconds": bounded(r.get("build_seconds"), 100000),
+        "challenge_sorries": bounded(r.get("challenge_sorries"), 1000) or 0,
         "checked_at": iso(now()),
     }
 

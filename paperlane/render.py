@@ -943,6 +943,9 @@ def lean_repo_html(r, papers, kept, base, built, lic=None, hist=None):
         rows.append(("lean", f'<span class="mono">{esc(r["toolchain"])}</span>'))
     if r.get("mathlib"):
         rows.append(("mathlib", f'<a class="mono" href="https://github.com/leanprover-community/mathlib4/tree/{esc(r["mathlib"])}" target="_blank" rel="noopener">{esc(r["mathlib"][:12])}</a>'))
+    if r.get("challenge_sorries"):
+        n = r["challenge_sorries"]
+        rows.append(("challenge", f'{n} sorry warning{"s" if n != 1 else ""} in the Palomar challenge file named in <span class="mono">comparator.json</span>, which states the theorems with <code>sorry</code> on purpose. They are not counted, because the solution module proves the same statements.'))
     if r["status"] in ("builds", "sorry"):
         rows.append(("axioms", axioms_html(r)))
     if r.get("path"):

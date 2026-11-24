@@ -390,3 +390,20 @@ def test_author_links_add_a_repo():
     s = signals.compute(paper, {}, check_github=False, extra=extra)
     assert s["code_links"] == extra["2611.25630"]
     assert signals.compute(paper, {}, check_github=False, extra={})["code_links"] == []
+
+
+def test_palomar_challenge_sorries_are_set_aside(tmp_path=None):
+    import tempfile, json as _json
+    from pathlib import Path as _P
+    from paperlane import leancheck as lc
+    proj = _P(tempfile.mkdtemp())
+    (proj / "comparator.json").write_text(_json.dumps({"challenge_module": "Challenge", "theorem_names": ["a", "b"]}))
+    log = ("warning: ././././Challenge.lean:72:8: declaration uses `sorry`\n"
+           "warning: Challenge.lean:77:8: declaration uses `sorry`\n"
+           "warning: Main/Gap.lean:3:0: declaration uses `sorry`\n")
+    assert lc.challenge_sorries(proj, log) == 2
+    # More challenge sorries than listed theorems: nothing is set aside.
+    (proj / "comparator.json").write_text(_json.dumps({"challenge_module": "Challenge", "theorem_names": ["a"]}))
+    assert lc.challenge_sorries(proj, log) == 0
+    # No comparator.json: nothing is set aside.
+    assert lc.challenge_sorries(_P(tempfile.mkdtemp()), log) == 0
