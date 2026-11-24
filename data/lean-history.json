@@ -161,6 +161,22 @@
    "axiom_count": null
   }
  ],
+ "DrZhouKarl/SharpContractionCutJohnEllipsoid": [
+  {
+   "checked_at": "2026-11-24T09:51:43Z",
+   "commit": "5d3932a2740b43d3f735c83646d85c2fc714f1cd",
+   "status": "fails",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 0,
+   "lean_files": 230,
+   "lean_lines": 28467,
+   "toolchain": "leanprover/lean4:v4.35.0-rc2",
+   "mathlib": null,
+   "axiom_count": null
+  }
+ ],
  "Fedor-Popov/Lean_VOA": [
   {
    "checked_at": "2026-11-12T19:47:53Z",
@@ -472,6 +488,27 @@
    "axiom_count": null
   }
  ],
+ "MinjaePark-Math/antichain-lean": [
+  {
+   "checked_at": "2026-11-24T09:51:43Z",
+   "commit": "d937861ca968d21c04d8c21be5ff3e3680e31ce2",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 3151,
+   "declarations": {
+    "theorems": 1932,
+    "definitions": 508,
+    "types": 4,
+    "axioms": 0
+   },
+   "build_seconds": 238,
+   "lean_files": 172,
+   "lean_lines": 32759,
+   "toolchain": "leanprover/lean4:v4.24.0",
+   "mathlib": "f897ebcf72cd16f89ab4577d0c826cd14afaafc7",
+   "axiom_count": 0
+  }
+ ],
  "TTony2019/OptPaper": [
   {
    "checked_at": "2026-11-20T15:12:41Z",
@@ -558,6 +595,22 @@
    "toolchain": "leanprover/lean4:v4.19.0",
    "mathlib": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
    "axiom_count": 0
+  }
+ ],
+ "XinyuanXie-hub/BooleanThreshold": [
+  {
+   "checked_at": "2026-11-24T09:51:43Z",
+   "commit": "20954df4139daa40da1659eaf5bbc44ab65350a7",
+   "status": "sorry",
+   "sorries": 2,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": 208,
+   "lean_files": 174,
+   "lean_lines": 30984,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": null
   }
  ],
  "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities": [
@@ -735,6 +788,22 @@
    "toolchain": "leanprover/lean4:v4.33.1",
    "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
    "axiom_count": 0
+  }
+ ],
+ "armandorodado/weierstrass-delaunay": [
+  {
+   "checked_at": "2026-11-24T09:51:43Z",
+   "commit": "f5c25f6096880f4d8c556f95509dc96edb44fbb8",
+   "status": "fails",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": null,
+   "lean_files": 1,
+   "lean_lines": 258,
+   "toolchain": "leanprover/lean4:v4.15.0",
+   "mathlib": null,
+   "axiom_count": null
   }
  ],
  "bishara74/lowhalf-mul3": [
@@ -1389,6 +1458,25 @@
    "toolchain": "leanprover/lean4:v4.28.0",
    "mathlib": "8f9d9cff6bd728b17a24e163c9402775d9e6a365",
    "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-24T09:51:43Z",
+   "commit": "4a9e698fb30af637370e23bff18e96d4c8d0a06f",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 956,
+   "declarations": {
+    "theorems": 521,
+    "definitions": 136,
+    "types": 0,
+    "axioms": 0
+   },
+   "build_seconds": 197,
+   "lean_files": 75,
+   "lean_lines": 14645,
+   "toolchain": "leanprover/lean4:v4.28.0",
+   "mathlib": "8f9d9cff6bd728b17a24e163c9402775d9e6a365",
+   "axiom_count": 0
   }
  ],
  "muchenju-math/positivity-lean": [
@@ -1923,6 +2011,27 @@
    "toolchain": "leanprover/lean4:v4.34.1",
    "mathlib": null,
    "axiom_count": null
+  }
+ ],
+ "tomhutchcroft/near-critical-diffusivity": [
+  {
+   "checked_at": "2026-11-24T09:51:43Z",
+   "commit": "c820fea91a7482c1755de0ec94ecb9f59ccfcacc",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 11805,
+   "declarations": {
+    "theorems": 5210,
+    "definitions": 1462,
+    "types": 41,
+    "axioms": 0
+   },
+   "build_seconds": 1319,
+   "lean_files": 1330,
+   "lean_lines": 178068,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four": [
