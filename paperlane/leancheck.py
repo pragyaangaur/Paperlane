@@ -23,6 +23,19 @@ SORRY_RE = re.compile(r"declaration uses ['`]sorry['`]")
 SORRY_AT_RE = re.compile(r"([^\s:]+\.lean):\d+:\d+: declaration uses ['`]sorry['`]")
 
 
+def challenge_module(proj):
+    """(module name, theorem names) of the Palomar challenge in comparator.json, or (None, [])."""
+    try:
+        comp = json.loads((Path(proj) / "comparator.json").read_text())
+        mod = comp["challenge_module"]
+        names = comp.get("theorem_names") or []
+    except (OSError, ValueError, KeyError, TypeError):
+        return None, []
+    if not isinstance(mod, str) or not re.fullmatch(r"[\w.]+", mod) or not isinstance(names, list):
+        return None, []
+    return mod, names
+
+
 def challenge_sorries(proj, text):
     """Sorry warnings from a Palomar challenge file, which states theorems with sorry on purpose.
 
@@ -30,13 +43,8 @@ def challenge_sorries(proj, text):
     They are set aside only when the file has no more of them than comparator.json lists theorems,
     so a project cannot hide real gaps by naming its main file the challenge.
     """
-    try:
-        comp = json.loads((proj / "comparator.json").read_text())
-        mod = comp["challenge_module"]
-        names = comp.get("theorem_names") or []
-    except (OSError, ValueError, KeyError, TypeError):
-        return 0
-    if not isinstance(mod, str) or not re.fullmatch(r"[\w.]+", mod) or not isinstance(names, list):
+    mod, names = challenge_module(proj)
+    if not mod:
         return 0
     want = mod.replace(".", "/") + ".lean"
     n = sum(1 for f in SORRY_AT_RE.findall(text) if re.sub(r"^(\./)+", "", f) == want)
@@ -224,7 +232,10 @@ def mathlib_rev(manifest):
 
 def check_axioms(proj, log):
     """Runs the axiom script inside the built project. Returns (theorems, axioms, note)."""
-    mods = project_modules(proj)
+    # A Palomar challenge restates the solution's theorems under the same names, so importing
+    # both would clash. Its statements are sorry by design, so it is left out of the check.
+    skip, _ = challenge_module(proj)
+    mods = [m for m in project_modules(proj) if m != skip]
     if not mods:
         return None, None, "no compiled modules were found"
     script = proj / ".paperlane_axioms.lean"

@@ -407,3 +407,15 @@ def test_palomar_challenge_sorries_are_set_aside(tmp_path=None):
     assert lc.challenge_sorries(proj, log) == 0
     # No comparator.json: nothing is set aside.
     assert lc.challenge_sorries(_P(tempfile.mkdtemp()), log) == 0
+
+
+def test_challenge_module_is_read_from_comparator():
+    import tempfile, json as _json
+    from pathlib import Path as _P
+    from paperlane import leancheck as lc
+    proj = _P(tempfile.mkdtemp())
+    assert lc.challenge_module(proj) == (None, [])
+    (proj / "comparator.json").write_text(_json.dumps({"challenge_module": "Challenge", "theorem_names": ["a"]}))
+    assert lc.challenge_module(proj) == ("Challenge", ["a"])
+    (proj / "comparator.json").write_text(_json.dumps({"challenge_module": "../evil"}))
+    assert lc.challenge_module(proj) == (None, [])
