@@ -711,11 +711,11 @@
  "chenle02/stratonovich-ham-second-moment-lean": {
   "repo": "chenle02/stratonovich-ham-second-moment-lean",
   "path": "",
-  "commit": "eaa2bfb3df0a37fedd7e423e5605ae2700ede5f1",
+  "commit": "06bda0f397275b8592f0190a398fd0b2f12c7cdc",
   "toolchain": "leanprover/lean4:v4.35.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 744,
+  "seconds": 749,
   "detail": "",
   "minutes": 90,
   "assumptions": [
@@ -736,9 +736,10 @@
   },
   "lean_files": 3502,
   "lean_lines": 349468,
-  "build_seconds": 654,
-  "checked_at": "2026-11-23T19:40:47Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45248636831"
+  "build_seconds": 644,
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-24T20:48:26Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45471734784"
  },
  "david44hello/paper_smale-mean-value-constant-equals-4": {
   "repo": "david44hello/paper_smale-mean-value-constant-equals-4",
