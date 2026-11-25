@@ -1504,6 +1504,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-25T17:47:46Z",
+   "commit": "3c60f6ba24bb410bfe91083fa4119e53b79763c0",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 11912,
+   "declarations": {
+    "theorems": 5632,
+    "definitions": 1807,
+    "types": 65,
+    "axioms": 0
+   },
+   "build_seconds": 859,
+   "lean_files": 416,
+   "lean_lines": 129969,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "magbenji/discrete-modified-gradient-lean": [

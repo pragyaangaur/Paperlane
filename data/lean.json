@@ -1183,16 +1183,33 @@
  "lukasniebel/fast_dynamo_lean": {
   "repo": "lukasniebel/fast_dynamo_lean",
   "path": "",
-  "commit": "f2e17cdd0f814af1bd9c0a6ce10320b216ed4fe0",
+  "commit": "3c60f6ba24bb410bfe91083fa4119e53b79763c0",
   "toolchain": "leanprover/lean4:v4.35.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 900,
+  "seconds": 942,
   "detail": "",
   "minutes": 90,
   "assumptions": [],
-  "checked_at": "2026-11-17T11:58:57Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44066953118"
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "source": "default branch",
+  "theorems": 11912,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 5632,
+   "definitions": 1807,
+   "types": 65,
+   "axioms": 0
+  },
+  "lean_files": 416,
+  "lean_lines": 129969,
+  "build_seconds": 859,
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-25T17:47:46Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45665171551"
  },
  "magbenji/discrete-modified-gradient-lean": {
   "repo": "magbenji/discrete-modified-gradient-lean",
