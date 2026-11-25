@@ -41,6 +41,12 @@
   "name": "MIT License",
   "url": "https://github.com/DrZhouKarl/SharpContractionCutJohnEllipsoid/blob/main/LICENSE"
  },
+ "EsperZhou/online-mms-lean": {
+  "checked_at": "2026-11-25T06:17:58Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
  "Fedor-Popov/Lean_VOA": {
   "checked_at": "2026-11-19T15:39:34Z",
   "spdx": "Apache-2.0",
@@ -70,6 +76,12 @@
   "spdx": "Apache-2.0",
   "name": "Apache License 2.0",
   "url": "https://github.com/JYin80/Lean-LSBA1d_arXiv-2611.09776/blob/main/LICENSE"
+ },
+ "JaTaSn/exterior-convex": {
+  "checked_at": "2026-11-25T06:17:59Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/JaTaSn/exterior-convex/blob/main/LICENSE"
  },
  "LeGenAI/llm_guided_EAQECC_search": {
   "checked_at": "2026-11-19T15:39:44Z",
@@ -341,6 +353,12 @@
   "name": "Apache License 2.0",
   "url": "https://github.com/mjarret/products-of-unitaries-lean/blob/main/LICENSE"
  },
+ "mtoenisk/hereditary-atomicity-and-accp": {
+  "checked_at": "2026-11-25T06:17:59Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
  "muchenju-math/positivity-lean": {
   "checked_at": "2026-11-19T15:41:07Z",
   "spdx": null,
@@ -365,6 +383,12 @@
   "name": "Apache License 2.0",
   "url": "https://github.com/na0b/phigherorder-lean/blob/main/LICENSE"
  },
+ "nawafbourabee/breaking-resonance-lean": {
+  "checked_at": "2026-11-25T06:17:59Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/nawafbourabee/breaking-resonance-lean/blob/main/LICENSE"
+ },
  "nawafbourabee/persistence-pays-lean": {
   "checked_at": "2026-11-19T15:41:29Z",
   "spdx": "Apache-2.0",
@@ -382,6 +406,12 @@
   "spdx": "Apache-2.0",
   "name": "Apache License 2.0",
   "url": "https://github.com/nitromannitol/FPP-variance/blob/main/LICENSE"
+ },
+ "nitromannitol/critical-long-range-conductance": {
+  "checked_at": "2026-11-25T06:18:00Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/nitromannitol/critical-long-range-conductance/blob/main/LICENSE"
  },
  "oasisss6666/pure-semisimplicity-lean": {
   "checked_at": "2026-11-19T15:41:34Z",
@@ -496,6 +526,12 @@
   "spdx": null,
   "name": null,
   "url": null
+ },
+ "whyihaveyou/ising3d-critical-interval": {
+  "checked_at": "2026-11-25T06:18:00Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/whyihaveyou/ising3d-critical-interval/blob/main/LICENSE"
  },
  "willmfeldman/bernoulli-perron-variational": {
   "checked_at": "2026-11-19T15:42:04Z",
