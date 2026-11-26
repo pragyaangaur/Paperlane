@@ -2,7 +2,7 @@
  "ANRGUSC/TINA": {
   "repo": "ANRGUSC/TINA",
   "path": "papers/arxiv-v2/lean",
-  "commit": "44d190a790757c7bb2a932c8f7a58e8fe8dc6c0d",
+  "commit": "fb39d6f615e823e8fa8d620932bdaad3f6a18ab7",
   "toolchain": null,
   "status": "error",
   "sorries": 0,
@@ -21,9 +21,10 @@
   "lean_files": null,
   "lean_lines": null,
   "build_seconds": null,
-  "checked_at": "2026-11-21T15:23:14Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44915976012",
-  "tries": 2
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-26T09:15:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45782909283",
+  "tries": 3
  },
  "Apsiape/kaplansky-conjectures-hyperbolic-groups": {
   "repo": "Apsiape/kaplansky-conjectures-hyperbolic-groups",
@@ -394,6 +395,37 @@
   "detail": "",
   "checked_at": "2026-11-02T06:31:11Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41398301899"
+ },
+ "MaTeArNog/RiskAutomata": {
+  "repo": "MaTeArNog/RiskAutomata",
+  "path": "lean",
+  "commit": "67bb577bd35855cf605e4457ad8795ec0e923991",
+  "toolchain": "leanprover/lean4:v4.15.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 238,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": null,
+  "source": "default branch",
+  "theorems": 384,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 251,
+   "definitions": 116,
+   "types": 6,
+   "axioms": 0
+  },
+  "lean_files": 19,
+  "lean_lines": 3951,
+  "build_seconds": 229,
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-26T09:15:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45782909283"
  },
  "ManuelManas/btp-pbf-verification": {
   "repo": "ManuelManas/btp-pbf-verification",
@@ -806,11 +838,11 @@
  "david44hello/paper_smale-mean-value-constant-equals-4": {
   "repo": "david44hello/paper_smale-mean-value-constant-equals-4",
   "path": "lean",
-  "commit": "173f1c5ea5df2fb4bdf559cb6d27a2f1ebb8c9d1",
+  "commit": "f0cbc9f7f5179d2755709c458b879db1e1a5a967",
   "toolchain": "leanprover/lean4:v4.35.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 269,
+  "seconds": 195,
   "detail": "",
   "minutes": 90,
   "assumptions": [],
@@ -829,9 +861,10 @@
   },
   "lean_files": 26,
   "lean_lines": 7264,
-  "build_seconds": 131,
-  "checked_at": "2026-11-19T18:50:20Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/44577588459"
+  "build_seconds": 106,
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-26T09:15:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45782909283"
  },
  "david44hello/papers_supporting_materials": {
   "repo": "david44hello/papers_supporting_materials",
@@ -1702,10 +1735,29 @@
   "toolchain": "leanprover/lean4:v4.19.0",
   "status": "builds",
   "sorries": 0,
-  "seconds": 2201,
+  "seconds": 2922,
   "detail": "",
-  "checked_at": "2026-11-03T16:11:04Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41655593897"
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
+  "source": "default branch",
+  "theorems": 31999,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 15457,
+   "definitions": 7132,
+   "types": 228,
+   "axioms": 0
+  },
+  "lean_files": 432,
+  "lean_lines": 198463,
+  "build_seconds": 2835,
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-26T09:15:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45782909283"
  },
  "samyama-ai/gw-speed-certificate": {
   "repo": "samyama-ai/gw-speed-certificate",
@@ -1724,11 +1776,11 @@
  "sashakolpakov/CoxeterPolytopes": {
   "repo": "sashakolpakov/CoxeterPolytopes",
   "path": "formal",
-  "commit": "c8c86903681c94e3358c484f7e0c86efcde78799",
+  "commit": "35c0e5495e638c46dc15f38f088b008bc7d55bb3",
   "toolchain": "leanprover/lean4:v4.32.2",
   "status": "builds",
   "sorries": 0,
-  "seconds": 1279,
+  "seconds": 1717,
   "detail": "",
   "minutes": 90,
   "assumptions": [
@@ -1750,10 +1802,10 @@
   },
   "lean_files": 103,
   "lean_lines": 23696,
-  "build_seconds": 1260,
+  "build_seconds": 1686,
   "challenge_sorries": 0,
-  "checked_at": "2026-11-25T06:17:56Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45554410463"
+  "checked_at": "2026-11-26T09:15:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45782909283"
  },
  "sashakolpakov/PseudoArithmetic": {
   "repo": "sashakolpakov/PseudoArithmetic",
@@ -1889,6 +1941,37 @@
   "checked_at": "2026-11-24T09:51:43Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45365024643"
  },
+ "uda-lab/degree-labeling": {
+  "repo": "uda-lab/degree-labeling",
+  "path": "",
+  "commit": "de336a99cda22bff987d8b3dbec5eb4a0cbd324d",
+  "toolchain": "leanprover/lean4:v4.33.1",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 100,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "source": "default branch",
+  "theorems": 16,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 7,
+   "definitions": 10,
+   "types": 0,
+   "axioms": 0
+  },
+  "lean_files": 8,
+  "lean_lines": 747,
+  "build_seconds": 8,
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-26T09:15:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45782909283"
+ },
  "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four": {
   "repo": "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four",
   "path": "",
@@ -1991,6 +2074,37 @@
   "detail": "lake build ran for more than 90 minutes",
   "checked_at": "2026-11-03T16:11:04Z",
   "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/41655593897"
+ },
+ "xyzw/tsga_sdft": {
+  "repo": "xyzw/tsga_sdft",
+  "path": "lean",
+  "commit": "cf392ad5009127973069bd63a5f730745f4780d5",
+  "toolchain": "leanprover/lean4:v4.36.0",
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 403,
+  "detail": "",
+  "minutes": 90,
+  "assumptions": [],
+  "reason": null,
+  "lean_errors": 0,
+  "mathlib": "fc4f59e577feb1a4956671bc04ac18aaaf8cd842",
+  "source": "default branch",
+  "theorems": 5429,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 2180,
+   "definitions": 937,
+   "types": 153,
+   "axioms": 0
+  },
+  "lean_files": 308,
+  "lean_lines": 47359,
+  "build_seconds": 322,
+  "challenge_sorries": 0,
+  "checked_at": "2026-11-26T09:15:21Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45782909283"
  },
  "ywatanabex/bp-degree-syzygies-lean": {
   "repo": "ywatanabex/bp-degree-syzygies-lean",

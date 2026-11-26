@@ -41,6 +41,20 @@
    "toolchain": null,
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-26T09:15:21Z",
+   "commit": "fb39d6f615e823e8fa8d620932bdaad3f6a18ab7",
+   "status": "error",
+   "sorries": 0,
+   "theorems": null,
+   "declarations": null,
+   "build_seconds": null,
+   "lean_files": null,
+   "lean_lines": null,
+   "toolchain": null,
+   "mathlib": null,
+   "axiom_count": null
   }
  ],
  "Apsiape/kaplansky-conjectures-hyperbolic-groups": [
@@ -529,6 +543,27 @@
    "toolchain": "leanprover/lean4:v4.33.1",
    "mathlib": null,
    "axiom_count": null
+  }
+ ],
+ "MaTeArNog/RiskAutomata": [
+  {
+   "checked_at": "2026-11-26T09:15:21Z",
+   "commit": "67bb577bd35855cf605e4457ad8795ec0e923991",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 384,
+   "declarations": {
+    "theorems": 251,
+    "definitions": 116,
+    "types": 6,
+    "axioms": 0
+   },
+   "build_seconds": 229,
+   "lean_files": 19,
+   "lean_lines": 3951,
+   "toolchain": "leanprover/lean4:v4.15.0",
+   "mathlib": null,
+   "axiom_count": 0
   }
  ],
  "ManuelManas/btp-pbf-verification": [
@@ -1036,6 +1071,25 @@
     "axioms": 0
    },
    "build_seconds": 131,
+   "lean_files": 26,
+   "lean_lines": 7264,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-26T09:15:21Z",
+   "commit": "f0cbc9f7f5179d2755709c458b879db1e1a5a967",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 635,
+   "declarations": {
+    "theorems": 312,
+    "definitions": 70,
+    "types": 0,
+    "axioms": 0
+   },
+   "build_seconds": 106,
    "lean_files": 26,
    "lean_lines": 7264,
    "toolchain": "leanprover/lean4:v4.35.0",
@@ -2111,6 +2165,25 @@
    "toolchain": "leanprover/lean4:v4.19.0",
    "mathlib": null,
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-26T09:15:21Z",
+   "commit": "b6028c386af83ed545ddbb65a8814db846f87112",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 31999,
+   "declarations": {
+    "theorems": 15457,
+    "definitions": 7132,
+    "types": 228,
+    "axioms": 0
+   },
+   "build_seconds": 2835,
+   "lean_files": 432,
+   "lean_lines": 198463,
+   "toolchain": "leanprover/lean4:v4.19.0",
+   "mathlib": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
+   "axiom_count": 0
   }
  ],
  "samyama-ai/gw-speed-certificate": [
@@ -2214,6 +2287,25 @@
     "axioms": 0
    },
    "build_seconds": 1260,
+   "lean_files": 103,
+   "lean_lines": 23696,
+   "toolchain": "leanprover/lean4:v4.32.2",
+   "mathlib": null,
+   "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-26T09:15:21Z",
+   "commit": "35c0e5495e638c46dc15f38f088b008bc7d55bb3",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 558,
+   "declarations": {
+    "theorems": 266,
+    "definitions": 264,
+    "types": 9,
+    "axioms": 0
+   },
+   "build_seconds": 1686,
    "lean_files": 103,
    "lean_lines": 23696,
    "toolchain": "leanprover/lean4:v4.32.2",
@@ -2373,6 +2465,27 @@
    "axiom_count": 0
   }
  ],
+ "uda-lab/degree-labeling": [
+  {
+   "checked_at": "2026-11-26T09:15:21Z",
+   "commit": "de336a99cda22bff987d8b3dbec5eb4a0cbd324d",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 16,
+   "declarations": {
+    "theorems": 7,
+    "definitions": 10,
+    "types": 0,
+    "axioms": 0
+   },
+   "build_seconds": 8,
+   "lean_files": 8,
+   "lean_lines": 747,
+   "toolchain": "leanprover/lean4:v4.33.1",
+   "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+   "axiom_count": 0
+  }
+ ],
  "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four": [
   {
    "checked_at": "2026-11-23T07:37:36Z",
@@ -2470,6 +2583,27 @@
    "toolchain": "leanprover/lean4:v4.34.0-rc2",
    "mathlib": null,
    "axiom_count": null
+  }
+ ],
+ "xyzw/tsga_sdft": [
+  {
+   "checked_at": "2026-11-26T09:15:21Z",
+   "commit": "cf392ad5009127973069bd63a5f730745f4780d5",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 5429,
+   "declarations": {
+    "theorems": 2180,
+    "definitions": 937,
+    "types": 153,
+    "axioms": 0
+   },
+   "build_seconds": 322,
+   "lean_files": 308,
+   "lean_lines": 47359,
+   "toolchain": "leanprover/lean4:v4.36.0",
+   "mathlib": "fc4f59e577feb1a4956671bc04ac18aaaf8cd842",
+   "axiom_count": 0
   }
  ],
  "ywatanabex/bp-degree-syzygies-lean": [
