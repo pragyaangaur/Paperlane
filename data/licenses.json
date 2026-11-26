@@ -101,6 +101,12 @@
   "name": "Apache License 2.0",
   "url": "https://github.com/MColbrook/Kung-Traub_conjecture/blob/main/LICENSE"
  },
+ "MaTeArNog/RiskAutomata": {
+  "checked_at": "2026-11-26T09:15:23Z",
+  "spdx": "MIT",
+  "name": "MIT License",
+  "url": "https://github.com/MaTeArNog/RiskAutomata/blob/main/LICENSE"
+ },
  "ManuelManas/btp-pbf-verification": {
   "checked_at": "2026-11-19T15:39:48Z",
   "spdx": null,
@@ -521,6 +527,12 @@
   "name": null,
   "url": null
  },
+ "uda-lab/degree-labeling": {
+  "checked_at": "2026-11-26T09:15:23Z",
+  "spdx": "Apache-2.0",
+  "name": "Apache License 2.0",
+  "url": "https://github.com/uda-lab/degree-labeling/blob/main/LICENSE"
+ },
  "wangjie212/homogeneous-nilpotent-Jacobian-maps-in-dimension-four": {
   "checked_at": "2026-11-23T07:37:38Z",
   "spdx": null,
@@ -547,6 +559,12 @@
  },
  "xyzw/qedft_pf_pub": {
   "checked_at": "2026-11-19T15:42:08Z",
+  "spdx": null,
+  "name": null,
+  "url": null
+ },
+ "xyzw/tsga_sdft": {
+  "checked_at": "2026-11-26T09:15:24Z",
   "spdx": null,
   "name": null,
   "url": null
