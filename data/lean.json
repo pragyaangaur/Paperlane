@@ -573,11 +573,11 @@
  "XinyuanXie-hub/BooleanThreshold": {
   "repo": "XinyuanXie-hub/BooleanThreshold",
   "path": "",
-  "commit": "20954df4139daa40da1659eaf5bbc44ab65350a7",
+  "commit": "c9a7b6da42ab9ed711530831add1cac2e5467627",
   "toolchain": "leanprover/lean4:v4.35.0",
-  "status": "sorry",
-  "sorries": 2,
-  "seconds": 288,
+  "status": "builds",
+  "sorries": 0,
+  "seconds": 225,
   "detail": "",
   "minutes": 90,
   "assumptions": [],
@@ -585,15 +585,21 @@
   "lean_errors": 0,
   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
   "source": "default branch",
-  "theorems": null,
-  "axioms": null,
-  "axiom_note": "the axiom check could not run",
-  "declarations": null,
+  "theorems": 2267,
+  "axioms": [],
+  "axiom_note": "",
+  "declarations": {
+   "theorems": 656,
+   "definitions": 188,
+   "types": 2,
+   "axioms": 0
+  },
   "lean_files": 174,
   "lean_lines": 30984,
-  "build_seconds": 208,
-  "checked_at": "2026-11-24T09:51:43Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45365024643"
+  "build_seconds": 145,
+  "challenge_sorries": 2,
+  "checked_at": "2026-11-27T20:08:40Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/46058042882"
  },
  "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities": {
   "repo": "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities",
@@ -1776,11 +1782,11 @@
  "sashakolpakov/CoxeterPolytopes": {
   "repo": "sashakolpakov/CoxeterPolytopes",
   "path": "formal",
-  "commit": "35c0e5495e638c46dc15f38f088b008bc7d55bb3",
+  "commit": "d4bb44c53b43782925bac14f1f33a6af0a57ef33",
   "toolchain": "leanprover/lean4:v4.32.2",
   "status": "builds",
   "sorries": 0,
-  "seconds": 1717,
+  "seconds": 1688,
   "detail": "",
   "minutes": 90,
   "assumptions": [
@@ -1802,10 +1808,10 @@
   },
   "lean_files": 103,
   "lean_lines": 23696,
-  "build_seconds": 1686,
+  "build_seconds": 1647,
   "challenge_sorries": 0,
-  "checked_at": "2026-11-26T09:15:21Z",
-  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/45782909283"
+  "checked_at": "2026-11-27T20:08:40Z",
+  "run": "https://github.com/pragyaangaur/Paperlane/actions/runs/46058042882"
  },
  "sashakolpakov/PseudoArithmetic": {
   "repo": "sashakolpakov/PseudoArithmetic",

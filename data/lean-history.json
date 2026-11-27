@@ -721,6 +721,25 @@
    "toolchain": "leanprover/lean4:v4.35.0",
    "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
    "axiom_count": null
+  },
+  {
+   "checked_at": "2026-11-27T20:08:40Z",
+   "commit": "c9a7b6da42ab9ed711530831add1cac2e5467627",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 2267,
+   "declarations": {
+    "theorems": 656,
+    "definitions": 188,
+    "types": 2,
+    "axioms": 0
+   },
+   "build_seconds": 145,
+   "lean_files": 174,
+   "lean_lines": 30984,
+   "toolchain": "leanprover/lean4:v4.35.0",
+   "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+   "axiom_count": 0
   }
  ],
  "adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities": [
@@ -2306,6 +2325,25 @@
     "axioms": 0
    },
    "build_seconds": 1686,
+   "lean_files": 103,
+   "lean_lines": 23696,
+   "toolchain": "leanprover/lean4:v4.32.2",
+   "mathlib": null,
+   "axiom_count": 0
+  },
+  {
+   "checked_at": "2026-11-27T20:08:40Z",
+   "commit": "d4bb44c53b43782925bac14f1f33a6af0a57ef33",
+   "status": "builds",
+   "sorries": 0,
+   "theorems": 558,
+   "declarations": {
+    "theorems": 266,
+    "definitions": 264,
+    "types": 9,
+    "axioms": 0
+   },
+   "build_seconds": 1647,
    "lean_files": 103,
    "lean_lines": 23696,
    "toolchain": "leanprover/lean4:v4.32.2",
